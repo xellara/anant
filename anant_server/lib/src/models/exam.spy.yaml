@@ -1,0 +1,13 @@
+### Exam or test event
+class: Exam
+table: exam
+fields:
+  organizationId: int, relation(parent=organization)
+  classId: int, relation(parent=class)
+  subjectId: int, relation(parent=subject)
+  name: String              # e.g. "Midterm Exam"
+  date: DateTime
+  totalMarks: int
+indexes:
+  exam_class_idx:
+    fields: classId, date

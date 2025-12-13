@@ -1,0 +1,29 @@
+### Organization
+class: Organization
+table: organization
+fields:
+  name: String
+  organizationName: String         # school’s unique code/name
+  code: String?
+  type: String
+  address: String?
+  city: String?
+  state: String?
+  country: String, default="India"
+  pincode: String?
+  contactNumber: String?
+  email: String?
+  website: String?
+  logoUrl: String?
+  isActive: bool, default=true
+  createdAt: DateTime
+  monthlyFees: Map<String, double>? # optional, e.g. { "Grade 1": 1500.0, "Grade 2": 1600.0 }
+  feeStartAndEndMonth: Map<String, String>? # optional, e.g. { "startMonth": "April", "endMonth": "March" }
+  admissionFee: double? # optional
+  gstNumber: String? # optional
+  panNumber: String? # optional
+
+indexes:
+  org_organizationName_unique:
+    fields: organizationName
+    unique: true

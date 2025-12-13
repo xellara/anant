@@ -1,0 +1,22 @@
+### Audit log for permission checks and usage
+class: PermissionAudit
+table: permission_audit
+fields:
+  user: User?, relation
+  permissionSlug: String
+  action: String
+  resourceType: String?
+  resourceId: String?
+  organizationName: String?
+  success: bool
+  failureReason: String?
+  ipAddress: String?
+  userAgent: String?
+  timestamp: DateTime, default=now
+indexes:
+  perm_audit_user_idx:
+    fields: userId, timestamp
+  perm_audit_time_idx:
+    fields: timestamp
+  perm_audit_org_idx:
+    fields: organizationName, timestamp

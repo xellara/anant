@@ -1,0 +1,357 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "external_auth_provider",
+        "dartName": "ExternalAuthProvider",
+        "module": "anant",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('external_auth_provider_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "uid",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "provider",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "providerUid",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "providerEmail",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "metadata",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "external_auth_provider_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "provider_uid_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "provider"
+              },
+              {
+                "type": 0,
+                "definition": "providerUid"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          },
+          {
+            "indexName": "uid_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "uid"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "user",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "uid",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "user_uid_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "uid"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          },
+          {
+            "indexName": "user_email_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "email"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          },
+          {
+            "indexName": "user_org_role_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "organizationName"
+              },
+              {
+                "type": 0,
+                "definition": "role"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"user_uid_idx\" is added to table \"user\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "user",
+            "columns": [
+              "uid"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"user_email_idx\" is added to table \"user\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "user",
+            "columns": [
+              "email"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"user_credentials_uid_idx\" is added to table \"user_credentials\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "user_credentials",
+            "columns": [
+              "uid"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"user_credentials\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "user_credentials",
+            "columns": [
+              "uid"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "user_credentials"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "user_credentials",
+        "dartName": "UserCredentials",
+        "module": "anant",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('user_credentials_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "uid",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "userId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "passwordHash",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "anantId",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "user_credentials_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "user_credentials_uid_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "uid"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          },
+          {
+            "indexName": "user_credentials_userId_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "userId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"user_uid_idx\" is added to table \"user\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "user",
+      "columns": [
+        "uid"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"user_email_idx\" is added to table \"user\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "user",
+      "columns": [
+        "email"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"user_credentials_uid_idx\" is added to table \"user_credentials\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "user_credentials",
+      "columns": [
+        "uid"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"user_credentials\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "user_credentials",
+      "columns": [
+        "uid"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

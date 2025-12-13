@@ -1,0 +1,21 @@
+### External Authentication Provider Mapping
+### Maps external provider UIDs (Firebase, Google, etc.) to internal UID
+class: ExternalAuthProvider
+table: external_auth_provider
+fields:
+  uid: String  # Internal user UID (references User.uid)
+  provider: String  # Provider name: 'firebase', 'google', 'apple', 'serverpod', etc.
+  providerUid: String  # UID from external provider
+  providerEmail: String?  # Email from provider (for matching)
+  metadata: String?  # JSON for additional provider-specific data
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+indexes:
+  # Composite index for provider + providerUid (unique per provider)
+  provider_uid_idx:
+    fields: provider, providerUid
+    unique: true
+  # Index on internal UID for reverse lookups
+  uid_idx:
+    fields: uid

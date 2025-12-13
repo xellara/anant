@@ -1,0 +1,531 @@
+BEGIN;
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "attendance" (
+    "id" bigserial PRIMARY KEY,
+    "organizationName" text NOT NULL,
+    "className" text NOT NULL,
+    "sectionName" text NOT NULL,
+    "subjectName" text,
+    "studentAnantId" text NOT NULL,
+    "startTime" text NOT NULL,
+    "endTime" text NOT NULL,
+    "date" text NOT NULL,
+    "markedByAnantId" text NOT NULL,
+    "status" text NOT NULL,
+    "isSubmitted" boolean NOT NULL DEFAULT false,
+    "remarks" text
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "class" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint,
+    "name" text NOT NULL,
+    "academicYear" text NOT NULL,
+    "courseName" text,
+    "classTeacherAnantId" text,
+    "startDate" timestamp without time zone,
+    "endDate" timestamp without time zone,
+    "isActive" boolean NOT NULL DEFAULT true
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "course" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint,
+    "department" text,
+    "name" text NOT NULL,
+    "code" text,
+    "description" text,
+    "semester" bigint,
+    "academicYear" text,
+    "credits" bigint,
+    "isElective" boolean NOT NULL DEFAULT false,
+    "isActive" boolean NOT NULL DEFAULT true
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "enrollment" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint NOT NULL,
+    "classId" bigint NOT NULL,
+    "studentId" bigint NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "enroll_class_idx" ON "enrollment" USING btree ("classId");
+CREATE INDEX "enroll_student_idx" ON "enrollment" USING btree ("studentId");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "exam" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint NOT NULL,
+    "classId" bigint NOT NULL,
+    "subjectId" bigint NOT NULL,
+    "name" text NOT NULL,
+    "date" timestamp without time zone NOT NULL,
+    "totalMarks" bigint NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "exam_class_idx" ON "exam" USING btree ("classId", "date");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "fee_record" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint NOT NULL,
+    "studentId" bigint NOT NULL,
+    "amount" double precision NOT NULL,
+    "dueDate" timestamp without time zone,
+    "paidDate" timestamp without time zone,
+    "description" text
+);
+
+-- Indexes
+CREATE INDEX "fee_student_idx" ON "fee_record" USING btree ("studentId", "dueDate");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "monthly_fee_transaction" (
+    "id" bigserial PRIMARY KEY,
+    "anantId" text NOT NULL,
+    "organizationName" text NOT NULL,
+    "month" text NOT NULL,
+    "feeAmount" double precision NOT NULL,
+    "discount" double precision NOT NULL,
+    "fine" double precision NOT NULL,
+    "transactionDate" timestamp without time zone NOT NULL,
+    "transactionGateway" text NOT NULL,
+    "transactionRef" text NOT NULL,
+    "transactionId" text NOT NULL,
+    "transactionStatus" text NOT NULL,
+    "transactionType" text NOT NULL,
+    "markedByAnantId" text NOT NULL,
+    "isRefunded" boolean NOT NULL DEFAULT false
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "organization" (
+    "id" bigserial PRIMARY KEY,
+    "name" text NOT NULL,
+    "organizationName" text NOT NULL,
+    "code" text,
+    "type" text NOT NULL,
+    "address" text,
+    "city" text,
+    "state" text,
+    "country" text NOT NULL DEFAULT 'India'::text,
+    "pincode" text,
+    "contactNumber" text,
+    "email" text,
+    "website" text,
+    "logoUrl" text,
+    "isActive" boolean NOT NULL DEFAULT true,
+    "createdAt" timestamp without time zone NOT NULL,
+    "monthlyFees" json,
+    "feeStartAndEndMonth" json,
+    "admissionFee" double precision,
+    "gstNumber" text,
+    "panNumber" text
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "org_organizationName_unique" ON "organization" USING btree ("organizationName");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "section" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint,
+    "className" text NOT NULL,
+    "name" text NOT NULL,
+    "sectionTeacherAnantId" text,
+    "isActive" boolean NOT NULL DEFAULT true
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "student_course_enrollment" (
+    "id" bigserial PRIMARY KEY,
+    "studentAnantId" text NOT NULL,
+    "courseName" text NOT NULL,
+    "organizationId" bigint,
+    "enrolledOn" timestamp without time zone NOT NULL
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "subject" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint NOT NULL,
+    "name" text NOT NULL,
+    "description" text
+);
+
+-- Indexes
+CREATE INDEX "subject_org_idx" ON "subject" USING btree ("organizationId");
+CREATE UNIQUE INDEX "subject_name_idx" ON "subject" USING btree ("organizationId", "name");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "timetable_entry" (
+    "id" bigserial PRIMARY KEY,
+    "organizationId" bigint NOT NULL,
+    "classId" bigint NOT NULL,
+    "subjectId" bigint NOT NULL,
+    "teacherId" bigint NOT NULL,
+    "dayOfWeek" bigint NOT NULL,
+    "startTime" timestamp without time zone NOT NULL,
+    "durationMinutes" bigint NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "time_class_idx" ON "timetable_entry" USING btree ("classId", "dayOfWeek");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "user" (
+    "id" bigserial PRIMARY KEY,
+    "anantId" text,
+    "email" text,
+    "mobileNumber" text,
+    "role" text NOT NULL,
+    "fullName" text,
+    "className" text,
+    "sectionName" text,
+    "rollNumber" text,
+    "profileImageUrl" text,
+    "organizationName" text NOT NULL,
+    "admissionNumber" text,
+    "gender" text,
+    "dob" text,
+    "bloodGroup" text,
+    "address" text,
+    "city" text,
+    "state" text,
+    "country" text NOT NULL DEFAULT 'India'::text,
+    "pincode" text,
+    "parentMobileNumber" text,
+    "parentEmail" text,
+    "aadharNumber" text,
+    "subjectTeaching" json,
+    "classAndSectionTeaching" json,
+    "isPasswordCreated" boolean NOT NULL DEFAULT false,
+    "isActive" boolean NOT NULL DEFAULT false,
+    "isPremiumUser" boolean NOT NULL DEFAULT false
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "user_username_idx" ON "user" USING btree ("anantId");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "user_credentials" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "passwordHash" text NOT NULL,
+    "anantId" text NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "user_credentials_userId_idx" ON "user_credentials" USING btree ("userId");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_auth_key" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "hash" text NOT NULL,
+    "scopeNames" json NOT NULL,
+    "method" text NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "serverpod_auth_key_userId_idx" ON "serverpod_auth_key" USING btree ("userId");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_email_auth" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "email" text NOT NULL,
+    "hash" text NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "serverpod_email_auth_email" ON "serverpod_email_auth" USING btree ("email");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_email_create_request" (
+    "id" bigserial PRIMARY KEY,
+    "userName" text NOT NULL,
+    "email" text NOT NULL,
+    "hash" text NOT NULL,
+    "verificationCode" text NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "serverpod_email_auth_create_account_request_idx" ON "serverpod_email_create_request" USING btree ("email");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_email_failed_sign_in" (
+    "id" bigserial PRIMARY KEY,
+    "email" text NOT NULL,
+    "time" timestamp without time zone NOT NULL,
+    "ipAddress" text NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "serverpod_email_failed_sign_in_email_idx" ON "serverpod_email_failed_sign_in" USING btree ("email");
+CREATE INDEX "serverpod_email_failed_sign_in_time_idx" ON "serverpod_email_failed_sign_in" USING btree ("time");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_email_reset" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "verificationCode" text NOT NULL,
+    "expiration" timestamp without time zone NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "serverpod_email_reset_verification_idx" ON "serverpod_email_reset" USING btree ("verificationCode");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_google_refresh_token" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "refreshToken" text NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "serverpod_google_refresh_token_userId_idx" ON "serverpod_google_refresh_token" USING btree ("userId");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_user_image" (
+    "id" bigserial PRIMARY KEY,
+    "userId" bigint NOT NULL,
+    "version" bigint NOT NULL,
+    "url" text NOT NULL
+);
+
+-- Indexes
+CREATE INDEX "serverpod_user_image_user_id" ON "serverpod_user_image" USING btree ("userId", "version");
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "serverpod_user_info" (
+    "id" bigserial PRIMARY KEY,
+    "userIdentifier" text NOT NULL,
+    "userName" text,
+    "fullName" text,
+    "email" text,
+    "created" timestamp without time zone NOT NULL,
+    "imageUrl" text,
+    "scopeNames" json NOT NULL,
+    "blocked" boolean NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "serverpod_user_info_user_identifier" ON "serverpod_user_info" USING btree ("userIdentifier");
+CREATE INDEX "serverpod_user_info_email" ON "serverpod_user_info" USING btree ("email");
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "class"
+    ADD CONSTRAINT "class_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "course"
+    ADD CONSTRAINT "course_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "enrollment"
+    ADD CONSTRAINT "enrollment_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "enrollment"
+    ADD CONSTRAINT "enrollment_fk_1"
+    FOREIGN KEY("classId")
+    REFERENCES "class"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "enrollment"
+    ADD CONSTRAINT "enrollment_fk_2"
+    FOREIGN KEY("studentId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "exam"
+    ADD CONSTRAINT "exam_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "exam"
+    ADD CONSTRAINT "exam_fk_1"
+    FOREIGN KEY("classId")
+    REFERENCES "class"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "exam"
+    ADD CONSTRAINT "exam_fk_2"
+    FOREIGN KEY("subjectId")
+    REFERENCES "subject"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "fee_record"
+    ADD CONSTRAINT "fee_record_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "fee_record"
+    ADD CONSTRAINT "fee_record_fk_1"
+    FOREIGN KEY("studentId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "section"
+    ADD CONSTRAINT "section_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "student_course_enrollment"
+    ADD CONSTRAINT "student_course_enrollment_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "subject"
+    ADD CONSTRAINT "subject_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "timetable_entry"
+    ADD CONSTRAINT "timetable_entry_fk_0"
+    FOREIGN KEY("organizationId")
+    REFERENCES "organization"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "timetable_entry"
+    ADD CONSTRAINT "timetable_entry_fk_1"
+    FOREIGN KEY("classId")
+    REFERENCES "class"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "timetable_entry"
+    ADD CONSTRAINT "timetable_entry_fk_2"
+    FOREIGN KEY("subjectId")
+    REFERENCES "subject"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "timetable_entry"
+    ADD CONSTRAINT "timetable_entry_fk_3"
+    FOREIGN KEY("teacherId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+
+--
+-- MIGRATION VERSION FOR anant
+--
+INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
+    VALUES ('anant', '20251201123942429', now())
+    ON CONFLICT ("module")
+    DO UPDATE SET "version" = '20251201123942429', "timestamp" = now();
+
+--
+-- MIGRATION VERSION FOR serverpod
+--
+INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
+    VALUES ('serverpod', '20240516151843329', now())
+    ON CONFLICT ("module")
+    DO UPDATE SET "version" = '20240516151843329', "timestamp" = now();
+
+--
+-- MIGRATION VERSION FOR serverpod_auth
+--
+INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
+    VALUES ('serverpod_auth', '20240520102713718', now())
+    ON CONFLICT ("module")
+    DO UPDATE SET "version" = '20240520102713718', "timestamp" = now();
+
+
+COMMIT;

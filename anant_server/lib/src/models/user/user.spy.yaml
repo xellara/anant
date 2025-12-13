@@ -1,0 +1,68 @@
+### User
+class: User
+table: user
+fields:
+  # Primary Identifier (UID for multi-provider auth support)
+  uid: String?  # UUID v4 - unique identifier across all auth providers
+  
+  # Legacy/Alternative Identifiers
+  anantId: String?  # Legacy identifier, kept for backward compatibility
+  email: String?
+  mobileNumber: String?
+  
+  # Core User Information
+  role: UserRole
+  fullName: String?
+  profileImageUrl: String?
+  organizationName: String
+  
+  # Student/Teacher Information
+  className: String?
+  sectionName: String?
+  rollNumber: String?
+  admissionNumber: String?
+  
+  # Personal Details
+  gender: String?
+  dob: String?
+  bloodGroup: String?
+  aadharNumber: String?
+  
+  # Contact Information
+  address: String?
+  city: String?
+  state: String?
+  country: String, default="India"
+  pincode: String?
+  parentMobileNumber: String?
+  parentEmail: String?
+  
+  # Teacher Specific
+  subjectTeaching: List<String>?
+  classAndSectionTeaching: List<String>?
+  
+  # Account Status
+  isPasswordCreated: bool, default=false
+  isActive: bool, default=false
+  isPremiumUser: bool, default=false
+  
+  # Timestamps
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+indexes:
+  # Primary UID index for fast lookups
+  user_uid_idx:
+    fields: uid
+    unique: true
+  # Legacy anantId index (backward compatibility)
+  user_username_idx:
+    fields: anantId
+    unique: true
+  # Email index for quick lookups
+  user_email_idx:
+    fields: email
+    unique: true
+  # Organization + Role composite index
+  user_org_role_idx:
+    fields: organizationName, role

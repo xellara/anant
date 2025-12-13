@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 8090,
+            "driver": "PostgreSQL",
+            "username": "postgres",
+            "database": "anant",
+            "name": "Postgres Local",
+            "password": "HCDmI73u99LzyJL4BGC_vJGJU4YSRp7f"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+### Enrollment (many-to-many: students enrolled in classes)
+class: Enrollment
+table: enrollment
+fields:
+  organizationId: int, relation(parent=organization)
+  classId: int, relation(parent=class)
+  studentId: int, relation(parent=user)
+indexes:
+  enroll_class_idx:
+    fields: classId
+  enroll_student_idx:
+    fields: studentId

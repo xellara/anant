@@ -1,0 +1,14 @@
+### Course
+class: Course
+table: course
+fields:
+  organizationId: int?, relation(parent=organization)
+  department: String?
+  name: String
+  code: String?
+  description: String?
+  semester: int?
+  academicYear: String?
+  credits: int?
+  isElective: bool, default=false
+  isActive: bool, default=true

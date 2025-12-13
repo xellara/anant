@@ -1,0 +1,13 @@
+### Fee or Payment record
+class: FeeRecord
+table: fee_record
+fields:
+  organizationId: int, relation(parent=organization)
+  studentId: int, relation(parent=user)
+  amount: double
+  dueDate: DateTime?
+  paidDate: DateTime?
+  description: String?           # e.g. "Tuition Jan 2025"
+indexes:
+  fee_student_idx:
+    fields: studentId, dueDate

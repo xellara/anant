@@ -1,0 +1,14 @@
+### Enum for user roles (RBAC)
+enum: UserRole
+serialized: byName   # Use name for serialization (recommended)
+values:
+  - admin           
+  - teacher
+  - student
+  - accountant
+  - parent
+  - principal
+  - clerk
+  - librarian
+  - transport
+  - hostel

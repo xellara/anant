@@ -1,0 +1,65 @@
+attendance:
+  - updateSingleAttendance:
+  - submitCompleteAttendance:
+  - getFilteredAttendanceStatus:
+  - getUserAttendanceRecords:
+auth:
+  - signUp:
+  - bulkSignUp:
+  - signIn:
+  - updateUser:
+  - deleteUser:
+classes:
+  - createClasses:
+  - getClasses:
+  - getAllClasseses:
+  - deleteClasses:
+course:
+  - createCourse:
+  - getCourse:
+  - getAllCourses:
+  - deleteCourse:
+organization:
+  - createOrganization:
+  - getOrganization:
+  - getAllOrganizations:
+  - deleteOrganization:
+permission:
+  - createPermission:
+  - getAllPermissions:
+  - getPermissionsByModule:
+  - updatePermission:
+  - deletePermission:
+  - initializeDefaultPermissions:
+role:
+  - createRole:
+  - getRoles:
+  - updateRole:
+  - deleteRole:
+  - assignPermission:
+  - removePermission:
+  - getPermissionsForRole:
+section:
+  - createSection:
+  - getSection:
+  - getAllSections:
+  - deleteSection:
+seed:
+  - seedDatabase:
+settings:
+  - getSettings:
+  - updateSettings:
+transaction:
+  - createMonthlyFeeTransaction:
+  - getMonthlyFeeTransaction:
+  - getAllMonthlyFeeTransactionUser:
+  - getAllMonthlyFeeTransactionOrg:
+  - deleteMonthlyFeeTransaction:
+user:
+  - me:
+  - getByAnantId:
+  - getAllUsers:
+  - getFilteredUsers:
+  - deleteUser:
+  - updateInitialPassword:
+  - searchUsers:

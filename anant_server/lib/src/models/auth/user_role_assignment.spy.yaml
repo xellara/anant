@@ -1,0 +1,15 @@
+### User-Role assignment table for multi-role support
+class: UserRoleAssignment
+table: user_role_assignment
+fields:
+  user: User?, relation
+  role: Role?, relation
+  assignedAt: DateTime, default=now
+  assignedById: int?
+  isActive: bool, default=true
+  validFrom: DateTime?
+  validUntil: DateTime?
+indexes:
+  user_role_assignment_idx:
+    fields: userId, roleId
+    unique: true

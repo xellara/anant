@@ -1,0 +1,9 @@
+class: RolePermission
+table: role_permission
+fields:
+  role: Role?, relation
+  permission: Permission?, relation
+indexes:
+  role_perm_idx:
+    fields: roleId, permissionId
+    unique: true

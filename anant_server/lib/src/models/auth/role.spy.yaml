@@ -1,0 +1,12 @@
+class: Role
+table: role
+fields:
+  name: String
+  slug: String
+  description: String?
+  organizationName: String?
+  isSystemRole: bool, default=false
+indexes:
+  role_slug_org_idx:
+    fields: slug, organizationName
+    unique: true

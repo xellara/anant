@@ -1,0 +1,54 @@
+services:
+  # Development services
+  postgres:
+    image: postgres:16.3
+    ports:
+      - '8090:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: anant
+      POSTGRES_PASSWORD: "HCDmI73u99LzyJL4BGC_vJGJU4YSRp7f"
+    volumes:
+      - anant_data:/var/lib/postgresql/data
+    profiles:
+      - '' # Default profile
+      - dev
+  redis:
+    image: redis:6.2.6
+    ports:
+      - '8091:6379'
+    command: redis-server --requirepass "XZiUbU1Ld8XpUWA6xLnGLM2ABfA_o4l4"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    profiles:
+      - '' # Default profile
+      - dev
+
+  # Test services
+  postgres_test:
+    image: postgres:16.3
+    ports:
+      - '9090:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: anant_test
+      POSTGRES_PASSWORD: "lEb5otHf79zaV3ekEc0VTx9QZvGJtRkl"
+    volumes:
+      - anant_test_data:/var/lib/postgresql/data
+    profiles:
+      - '' # Default profile
+      - test
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - '9091:6379'
+    command: redis-server --requirepass "N3OVWWCLDBSSPWXY0CYtvoa5LpU6CMCc"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    profiles:
+      - '' # Default profile
+      - test
+
+volumes:
+  anant_data:
+  anant_test_data:

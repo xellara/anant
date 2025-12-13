@@ -1,0 +1,16 @@
+### Attendance
+class: Attendance
+table: attendance
+fields:
+  organizationName: String,
+  className: String
+  sectionName: String
+  subjectName: String?
+  studentAnantId: String
+  startTime: String
+  endTime: String
+  date: String
+  markedByAnantId: String
+  status: String
+  isSubmitted: bool,default=false                                   # "Present", "Absent", etc.
+  remarks: String?

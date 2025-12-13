@@ -1,0 +1,10 @@
+class: OrganizationSettings
+table: organization_settings
+fields:
+  organizationName: String
+  enabledModules: List<String>
+  
+indexes:
+  org_settings_unique:
+    fields: organizationName
+    unique: true

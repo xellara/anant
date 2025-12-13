@@ -1,0 +1,12 @@
+### Class
+class: Classes
+table: class
+fields:
+  organizationId: int?, relation(parent=organization)
+  name: String                      # e.g., "Class 10" or "BTech 2022"
+  academicYear: String             # e.g., "2024-2025"
+  courseName: String?
+  classTeacherAnantId: String?
+  startDate: DateTime?
+  endDate: DateTime?
+  isActive: bool, default=true

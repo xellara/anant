@@ -1,0 +1,8 @@
+### StudentCourseEnrollment
+class: StudentCourseEnrollment
+table: student_course_enrollment
+fields:
+  studentAnantId: String
+  courseName: String
+  organizationId: int?, relation(parent=organization)
+  enrolledOn: DateTime

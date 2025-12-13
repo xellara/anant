@@ -1,0 +1,22 @@
+name: anant_server
+description: Starting point for a Serverpod server.
+# version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  serverpod: ^2.9.1
+  serverpod_auth_server: ^2.9.1
+  bcrypt: ^1.1.3
+  uuid: ^4.5.2
+
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: '^1.24.2'
+  serverpod_test: ^2.9.1
+  mockito: ^5.6.1
+  build_runner: ^2.10.4
+

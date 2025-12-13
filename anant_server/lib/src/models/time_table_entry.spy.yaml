@@ -1,0 +1,13 @@
+class: TimetableEntry
+table: timetable_entry
+fields:
+  organizationId: int, relation(parent=organization)
+  classId: int, relation(parent=class)
+  subjectId: int, relation(parent=subject)
+  teacherId: int, relation(parent=user)
+  dayOfWeek: int                      # 1=Mon,...7=Sun (or 0-6)
+  startTime: DateTime                 # class start time (Time type supported as DateTime or Duration)
+  durationMinutes: int
+indexes:
+  time_class_idx:
+    fields: classId, dayOfWeek

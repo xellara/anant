@@ -1,0 +1,17 @@
+### Resource-based access control for fine-grained permissions
+class: ResourcePermission
+table: resource_permission
+fields:
+  role: Role?, relation
+  permission: Permission?, relation
+  resourceType: String
+  resourceId: String
+  organizationName: String?
+  conditions: String?  # JSON string for complex conditions
+  createdAt: DateTime, default=now
+  createdById: int?
+indexes:
+  resource_perm_idx:
+    fields: roleId, resourceType, resourceId
+  resource_perm_org_idx:
+    fields: organizationName, resourceType

@@ -1,0 +1,17 @@
+class: MonthlyFeeTransaction
+table: monthly_fee_transaction
+fields:
+  anantId: String
+  organizationName: String
+  month: String
+  feeAmount: double
+  discount: double
+  fine: double
+  transactionDate: DateTime
+  transactionGateway: String
+  transactionRef: String
+  transactionId: String
+  transactionStatus: String
+  transactionType: String   # Cash,online(UPI,Card,Netbanking),Cheque
+  markedByAnantId: String
+  isRefunded: bool, default=false

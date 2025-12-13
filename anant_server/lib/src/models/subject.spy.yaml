@@ -1,0 +1,12 @@
+class: Subject
+table: subject
+fields:
+  organizationId: int, relation(parent=organization)
+  name: String
+  description: String?
+indexes:
+  subject_org_idx:
+    fields: organizationId
+  subject_name_idx:
+    fields: organizationId, name
+    unique: true       

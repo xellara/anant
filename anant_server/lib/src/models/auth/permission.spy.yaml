@@ -1,0 +1,10 @@
+class: Permission
+table: permission
+fields:
+  slug: String
+  description: String?
+  module: String?
+indexes:
+  permission_slug_idx:
+    fields: slug
+    unique: true

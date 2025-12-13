@@ -1,0 +1,9 @@
+### Section
+class: Section
+table: section
+fields:
+  organizationId: int?, relation(parent=organization)
+  className: String
+  name: String                     # e.g., "A"
+  sectionTeacherAnantId: String?
+  isActive: bool, default=true
