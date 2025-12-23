@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:anant_flutter/config/role_theme.dart';
 import '../../domain/entities/timetable_entry.dart';
 import '../../data/repositories/timetable_repository_impl.dart';
 import '../../domain/usecases/get_timetable.dart';
@@ -9,14 +12,16 @@ import '../bloc/timetable_event.dart';
 import '../bloc/timetable_state.dart';
 
 class TimetablePage extends StatelessWidget {
-  const TimetablePage({super.key});
+  final String? role;
+
+  const TimetablePage({super.key, this.role});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TimetableBloc(
         getTimetable: GetTimetable(TimetableRepositoryImpl()),
-      )..add(LoadTimetable()),
+      )..add(LoadTimetable(role: role)),
       child: const TimetableView(),
     );
   }
@@ -50,73 +55,62 @@ class _TimetableViewState extends State<TimetableView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Timetable', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: !kIsWeb,
+        title: const Text('Timetable'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                const Color(0xFF335762).withOpacity(0.9),
-                const Color(0xFF335762).withOpacity(0.7),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(showTableView ? Icons.grid_view_rounded : Icons.table_chart_rounded),
-            tooltip: showTableView ? 'Show Today\'s Classes' : 'Show Full Timetable',
-            onPressed: () {
-              setState(() {
-                showTableView = !showTableView;
-              });
-            },
-          ),
+          if (!ResponsiveLayout.isDesktop(context))
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: IconButton(
+                icon: Icon(showTableView ? Icons.grid_view_rounded : Icons.table_chart_rounded),
+                tooltip: showTableView ? 'Show Today\'s Classes' : 'Show Full Timetable',
+                onPressed: () {
+                  setState(() {
+                    showTableView = !showTableView;
+                  });
+                },
+              ),
+            ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5F7FA), Color(0xFFE4E7EB)],
-          ),
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
-            child: BlocBuilder<TimetableBloc, TimetableState>(
-              builder: (context, state) {
-                if (state is TimetableLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is TimetableError) {
-                  return Center(child: Text('Error: ${state.message}'));
-                } else if (state is TimetableLoaded) {
-                  return SafeArea(
-                    child: AnimatedSwitcher(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: BlocBuilder<TimetableBloc, TimetableState>(
+            builder: (context, state) {
+              if (state is TimetableLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is TimetableError) {
+                return Center(child: Text('Error: ${state.message}'));
+              } else if (state is TimetableLoaded) {
+                return SafeArea(
+                  child: ResponsiveLayout(
+                    mobileBody: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       child: showTableView
                           ? _buildTableView(state.timetable)
-                          : _buildGridView(state.timetable),
+                          : _buildTodayList(state.timetable),
                     ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+                    desktopBody: _buildTableView(state.timetable),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildGridView(List<TimetableSlot> timetable) {
+  Widget _buildTodayList(List<TimetableSlot> timetable) {
     final today = _today;
     final todaySlots = timetable.where((slot) => slot.weekSchedule.containsKey(today)).toList();
 
@@ -149,10 +143,10 @@ class _TimetableViewState extends State<TimetableView> {
             padding: const EdgeInsets.only(bottom: 20, left: 8),
             child: Text(
               'Today\'s Schedule ($today)',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF335762),
+                color: Theme.of(context).primaryColor,
               ),
             ),
           );
@@ -164,7 +158,7 @@ class _TimetableViewState extends State<TimetableView> {
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            gradient: Theme.of(context).extension<AppGradients>()?.cardGradient,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -183,12 +177,12 @@ class _TimetableViewState extends State<TimetableView> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF335762).withOpacity(0.1),
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.class_rounded,
-                      color: Color(0xFF335762),
+                      color: Theme.of(context).primaryColor,
                       size: 28,
                     ),
                   ),
@@ -275,8 +269,8 @@ class _TimetableViewState extends State<TimetableView> {
               children: [
                 // Header
                 TableRow(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF335762),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
                   ),
                   children: [
                     _buildTableHeader('Time'),
@@ -336,7 +330,7 @@ class _TimetableViewState extends State<TimetableView> {
           style: TextStyle(
             fontWeight: isTime ? FontWeight.bold : FontWeight.normal,
             fontSize: 13,
-            color: isTime ? const Color(0xFF335762) : const Color(0xFF374151),
+            color: isTime ? Theme.of(context).primaryColor : Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
       ),

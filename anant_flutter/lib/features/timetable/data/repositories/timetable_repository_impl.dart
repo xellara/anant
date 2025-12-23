@@ -1,53 +1,96 @@
+import 'package:anant_flutter/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/timetable_entry.dart';
 import '../../domain/repositories/timetable_repository.dart';
 
 class TimetableRepositoryImpl implements TimetableRepository {
   @override
-  Future<List<TimetableSlot>> getTimetable() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
-    
-    // Return hardcoded data for now (matching the original file)
-    return const [
-      TimetableSlot(
-        startTime: '09:00',
-        endTime: '10:00',
-        showTeacher: true,
-        weekSchedule: {
-          'Monday': ClassSession(subject: 'Math', faculty: 'Dr. Smith'),
-          'Tuesday': ClassSession(subject: 'English', faculty: 'Ms. Johnson'),
-          'Wednesday': ClassSession(subject: 'Science', faculty: 'Dr. Brown'),
-          'Thursday': ClassSession(subject: 'History', faculty: 'Mr. Davis'),
-          'Friday': ClassSession(subject: 'Art', faculty: 'Mrs. Wilson'),
-          'Saturday': ClassSession(subject: 'Physical Ed', faculty: 'Coach Taylor'),
-        },
-      ),
-      TimetableSlot(
-        startTime: '10:15',
-        endTime: '11:15',
-        showTeacher: false,
-        weekSchedule: {
-          'Monday': ClassSession(subject: 'Physics', faculty: 'Dr. Miller'),
-          'Tuesday': ClassSession(subject: 'Chemistry', faculty: 'Dr. Anderson'),
-          'Wednesday': ClassSession(subject: 'Biology', faculty: 'Dr. Thomas'),
-          'Thursday': ClassSession(subject: 'PE', faculty: 'Coach Moore'),
-          'Friday': ClassSession(subject: 'Music', faculty: 'Ms. Martin'),
-          'Saturday': ClassSession(subject: 'Drama', faculty: 'Mrs. Thompson'),
-        },
-      ),
-      TimetableSlot(
-        startTime: '11:30',
-        endTime: '12:30',
-        showTeacher: false,
-        weekSchedule: {
-          'Monday': ClassSession(subject: 'Economics', faculty: 'Dr. Garcia'),
-          'Tuesday': ClassSession(subject: 'Computer Sci', faculty: 'Dr. Martinez'),
-          'Wednesday': ClassSession(subject: 'Literature', faculty: 'Ms. Robinson'),
-          'Thursday': ClassSession(subject: 'Drama', faculty: 'Mrs. Clark'),
-          'Friday': ClassSession(subject: 'Geography', faculty: 'Mr. Rodriguez'),
-          'Saturday': ClassSession(subject: 'Social Studies', faculty: 'Ms. Lewis'),
-        },
-      ),
-    ];
+  Future<List<TimetableSlot>> getTimetable({String? role}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getInt('userId');
+      
+      if (userId == null) {
+        // If no user logged in, return empty or retry?
+        return [];
+      }
+
+      final userData = await client.user.me(userId);
+      final anantId = userData?.anantId;
+      
+      if (anantId == null || anantId.isEmpty) {
+        return [];
+      }
+
+      final fetchedRole = role ?? 'Student';
+      
+      // Fetch from backend
+      // Note: Serverpod returns List<Map<String, dynamic>>
+      final List<dynamic> serverResponse = await client.timetable.getTimetable(anantId, fetchedRole);
+
+      // Transform "Day->Slots" to "Time->Days" (Pivot)
+      Set<String> timeStrings = {};
+      Map<String, Map<String, _SlotInfo>> pivotedData = {};
+
+      for (var dayItem in serverResponse) {
+        if (dayItem is! Map) continue;
+        final dayName = dayItem['day'] as String;
+        final slots = dayItem['slots'] as List;
+
+        for (var slot in slots) {
+          if (slot is! Map) continue;
+          final time = slot['time'] as String;
+          final subject = slot['subject'] as String;
+          // For student it is 'faculty', for teacher it is 'class'
+          final related = (slot['faculty'] ?? slot['class'] ?? '') as String;
+
+          timeStrings.add(time);
+
+          if (!pivotedData.containsKey(time)) {
+            pivotedData[time] = {};
+          }
+          pivotedData[time]![dayName] = _SlotInfo(subject, related);
+        }
+      }
+
+      // Sort times
+      final sortedTimes = timeStrings.toList()..sort();
+
+      return sortedTimes.map((timeStr) {
+        final parts = timeStr.split(' - ');
+        final start = parts.isNotEmpty ? parts[0] : '';
+        final end = parts.length > 1 ? parts[1] : '';
+
+        final dayMap = pivotedData[timeStr] ?? {};
+        Map<String, ClassSession> weekSchedule = {};
+
+        for (var day in dayMap.keys) {
+          final info = dayMap[day]!;
+          weekSchedule[day] = ClassSession(
+            subject: info.subject,
+            faculty: info.relatedInfo,
+          );
+        }
+
+        return TimetableSlot(
+          startTime: start,
+          endTime: end,
+          showTeacher: fetchedRole != 'Teacher',
+          weekSchedule: weekSchedule,
+        );
+      }).toList();
+
+    } catch (e) {
+      // In case of error, return empty list or handle gracefully
+      // debugPrint('Timetable fetch error: $e');
+      return [];
+    }
   }
 }
+
+class _SlotInfo {
+  final String subject;
+  final String relatedInfo;
+  _SlotInfo(this.subject, this.relatedInfo);
+}
+

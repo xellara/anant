@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class TimeTableScreen extends StatefulWidget {
   const TimeTableScreen({super.key});
@@ -75,12 +76,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return Scaffold(
       appBar: AppBar(
         // Back button to pop the current route.
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        automaticallyImplyLeading: !kIsWeb,
         title: const Text('Timetable'),
         actions: [
           IconButton(

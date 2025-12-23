@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class ExamDateSheetScreen extends StatelessWidget {
   // A sample list representing exam data
@@ -9,13 +10,14 @@ class ExamDateSheetScreen extends StatelessWidget {
     // You can add more exam entries here
   ];
 
-  ExamDateSheetScreen({Key? key}) : super(key: key);
+  ExamDateSheetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // AppBar for the screen title
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         title: const Text('Exam Date Sheet'),
       ),
       // Using a ListView to display exam details

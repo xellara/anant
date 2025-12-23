@@ -25,6 +25,8 @@ class AttendanceEndpoint extends Endpoint {
     // Record does not exist, insert it.
     await Attendance.db.insertRow(session, attendance);
   }
+  
+  session.messages.postMessage('student_attendance_${attendance.studentAnantId}', attendance);
 }
 
   /// Submit full attendance list and mark all as submitted
@@ -51,6 +53,8 @@ class AttendanceEndpoint extends Endpoint {
       } else {
         await Attendance.db.insertRow(session, attendance);
       }
+      
+      session.messages.postMessage('student_attendance_${attendance.studentAnantId}', attendance);
     }
   }
 
@@ -98,5 +102,18 @@ class AttendanceEndpoint extends Endpoint {
       session,
       where: (t) => t.studentAnantId.equals(studentAnantId),
     );
+  }
+
+  /// Stream attendance updates for a user
+  Stream<Attendance> receiveAttendanceStream(
+    Session session,
+    String studentAnantId,
+  ) async* {
+    var stream = session.messages.createStream('student_attendance_$studentAnantId');
+    await for (var message in stream) {
+      if (message is Attendance) {
+        yield message;
+      }
+    }
   }
 }

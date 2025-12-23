@@ -1,16 +1,31 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:anant_flutter/common/bottom_nav_bloc.dart';
 import 'package:anant_flutter/common/coming_soon_page.dart';
+import 'package:anant_flutter/main.dart';
+import 'package:anant_client/anant_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anant_flutter/features/profile_screen.dart';
 import 'package:anant_flutter/features/role_dashboards/dashboard_shared.dart';
 import 'package:anant_flutter/features/student_attendance/presentation/pages/student_attendance_page.dart';
 import 'package:anant_flutter/features/timetable/presentation/pages/timetable_page.dart';
-import 'package:anant_flutter/features/transaction/organization/monthly_fee_transaction_page.dart';
+import 'package:anant_flutter/fee_screen.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:anant_flutter/config/role_theme.dart';
+import 'package:anant_flutter/features/role_dashboards/dashboard_animations.dart';
 import 'package:anant_flutter/features/attendance/attendance.dart';
+import 'package:anant_flutter/features/exams/presentation/pages/exam_schedule_page.dart';
+import 'package:anant_flutter/features/teacher_home/student_selection_page.dart';
+import 'package:anant_flutter/features/announcements/presentation/pages/announcement_page.dart';
+import 'package:anant_flutter/features/announcements/presentation/pages/create_announcement_page.dart';
+import 'package:anant_flutter/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:anant_flutter/features/admin/pages/manage_users_page.dart';
+import 'package:anant_flutter/features/admin/pages/manage_classes_page.dart';
+import 'package:anant_flutter/features/admin/pages/system_settings_page.dart';
+import 'package:anant_flutter/features/admin/pages/reports_page.dart';
 
 // -------------------------
 // Models
@@ -140,6 +155,66 @@ class GenericRoleDashboard extends StatelessWidget {
   }
 }
 
+class RoleTheme {
+  final List<Color> gradientColors;
+  final Color accentColor;
+  final Color secondaryAccent;
+
+  const RoleTheme({
+    required this.gradientColors,
+    required this.accentColor,
+    required this.secondaryAccent,
+  });
+}
+
+final Map<String, RoleTheme> dashboardThemes = {
+  'Student': const RoleTheme(
+    gradientColors: [Color(0xFF1A237E), Color(0xFF3949AB), Color(0xFF8E24AA)],
+    accentColor: Color(0xFF3949AB),
+    secondaryAccent: Color(0xFF8E24AA),
+  ),
+  'Teacher': const RoleTheme(
+    gradientColors: [Color(0xFF004D40), Color(0xFF00695C), Color(0xFF00897B)],
+    accentColor: Color(0xFF00695C),
+    secondaryAccent: Color(0xFF4DB6AC),
+  ),
+  'Principal': const RoleTheme(
+    gradientColors: [Color(0xFF3E2723), Color(0xFF5D4037), Color(0xFF8D6E63)],
+    accentColor: Color(0xFF5D4037),
+    secondaryAccent: Color(0xFFA1887F),
+  ),
+  'Admin': const RoleTheme(
+    gradientColors: [Color(0xFF212121), Color(0xFF424242), Color(0xFF616161)],
+    accentColor: Color(0xFF424242),
+    secondaryAccent: Color(0xFF757575),
+  ),
+  'Accountant': const RoleTheme(
+    gradientColors: [Color(0xFF1B5E20), Color(0xFF2E7D32), Color(0xFF43A047)],
+    accentColor: Color(0xFF2E7D32),
+    secondaryAccent: Color(0xFF66BB6A),
+  ),
+  'Clerk': const RoleTheme(
+    gradientColors: [Color(0xFF0D47A1), Color(0xFF1565C0), Color(0xFF1976D2)],
+    accentColor: Color(0xFF1565C0),
+    secondaryAccent: Color(0xFF42A5F5),
+  ),
+  'Hostel Warden': const RoleTheme(
+    gradientColors: [Color(0xFFBF360C), Color(0xFFD84315), Color(0xFFF4511E)],
+    accentColor: Color(0xFFD84315),
+    secondaryAccent: Color(0xFFFF7043),
+  ),
+  'Librarian': const RoleTheme(
+    gradientColors: [Color(0xFF33691E), Color(0xFF558B2F), Color(0xFF689F38)],
+    accentColor: Color(0xFF558B2F),
+    secondaryAccent: Color(0xFF8BC34A),
+  ),
+  'Transport Manager': const RoleTheme(
+    gradientColors: [Color(0xFFE65100), Color(0xFFEF6C00), Color(0xFFF57C00)],
+    accentColor: Color(0xFFEF6C00),
+    secondaryAccent: Color(0xFFFF9800),
+  ),
+};
+
 class _DashboardView extends StatefulWidget {
   final String roleName;
   final List<DashboardFeature> features;
@@ -159,15 +234,60 @@ class _DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<_DashboardView> {
   final ScrollController _scrollController = ScrollController();
+  int _unreadCount = 0;
+  StreamSubscription? _notificationSubscription;
 
   @override
   void initState() {
     super.initState();
+    _fetchUnreadCount();
     // Reset navigation to home (index 0) when entering this dashboard
     context.read<BottomNavBloc>().add(const NavItemSelectedEvent(selectedIndex: 0));
     
     // Trigger profile load to get user details
     context.read<ProfileBloc>().add(LoadProfileEvent());
+  }
+
+  Future<void> _fetchUnreadCount() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getInt('userId');
+      if (userId == null) return;
+      
+      final user = await client.user.me(userId);
+      final anantId = user?.anantId;
+      
+      if (anantId != null) {
+        if (_notificationSubscription == null) _setupRealtime(anantId);
+        
+        final count = await client.notification.getUnreadCount(anantId);
+        if (mounted) {
+           setState(() {
+             _unreadCount = count;
+           });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching unread count: $e');
+    }
+  }
+
+  void _setupRealtime(String anantId) async {
+    try {
+      await client.openStreamingConnection();
+      _notificationSubscription = client.notification.receiveNotificationStream(anantId).listen((event) {
+        _fetchUnreadCount();
+      });
+    } catch (e) {
+      debugPrint('Realtime setup failed: $e');
+    }
+  }
+  
+  @override
+  void dispose() {
+    _notificationSubscription?.cancel();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -178,11 +298,12 @@ class _DashboardViewState extends State<_DashboardView> {
     final double contentTopPadding = bannerHeight * 0.7;
     
     // Use ResponsiveLayout helper to determine if we should show desktop layout
-    // We treat tablet and desktop as "large screen" for the purpose of the grid count in home content
     final bool isLargeScreen = !ResponsiveLayout.isMobile(context);
 
     // Default pages: Home + Profile
-    final homeContent = _buildHomeContent(screenSize, statusBarHeight, contentTopPadding, isLargeScreen);
+    final homeContent = isLargeScreen 
+        ? _buildDesktopHomeContent(screenSize) 
+        : _buildHomeContent(screenSize, statusBarHeight, contentTopPadding, isLargeScreen);
     final profileContent = const ProfileScreen();
 
     List<Widget> activePages;
@@ -236,7 +357,7 @@ class _DashboardViewState extends State<_DashboardView> {
 
   Widget _buildDesktopLayout(BuildContext context, List<Widget> activePages) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF3F4F6), // Light background for contrast
       body: BlocBuilder<BottomNavBloc, BottomNavState>(
         builder: (context, navState) {
           final int safeIndex = navState.selectedIndex >= activePages.length 
@@ -244,12 +365,19 @@ class _DashboardViewState extends State<_DashboardView> {
               : navState.selectedIndex;
           
           return Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildSideNav(context, safeIndex),
+              _buildFloatingSideNav(context, safeIndex),
               Expanded(
-                child: IndexedStack(
-                  index: safeIndex,
-                  children: activePages,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    bottomLeft: Radius.circular(32),
+                  ),
+                  child: IndexedStack(
+                    index: safeIndex,
+                    children: activePages,
+                  ),
                 ),
               ),
             ],
@@ -259,32 +387,110 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  Widget _buildSideNav(BuildContext context, int selectedIndex) {
+  Widget _buildFloatingSideNav(BuildContext context, int selectedIndex) {
     final displayItems = widget.navItems ?? [
       {'icon': Icons.home_rounded, 'label': 'Home'},
       {'icon': Icons.person_rounded, 'label': 'Profile'},
     ];
 
-    return NavigationRail(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: (index) {
-        BlocProvider.of<BottomNavBloc>(context)
-            .add(NavItemSelectedEvent(selectedIndex: index));
-      },
-      labelType: NavigationRailLabelType.all,
-      backgroundColor: Colors.white,
-      selectedIconTheme: const IconThemeData(color: Color(0xFF335762)),
-      unselectedIconTheme: const IconThemeData(color: Colors.grey),
-      selectedLabelTextStyle: const TextStyle(
-        color: Color(0xFF335762),
-        fontWeight: FontWeight.bold,
+    return Container(
+      width: 100, // Fixed width for the nav area
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 24,
+                offset: const Offset(4, 4),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.02),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Shrink to fit content
+            children: [
+              // Logo Placeholder or Home Indicator
+              Container(
+                 margin: const EdgeInsets.only(bottom: 32),
+                 padding: const EdgeInsets.all(10),
+                 decoration: BoxDecoration(
+                   color: Theme.of(context).primaryColor.withOpacity(0.1),
+                   shape: BoxShape.circle,
+                 ),
+                 child: Icon(
+                   Icons.school_rounded,
+                   color: Theme.of(context).primaryColor,
+                   size: 24,
+                 ),
+              ),
+              
+              // Nav Items
+              ...displayItems.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                final isSelected = index == selectedIndex;
+                
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Tooltip(
+                    message: item['label'] as String,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1F2937),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textStyle: const TextStyle(color: Colors.white, fontSize: 12),
+                    child: InkWell(
+                      onTap: () {
+                        BlocProvider.of<BottomNavBloc>(context)
+                            .add(NavItemSelectedEvent(selectedIndex: index));
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeOutCubic,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isSelected 
+                              ? Theme.of(context).primaryColor 
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Theme.of(context).primaryColor.withOpacity(0.4),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  )
+                                ]
+                              : [],
+                        ),
+                        child: Icon(
+                          item['icon'] as IconData,
+                          color: isSelected ? Colors.white : Colors.grey[400],
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+              
+              // Flexible Spacer if we want bottom items
+              // const Spacer(), 
+            ],
+          ),
+        ),
       ),
-      destinations: displayItems.map((item) {
-        return NavigationRailDestination(
-          icon: Icon(item['icon'] as IconData),
-          label: Text(item['label'] as String),
-        );
-      }).toList(),
     );
   }
 
@@ -294,145 +500,312 @@ class _DashboardViewState extends State<_DashboardView> {
     double contentTopPadding,
     bool isDesktop,
   ) {
+    // Adjusted heights for better fit on all screens
+    // For Web/Tablet, we reduce the banner height ratio slightly to avoid it taking over the whole screen
+    final double bannerHeightRatio = ResponsiveLayout.isMobile(context) ? 0.35 : 0.28;
+    final double bannerHeight = screenSize.height * bannerHeightRatio;
+    final double overlap = 30.0;
+    
+    // Ensure minimum banner height
+    final double safeBannerHeight = bannerHeight < 250 ? 250 : bannerHeight;
+
     return Stack(
       children: [
-        // Banner
-        Transform(
-          alignment: FractionalOffset.topCenter,
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateX(0.07),
-          child: SizedBox(
-            height: screenSize.height * 0.3 + statusBarHeight,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: HomeBannerPainter(),
+        // Ultra-Premium Gradient Banner
+        Container(
+          height: safeBannerHeight,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
+          ),
+          child: Stack(
+            children: [
+              // 0. Base Particles (Magical Knowledge World)
+              Positioned.fill(
+                child: MagicalKnowledgeWorldWidget(
+                  size: Size(screenSize.width, safeBannerHeight),
+                ),
+              ),
+
+              // 1. Organic Mesh-like BLUR Shapes (Animated)
+              Positioned(
+                top: -100,
+                left: -100,
+                child: BreathingWidget(
+                  duration: const Duration(seconds: 6),
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.pink.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -50,
+                right: -50,
+                child: BreathingWidget(
+                  duration: const Duration(seconds: 5),
+                  child: Container(
+                    width: 250,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blueAccent.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+              ),
+              
+              // 2. Glassmorphism Overlay (Subtle)
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Container(color: Colors.transparent),
+                ),
+              ),
+
+              // 3. Subtle Texture
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.15,
+                  child: const TwinklingStarsWidget(),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Main Content Layer (Foreground)
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Row: Avatar & Notification Bell (future proofing)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    EntranceFader(
+                      delay: const Duration(milliseconds: 200),
+                      child: BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, state) {
+                          String initials = 'U';
+                          if (state is ProfileLoaded) {
+                            final parts = (state.user.fullName ?? '').split(RegExp(r'[\s@.]'));
+                            if (parts.isNotEmpty && parts[0].isNotEmpty) {
+                               initials = parts[0][0].toUpperCase();
+                               if(parts.length > 1 && parts[1].isNotEmpty) initials += parts[1][0].toUpperCase();
+                            }
+                          }
+                          
+                          return Container(
+                            padding: const EdgeInsets.all(2), // Space for border
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                  blurRadius: 12,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            child: CircleAvatar(
+                              radius: 26,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 24,
+                                backgroundColor: const Color(0xFFE8EAF6),
+                                child: Text(
+                                  initials,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    
+                    
+                    // Notification Icon with Badge
+                    EntranceFader(
+                      delay: const Duration(milliseconds: 300),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                              ).then((_) => _fetchUnreadCount());
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(Icons.notifications_outlined, color: Colors.white, size: 24),
+                            ),
+                          ),
+                          // Badge
+                          if (_unreadCount > 0)
+                            Positioned(
+                              right: -4,
+                              top: -4,
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 18,
+                                  minHeight: 18,
+                                ),
+                                child: Text(
+                                  _unreadCount > 9 ? '9+' : _unreadCount.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // Greeting & Name - Hero Text
+                BlocBuilder<RoleDashboardBloc, RoleDashboardState>(
+                  builder: (context, state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        EntranceFader(
+                          delay: const Duration(milliseconds: 400),
+                          child: Row(
+                            children: [
+                              Text(
+                                state.emoji, 
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                state.greetingMessage.toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 13,
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                         EntranceFader(
+                           delay: const Duration(milliseconds: 500),
+                           child: BlocBuilder<ProfileBloc, ProfileState>(
+                            builder: (context, profileState) {
+                              String name = widget.roleName;
+                              if (profileState is ProfileLoaded) {
+                                name = profileState.user.fullName ?? widget.roleName;
+                                // Just get first name for friendlier UI
+                                name = name.split(' ')[0];
+                              }
+                              return Text(
+                                name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 36, // Huge text
+                                  fontWeight: FontWeight.w300,
+                                  letterSpacing: -0.5,
+                                  height: 1.1,
+                                ),
+                              );
+                            },
+                                                   ),
+                         ),
+                      ],
+                    );
+                  },
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Context Pill
+                 EntranceFader(
+                   delay: const Duration(milliseconds: 600),
+                   child: Container(
+                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                     decoration: BoxDecoration(
+                       color: Colors.white.withOpacity(0.1),
+                       borderRadius: BorderRadius.circular(30),
+                       border: Border.all(color: Colors.white.withOpacity(0.15)),
+                     ),
+                     child: const Row(
+                       mainAxisSize: MainAxisSize.min,
+                       children: [
+                         Icon(Icons.school_outlined, size: 14, color: Colors.white70),
+                         SizedBox(width: 8),
+                         Text('Academic Year 2024-25', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500)),
+                       ],
+                     ),
+                   ),
+                 ),
+
+                 const SizedBox(height: 16),
+                 
+                 // Motivational Quotes Carousel (New!)
+                 const SplashScreenQuotesWidget(),
+
+              ],
             ),
           ),
         ),
-        // Stars
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: screenSize.height * 0.3 + statusBarHeight,
-          child: Transform(
-            alignment: FractionalOffset.topCenter,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateX(0.07),
-            child: const TwinklingStarsWidget(),
-          ),
-        ),
-        // Greeting
-        Positioned(
-          top: statusBarHeight + 20,
-          left: 16,
-          child: BlocBuilder<RoleDashboardBloc, RoleDashboardState>(
-            builder: (context, state) {
-              return Text(
-                '${state.emoji} ${state.greetingMessage}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            },
-          ),
-        ),
-        // Profile Image
-        Positioned(
-          top: statusBarHeight + 10,
-          right: 16,
-          child: BlocBuilder<ProfileBloc, ProfileState>(
-            builder: (context, state) {
-              String initials = '';
-              if (state is ProfileLoaded) {
-                final parts = (state.user.fullName ?? '').split(RegExp(r'[\s@.]'));
-                for (final part in parts) {
-                  if (part.isNotEmpty && RegExp(r'[A-Za-z]').hasMatch(part[0])) {
-                    initials += part[0].toUpperCase();
-                  }
-                }
-                if (initials.length > 2) initials = initials.substring(0, 2);
-              }
-              
-              return CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.blueGrey[100],
-                  child: state is ProfileLoaded
-                      ? Text(
-                          initials,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF335762),
-                          ),
-                        )
-                      : const Icon(Icons.person, color: Colors.white),
-                ),
-              );
-            },
-          ),
-        ),
-        // Welcome Text
-        Positioned(
-          top: statusBarHeight + 90,
-          left: 16,
-          child: BlocBuilder<ProfileBloc, ProfileState>(
-            builder: (context, state) {
-              String name = widget.roleName;
-              if (state is ProfileLoaded) {
-                name = state.user.fullName ?? widget.roleName;
-              }
-              return Column(
+
+        // Scrollable Content Sheet
+        Positioned.fill(
+          top: safeBannerHeight - overlap, 
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFFF8FAFC), // Slightly off-white for depth
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+            ),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20), // Top padding pushes content down
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Welcome back,',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                       return _buildFeatureGrid(context, constraints);
+                    },
                   ),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  // Add more widgets here if needed (e.g. recent announcements)
                 ],
-              );
-            },
-          ),
-        ),
-        // Main Content
-        SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.only(top: contentTopPadding, bottom: 20), // Reduced bottom padding
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    _buildFeatureGrid(context, isDesktop),
-                  ],
-                ),
               ),
             ),
           ),
@@ -441,16 +814,27 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
-  Widget _buildFeatureGrid(BuildContext context, bool isDesktop) {
+  Widget _buildFeatureGrid(BuildContext context, BoxConstraints constraints) {
     if (widget.features.isEmpty) {
       return _buildPlaceholderCard();
+    }
+    
+    
+    // Dynamic Grid Cols based on width
+    int crossAxisCount = 2;
+    if (constraints.maxWidth > 1200) {
+      crossAxisCount = 4;
+    } else if (constraints.maxWidth > 800) {
+      crossAxisCount = 3;
+    } else {
+      crossAxisCount = 2;
     }
 
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isDesktop ? 4 : 2,
+        crossAxisCount: crossAxisCount,
         mainAxisExtent: 160,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
@@ -463,66 +847,401 @@ class _DashboardViewState extends State<_DashboardView> {
     );
   }
 
+  Widget _buildDesktopHomeContent(Size screenSize) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  )
+                ],
+              ),
+              child: Stack(
+                children: [
+                   Positioned(
+                      right: -50,
+                      top: -50,
+                       child: Container(
+                         width: 200,
+                         height: 200,
+                         decoration: BoxDecoration(
+                           color: Colors.white.withOpacity(0.1),
+                           shape: BoxShape.circle,
+                         ),
+                       ),
+                   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BlocBuilder<RoleDashboardBloc, RoleDashboardState>(
+                        builder: (context, state) {
+                          return Text(
+                            state.greetingMessage,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, state) {
+                          String name = widget.roleName;
+                          if (state is ProfileLoaded) {
+                            name = state.user.fullName ?? widget.roleName;
+                          }
+                          return Text(
+                            "Welcome back, $name",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          "Academic Year 2024-2025",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Content Grid
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Main Features
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Quick Access",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1F2937),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisExtent: 180, // Taller cards
+                          crossAxisSpacing: 24,
+                          mainAxisSpacing: 24,
+                        ),
+                        itemCount: widget.features.length,
+                        itemBuilder: (context, index) {
+                          final feature = widget.features[index];
+                          return _buildFeatureCard(context, feature);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(width: 40),
+                
+                // Sidebar Widgets (e.g. Notifications / Calendar)
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDesktopNotificationWidget(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Removed _buildDesktopFeatureCard to use the standard _buildFeatureCard everywhere
+
+  Widget _buildDesktopNotificationWidget() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Notifications",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+              if (_unreadCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "$_unreadCount new",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red.shade700,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Simple placeholder list
+          _buildNotificationPlaceholderItem("School Annual Day announced", "2 hours ago"),
+          _buildNotificationPlaceholderItem("Exam schedule for Term 1 released", "Yesterday"),
+          _buildNotificationPlaceholderItem("Holiday declared on Monday", "2 days ago"),
+          
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () {
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                 ).then((_) => _fetchUnreadCount());
+              },
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text("View All"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationPlaceholderItem(String title, String time) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            margin: const EdgeInsets.only(top: 6),
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF374151),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFeatureCard(BuildContext context, DashboardFeature feature) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        gradient: Theme.of(context).extension<AppGradients>()?.cardGradient,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            offset: const Offset(2, 4),
-            blurRadius: 8,
+            color: feature.color.withOpacity(0.15),
+            offset: const Offset(0, 8),
+            blurRadius: 20,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            offset: const Offset(0, 2),
+            blurRadius: 4,
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           onTap: feature.onTap ?? () {
              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ComingSoonPage()),
               );
           },
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
+          child: Stack(
+            children: [
+              // Decorative Circle
+              Positioned(
+                right: -20,
+                top: -20,
+                child: Container(
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
-                    color: feature.color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    feature.icon,
-                    size: 28,
-                    color: feature.color,
+                    color: feature.color.withOpacity(0.05),
+                    shape: BoxShape.circle,
                   ),
                 ),
-                const Spacer(),
-                Text(
-                  feature.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Color(0xFF1F2937),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            feature.color.withOpacity(0.8),
+                            feature.color,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: feature.color.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        feature.icon,
+                        size: 28,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                feature.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color(0xFF1F2937),
+                                  letterSpacing: -0.5,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                feature.subtitle,
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[50],
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  feature.subtitle,
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -534,11 +1253,11 @@ class _DashboardViewState extends State<_DashboardView> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: Theme.of(context).extension<AppGradients>()!.cardGradient,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -674,25 +1393,22 @@ class StudentDashboard extends StatelessWidget {
           icon: Icons.calendar_today_rounded,
           color: Colors.blue,
           onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 1));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TimetablePage()),
+            );
           },
         ),
         DashboardFeature(
-          title: 'Attendance',
-          subtitle: 'Track attendance',
-          icon: Icons.check_circle_outline_rounded,
+          title: 'My Attendance',
+          subtitle: 'Track your records',
+          icon: Icons.fact_check_outlined,
           color: Colors.green,
           onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 2));
-          },
-        ),
-        DashboardFeature(
-          title: 'Fees',
-          subtitle: 'Pay your dues',
-          icon: Icons.currency_rupee_rounded,
-          color: Colors.orange,
-          onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 3));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentAttendancePage()),
+            );
           },
         ),
         DashboardFeature(
@@ -703,23 +1419,21 @@ class StudentDashboard extends StatelessWidget {
           onTap: () {
              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ComingSoonPage()),
+                MaterialPageRoute(builder: (context) => const ExamSchedulePage()),
               );
           },
         ),
       ],
       navItems: const [
         {'icon': Icons.home_rounded, 'label': 'Home'},
-        {'icon': Icons.calendar_month_rounded, 'label': 'Time'},
-        {'icon': Icons.check_circle_outline_rounded, 'label': 'Attend'},
+        {'icon': Icons.campaign_rounded, 'label': 'News'},
         {'icon': Icons.currency_rupee_rounded, 'label': 'Fees'},
         {'icon': Icons.person_rounded, 'label': 'Profile'},
       ],
       pages: const [
         SizedBox(height: 0), // Placeholder for Home
-        TimetablePage(),
-        StudentAttendancePage(),
-        MonthlyFeeTransactionPage(),
+        AnnouncementPage(),
+        FeeScreen(),
         ProfileScreen(),
       ],
     );
@@ -736,56 +1450,63 @@ class TeacherDashboard extends StatelessWidget {
       features: [
         DashboardFeature(
           title: 'Mark Attendance',
-          subtitle: 'Record attendance',
+          subtitle: 'Record class attendance',
           icon: Icons.edit_calendar_rounded,
           color: Colors.blue,
           onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 1));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AttendanceInputPage()),
+            );
           },
         ),
         DashboardFeature(
-          title: 'View Attendance',
-          subtitle: 'Review history',
-          icon: Icons.fact_check_outlined,
-          color: Colors.green,
+          title: 'Create Announcement',
+          subtitle: 'Post updates',
+          icon: Icons.campaign_rounded,
+          color: Colors.indigo,
           onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 2));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateAnnouncementPage()),
+            );
+          },
+        ),
+        DashboardFeature(
+          title: 'Student History',
+          subtitle: 'View student records',
+          icon: Icons.history_edu_rounded,
+          color: Colors.orange,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentSelectionPage()),
+            );
           },
         ),
         DashboardFeature(
           title: 'Timetable',
-          subtitle: 'View schedule',
+          subtitle: 'View your schedule',
           icon: Icons.calendar_today_rounded,
-          color: Colors.orange,
+          color: Colors.teal,
           onTap: () {
-            BlocProvider.of<BottomNavBloc>(context).add(const NavItemSelectedEvent(selectedIndex: 3));
-          },
-        ),
-        DashboardFeature(
-          title: 'Reports',
-          subtitle: 'Student reports',
-          icon: Icons.analytics_rounded,
-          color: Colors.purple,
-          onTap: () {
-             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ComingSoonPage()),
-              );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TimetablePage(role: 'Teacher')),
+            );
           },
         ),
       ],
       navItems: const [
         {'icon': Icons.home_rounded, 'label': 'Home'},
-        {'icon': Icons.edit_calendar_rounded, 'label': 'Mark'},
-        {'icon': Icons.fact_check_outlined, 'label': 'View'},
-        {'icon': Icons.calendar_month_rounded, 'label': 'Time'},
+        {'icon': Icons.fact_check_outlined, 'label': 'Attend'},
+        {'icon': Icons.campaign_rounded, 'label': 'News'},
         {'icon': Icons.person_rounded, 'label': 'Profile'},
       ],
       pages: const [
         SizedBox(height: 0), // Placeholder for Home
-        AttendanceInputPage(),
         StudentAttendancePage(),
-        ComingSoonPage(), // Placeholder for Teacher Timetable if not yet implemented
+        AnnouncementPage(),
         ProfileScreen(),
       ],
     );
@@ -801,28 +1522,64 @@ class AdminDashboard extends StatelessWidget {
       roleName: 'Admin',
       features: [
         DashboardFeature(
+          title: 'Create Announcement',
+          subtitle: 'Broadcast messages',
+          icon: Icons.campaign_rounded,
+          color: Colors.green,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateAnnouncementPage()),
+            );
+          },
+        ),
+        DashboardFeature(
           title: 'Manage Users',
           subtitle: 'Add or edit users',
           icon: Icons.people_alt_rounded,
           color: Colors.blue,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ManageUsersPage()),
+            );
+          },
         ),
         DashboardFeature(
           title: 'Manage Classes',
           subtitle: 'Configure school structure',
           icon: Icons.school_rounded,
           color: Colors.orange,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ManageClassesPage()),
+            );
+          },
         ),
         DashboardFeature(
           title: 'System Settings',
           subtitle: 'Global configurations',
           icon: Icons.settings_rounded,
           color: Colors.grey,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SystemSettingsPage()),
+            );
+          },
         ),
         DashboardFeature(
           title: 'Reports',
           subtitle: 'View analytics',
           icon: Icons.bar_chart_rounded,
           color: Colors.purple,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ReportsPage()),
+            );
+          },
         ),
       ],
     );
@@ -850,10 +1607,16 @@ class PrincipalDashboard extends StatelessWidget {
           color: Colors.indigo,
         ),
         DashboardFeature(
-          title: 'Announcements',
+          title: 'Create Announcement',
           subtitle: 'Broadcast messages',
           icon: Icons.campaign_rounded,
           color: Colors.redAccent,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateAnnouncementPage()),
+            );
+          },
         ),
         DashboardFeature(
           title: 'Timetable',

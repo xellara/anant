@@ -1,19 +1,55 @@
+import 'package:anant_flutter/main.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/exam.dart';
 import '../../domain/repositories/exam_repository.dart';
 
 class ExamRepositoryImpl implements ExamRepository {
   @override
   Future<List<Exam>> getExamSchedule() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
-    
-    // Return hardcoded data for now
-    return const [
-      Exam(subject: 'Mathematics', date: '2025-04-01', time: '09:00 AM'),
-      Exam(subject: 'Physics', date: '2025-04-03', time: '11:00 AM'),
-      Exam(subject: 'Chemistry', date: '2025-04-05', time: '10:00 AM'),
-      Exam(subject: 'English', date: '2025-04-07', time: '09:00 AM'),
-      Exam(subject: 'Computer Science', date: '2025-04-09', time: '02:00 PM'),
-    ];
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getInt('userId');
+      
+      if (userId == null) {
+        return [];
+      }
+
+      final userData = await client.user.me(userId);
+      final anantId = userData?.anantId;
+      
+      if (anantId == null || anantId.isEmpty) {
+        return [];
+      }
+      
+      // Fetch from backend
+      // Returns List<Map<String, dynamic>>
+      final List<dynamic> serverResponse = await client.exam.getExamSchedule(anantId);
+      
+      return serverResponse.map((data) {
+        if (data is! Map) return null;
+        
+        // Parse date
+        final dtStr = data['date'] as String;
+        final dt = DateTime.parse(dtStr);
+        final subject = data['subject'] as String;
+        
+        // Format for UI
+        // Domain Exam expects String date "YYYY-MM-DD" and time "HH:mm AM/PM"
+        final dateStr = DateFormat('yyyy-MM-dd').format(dt);
+        final timeStr = DateFormat('hh:mm a').format(dt);
+        
+        return Exam(
+          subject: subject,
+          date: dateStr,
+          time: timeStr,
+        );
+      }).whereType<Exam>().toList(); // Filter out nulls
+      
+    } catch (e) {
+      // In case of error (e.g. endpoint not ready, parsing error)
+      // debugPrint('Error fetching exam schedule: $e');
+      return [];
+    }
   }
 }

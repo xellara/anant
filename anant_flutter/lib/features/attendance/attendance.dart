@@ -1,10 +1,12 @@
 import 'package:anant_client/anant_client.dart';
-import 'package:anant_flutter/common/widgets/custom_appbar.dart';
+import 'package:anant_flutter/config/role_theme.dart';
 import 'package:anant_flutter/common/widgets/custom_button.dart';
 import 'package:anant_flutter/main.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 
 /// A simple local Student model.
 class Student {
@@ -131,18 +133,92 @@ class _AttendanceInputPageState extends State<AttendanceInputPage> {
     }
   }
 
-  // Only the changed parts of the AttendanceInputPage build() method are shown below.
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: !kIsWeb,
+          title: const Text('Attendance Entry'),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
+            ),
+          ),
+        ),
+      body: ResponsiveLayout(
+        mobileBody: _buildFormContent(isDesktop: false),
+        desktopBody: _buildDesktopLayout(),
+        tabletBody: _buildDesktopLayout(),
+      ),
+    );
+  }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: CustomAppBar(title: 'Attendance Entry'),
-    body: SingleChildScrollView(
+  Widget _buildDesktopLayout() {
+    return Row(
+      children: [
+        // Left Panel: Context/Info
+        Expanded(
+          flex: 4,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
+            ),
+            padding: const EdgeInsets.all(40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.class_rounded, size: 80, color: Colors.white),
+                const SizedBox(height: 32),
+                const Text(
+                  'Record Class\nAttendance',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Select the class details on the right to proceed with marking attendance.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Right Panel: Form
+        Expanded(
+          flex: 6,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: _buildFormContent(isDesktop: true),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormContent({bool isDesktop = false}) {
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Changed: Class & Section dropdown using DropdownButton2.
+          if (isDesktop) ...[
+             const Text(
+               'Class Details',
+               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+             ),
+             const SizedBox(height: 32),
+          ],
+          // Class & Section dropdown using DropdownButton2.
           Container(
             padding: EdgeInsets.zero,
             child: DropdownButtonHideUnderline(
@@ -199,25 +275,35 @@ Widget build(BuildContext context) {
             ),
           ),
           const SizedBox(height: 12),
-          // Date picker remains unchanged.
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  selectedDate == null
-                      ? 'Select Date'
-                      : 'Date: $selectedDate',
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: _pickDate,
-              ),
-            ],
+          // Date picker
+          Container(
+             height: 44,
+             decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: const Color(0xFFD0D5DD)),
+             ),
+             child: InkWell(
+               onTap: _pickDate,
+               child: Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                 child: Row(
+                   children: [
+                     Expanded(
+                       child: Text(
+                         selectedDate == null
+                             ? 'Select Date'
+                             : 'Date: $selectedDate',
+                         style: const TextStyle(fontSize: 14),
+                       ),
+                     ),
+                     const Icon(Icons.calendar_today, size: 20, color: Color(0xFF41419B)),
+                   ],
+                 ),
+               ),
+             ),
           ),
           const SizedBox(height: 12),
-          // Changed: Subject dropdown using DropdownButton2.
+          // Subject dropdown using DropdownButton2.
           Container(
             padding: EdgeInsets.zero,
             child: DropdownButtonHideUnderline(
@@ -274,7 +360,7 @@ Widget build(BuildContext context) {
             ),
           ),
           const SizedBox(height: 12),
-          // Changed: Time selection row using DropdownButton2.
+          // Time selection row using DropdownButton2.
           Row(
             children: [
               Expanded(
@@ -407,9 +493,8 @@ Widget build(BuildContext context) {
           CustomButton(onPressed: navigateToAttendanceDetail, label: 'Load Students'),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 
@@ -574,106 +659,279 @@ class _AttendanceDetailPageState extends State<AttendanceDetailPage> {
   Widget build(BuildContext context) {
     // Compute if all students are present.
     bool allPresent = students.isNotEmpty && students.every((student) => student.isPresent);
-
-    final bottomPadding = students.isNotEmpty ? 80.0 : 8.0;
+    
+    // Stats for desktop
+    int presentCount = students.where((s) => s.isPresent).length;
+    int absentCount = students.length - presentCount;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Record Attendance'
+      appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
+        title: const Text('Record Attendance'),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
+          ),
+        ),
       ),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(12, 8, 12, bottomPadding),
-        children: [
-          if (students.isNotEmpty)
-            SwitchListTile(
-              title: Text(!allPresent ? 'Marked all as Absent' : 'Marked all as Present', style: TextStyle(fontSize: 14)),
-              value: allPresent,
-              onChanged: (value) => toggleAll(value),
-              activeColor: Colors.green,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.red.withValues(alpha: 0.4),
-              contentPadding: EdgeInsets.zero,
-            ),
-          const SizedBox(height: 8),
-          if (students.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              child: Table(
-                border: TableBorder.all(color: Colors.grey, width: 1),
-                columnWidths: const {
-                  0: FixedColumnWidth(60), // Admission number column.
-                  1: FlexColumnWidth(),     // Name column.
-                  2: FixedColumnWidth(80),  // Attendance toggle column.
-                },
-                children: [
-                  TableRow(
-                    decoration: BoxDecoration(color: Colors.grey[300]),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Roll No.", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Name", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Attendance", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                  ...students.map((student) {
-                    return TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(student.rollNumber, style: const TextStyle(fontSize: 14)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(student.name, style: const TextStyle(fontSize: 14)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: student.isPresent,
-                                onChanged: (bool value) async {
-                                  setState(() {
-                                    student.isPresent = value;
-                                  });
-                                  await updateAttendanceForStudent(student);
-                                },
-                                activeColor: Colors.green,
-                                inactiveThumbColor: Colors.red,
-                                inactiveTrackColor: Colors.red.withValues(alpha: 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              ),
-            ),
-        ],
+      body: ResponsiveLayout(
+        mobileBody: _buildMobileList(allPresent),
+        desktopBody: _buildDesktopLayout(allPresent, presentCount, absentCount),
+        tabletBody: _buildDesktopLayout(allPresent, presentCount, absentCount),
       ),
-      bottomSheet: students.isNotEmpty
+      bottomSheet: (!ResponsiveLayout.isDesktop(context) && students.isNotEmpty)
           ? Padding(
           padding: const EdgeInsets.fromLTRB(30, 12, 30, 20),
           child: CustomButton(
             onPressed: () {
-          Navigator.pop(context);
-          submitAttendance();
+              Navigator.pop(context);
+              submitAttendance();
             },
             label: 'Submit Attendance',
           ),
         )
           : null,
+    );
+  }
+  
+  Widget _buildDesktopLayout(bool allPresent, int presentCount, int absentCount) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left Side: Stats and Info
+          Expanded(
+            flex: 3,
+            child: Column(
+              children: [
+                _buildStatCard('Total Students', '${students.length}', Colors.blue),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(child: _buildStatCard('Present', '$presentCount', Colors.green)),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildStatCard('Absent', '$absentCount', Colors.red)),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)
+                    ]
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Class Details', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(height: 16),
+                      _buildDetailRow('Date', widget.selectedDate),
+                      _buildDetailRow('Subject', widget.selectedSubject),
+                      _buildDetailRow('Class', '${widget.selectedClass} ${widget.selectedSection}'),
+                      _buildDetailRow('Time', '${widget.selectedStartTime} - ${widget.selectedEndTime}'),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        child: CustomButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            submitAttendance();
+                          },
+                          label: 'Submit Final Attendance',
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(width: 24),
+          // Right Side: List
+          Expanded(
+            flex: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                 boxShadow: [
+                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)
+                 ]
+              ),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Column(
+                    children: [
+                      // Header for Desktop List
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        color: Colors.grey[50],
+                        child: Row(
+                          children: [
+                            const Text('Student List', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                            const Spacer(),
+                            Text('Mark All Present', style: TextStyle(color: Colors.grey[700], fontSize: 14)),
+                            const SizedBox(width: 8),
+                            Switch(
+                              value: allPresent,
+                              onChanged: (value) => toggleAll(value),
+                              activeColor: Colors.green,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildStudentTable(),
+                      ),
+                    ],
+                  ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(value, style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: color)),
+          Text(label, style: TextStyle(fontSize: 14, color: color.withOpacity(0.8), fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+           SizedBox(width: 80, child: Text(label, style: TextStyle(color: Colors.grey[500], fontSize: 14))),
+           Expanded(child: Text(value, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileList(bool allPresent) {
+    final bottomPadding = students.isNotEmpty ? 80.0 : 8.0;
+    return ListView(
+        padding: EdgeInsets.fromLTRB(12, 8, 12, bottomPadding),
+        children: [
+          if (students.isNotEmpty)
+            SwitchListTile(
+              title: Text(!allPresent ? 'Marked all as Absent' : 'Marked all as Present', style: const TextStyle(fontSize: 14)),
+              value: allPresent,
+              onChanged: (value) => toggleAll(value),
+              activeColor: Colors.green,
+              inactiveThumbColor: Colors.red,
+              inactiveTrackColor: Colors.red.withOpacity(0.4),
+              contentPadding: EdgeInsets.zero,
+            ),
+          const SizedBox(height: 8),
+          if (students.isNotEmpty)
+            Card(
+              elevation: 4,
+              shadowColor: Colors.black26, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: _buildStudentTable(),
+              ),
+            ),
+        ],
+      );
+  }
+
+  Widget _buildStudentTable() {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: FixedColumnWidth(70), // Roll No
+        1: FlexColumnWidth(),     // Name
+        2: FixedColumnWidth(90),  // Toggle
+      },
+      children: [
+        // Header Row
+        TableRow(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+          ),
+          children: const [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Text("Roll No", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Text("Name", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Text("Status", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+            ),
+          ],
+        ),
+        // Data Rows
+        ...students.asMap().entries.map((entry) {
+          final int index = entry.key;
+          final Student student = entry.value;
+          final bool isEven = index % 2 == 0;
+          return TableRow(
+            decoration: BoxDecoration(
+              color: isEven ? Colors.white : Colors.grey.withOpacity(0.05),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Text(student.rollNumber, style: TextStyle(fontSize: 14, color: Colors.grey[800], fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Text(student.name, style: TextStyle(fontSize: 15, color: Colors.grey[900], fontWeight: FontWeight.w500)),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Center(
+                  child: Transform.scale(
+                    scale: 0.8,
+                    child: Switch(
+                      value: student.isPresent,
+                      onChanged: (bool value) async {
+                        setState(() {
+                          student.isPresent = value;
+                        });
+                        await updateAttendanceForStudent(student);
+                      },
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.green,
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: Colors.red.shade300,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+      ],
     );
   }
 }

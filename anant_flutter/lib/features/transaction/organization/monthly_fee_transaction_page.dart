@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:anant_flutter/common/widgets/custom_appbar.dart';
+import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:anant_flutter/main.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -85,6 +86,7 @@ class _MonthlyFeeTransactionPageState
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: !kIsWeb,
         title: const Text(
           'Fee Transactions',
           style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
@@ -206,110 +208,125 @@ class _MonthlyFeeTransactionPageState
         ),
       );
     }
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        final tx = list[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    
+    return ResponsiveLayout(
+      mobileBody: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: list.length,
+        itemBuilder: (context, index) => _buildTransactionCard(list[index]),
+      ),
+      desktopBody: GridView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+          childAspectRatio: 2.5,
+        ),
+        itemCount: list.length,
+        itemBuilder: (context, index) => _buildTransactionCard(list[index]),
+      ),
+    );
+  }
+
+  Widget _buildTransactionCard(FeeTransaction tx) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: tx.isPaid ? () => _openDetailForm(tx) : null,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: (tx.isPaid ? Colors.green : Colors.red).withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        tx.isPaid ? Icons.check_rounded : Icons.priority_high_rounded,
-                        color: tx.isPaid ? Colors.green : Colors.red,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tx.month,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Color(0xFF1F2937),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            tx.isPaid && tx.paidDate != null
-                                ? 'Paid on ${_formatDate(tx.paidDate!)}'
-                                : 'Payment Pending',
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '₹${tx.amount.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Color(0xFF335762),
-                          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: tx.isPaid ? () => _openDetailForm(tx) : null,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: (tx.isPaid ? Colors.green : Colors.red).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    tx.isPaid ? Icons.check_rounded : Icons.priority_high_rounded,
+                    color: tx.isPaid ? Colors.green : Colors.red,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tx.month,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Color(0xFF1F2937),
                         ),
-                        const SizedBox(height: 8),
-                        if (!tx.isPaid)
-                          SizedBox(
-                            height: 32,
-                            child: ElevatedButton(
-                              onPressed: () => _pay(tx),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF335762),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                elevation: 0,
-                              ),
-                              child: const Text('Pay Now', style: TextStyle(fontSize: 12)),
-                            ),
-                          ),
-                      ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        tx.isPaid && tx.paidDate != null
+                            ? 'Paid on ${_formatDate(tx.paidDate!)}'
+                            : 'Payment Pending',
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '₹${tx.amount.toStringAsFixed(0)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xFF335762),
+                      ),
                     ),
+                    const SizedBox(height: 8),
+                    if (!tx.isPaid)
+                      SizedBox(
+                        height: 32,
+                        child: ElevatedButton(
+                          onPressed: () => _pay(tx),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF335762),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            elevation: 0,
+                          ),
+                          child: const Text('Pay Now', style: TextStyle(fontSize: 12)),
+                        ),
+                      ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

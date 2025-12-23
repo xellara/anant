@@ -6,7 +6,7 @@ class GetTimetable {
 
   GetTimetable(this.repository);
 
-  Future<List<TimetableSlot>> call() async {
-    return await repository.getTimetable();
+  Future<List<TimetableSlot>> call({String? role}) async {
+    return await repository.getTimetable(role: role);
   }
 }

@@ -1,15 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_upi_india/flutter_upi_india.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 /// -- shared constants --------------------------------
 const _upiId = '6386065723@paytm';
 const _payeeName = 'Test English School';
-const num _amount = 199;
-const num _fee = 0;
 
 /// -- EVENTS -------------------------------------------
 abstract class PaymentEvent {}
@@ -50,8 +52,11 @@ class PaymentFailureState extends PaymentState {
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final String _orderId = 'ORD-${1024 + Random().nextInt(1000)}';
   List<ApplicationMeta> _apps = [];
+  
+  final double amount;
+  final String note;
 
-  PaymentBloc() : super(PaymentInitial()) {
+  PaymentBloc({required this.amount, required this.note}) : super(PaymentInitial()) {
     on<LoadAppsEvent>(_onLoadApps);
     on<ToggleViewEvent>(_onToggleView);
     on<InitiatePaymentEvent>(_onInitiatePayment);
@@ -79,12 +84,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     final txnRef = Random.secure().nextInt(1 << 32).toString();
     try {
       final resp = await UpiPay.initiateTransaction(
-        amount: _amount.toStringAsFixed(2),
+        amount: amount.toStringAsFixed(2),
         app: event.appMeta.upiApplication,
         receiverUpiAddress: _upiId,
         receiverName: _payeeName,
         transactionRef: txnRef,
-        transactionNote: 'Order #$_orderId',
+        transactionNote: 'Order #$_orderId | $note',
       );
       emit(PaymentSuccessState(resp));
     } catch (e) {
@@ -97,21 +102,32 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
 /// -- UI WIDGET ----------------------------------------
 class PaymentGatewayPage extends StatelessWidget {
-  const PaymentGatewayPage({super.key});
+  final double amount;
+  final String purpose;
+
+  const PaymentGatewayPage({
+    super.key,
+    this.amount = 199.0,
+    this.purpose = 'Fee Payment',
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => PaymentBloc()..add(LoadAppsEvent()),
+      create: (_) => PaymentBloc(amount: amount, note: purpose)..add(LoadAppsEvent()),
       child: BlocConsumer<PaymentBloc, PaymentState>(
         listener: (context, state) {
           if (state is PaymentSuccessState) {
-            Navigator.of(context).pushReplacementNamed('/splash');
+            // In a real app, you might want to return result to caller instead of navigating to splash
+            Navigator.of(context).pop(true); 
           }
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(title: Text(_getTitle(state))),
+            appBar: AppBar(
+              automaticallyImplyLeading: !kIsWeb,
+              title: Text(_getTitle(state)),
+            ),
             body: _buildBody(context, state),
             bottomNavigationBar: _buildFooter(),
           );
@@ -128,7 +144,7 @@ class PaymentGatewayPage extends StatelessWidget {
     if (state is PaymentProcessingState) {
       return 'Processing Payment';
     }
-    return 'Pay ₹${_amount.toStringAsFixed(2)} via UPI';
+    return 'Pay ₹${amount.toStringAsFixed(2)} via UPI';
   }
 
   Widget _buildBody(BuildContext context, PaymentState state) {
@@ -262,7 +278,7 @@ class PaymentGatewayPage extends StatelessWidget {
       queryParameters: {
         'pa': _upiId,
         'pn': _payeeName,
-        'am': _amount.toStringAsFixed(2),
+        'am': amount.toStringAsFixed(2),
         'cu': 'INR',
         'tn': 'Order #$orderId',
       },
@@ -280,7 +296,9 @@ class PaymentGatewayPage extends StatelessWidget {
   Widget _buildReceiptCard(BuildContext context) {
     final orderId = context.read<PaymentBloc>().orderId;
     final date = DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.now());
-    final total = _amount + _fee;
+    // Assuming fee is included or extra. Using 0 for now as per original
+    const num fee = 0; 
+    final total = amount + fee;
     return Card(
       color: Colors.grey[50],
       elevation: 2,
@@ -295,9 +313,10 @@ class PaymentGatewayPage extends StatelessWidget {
           _buildRow('Date', date),
           _buildRow('Payee', _payeeName),
           _buildRow('UPI ID', _upiId),
+          _buildRow('Purpose', purpose),
           const SizedBox(height: 8),
-          _buildRow('Amount', '₹${_amount.toStringAsFixed(2)}'),
-          _buildRow('Txn Fee', '₹${_fee.toStringAsFixed(2)}'),
+          _buildRow('Amount', '₹${amount.toStringAsFixed(2)}'),
+          _buildRow('Txn Fee', '₹${fee.toStringAsFixed(2)}'),
           const Divider(height: 24),
           _buildRow('Total', '₹${total.toStringAsFixed(2)}', isTotal: true),
         ]),
@@ -349,19 +368,106 @@ class PaymentGatewayPage extends StatelessWidget {
             child: Column(children: [
               const Text('Transaction Details', style: TextStyle(fontWeight: FontWeight.bold)),
               const Divider(height: 20),
-              _buildRow('Txn ID', response?.txnId ?? ''),
-              _buildRow('Txn Ref', response?.txnRef ?? ''),
-              _buildRow('Approval Ref', response?.approvalRefNo ?? ''),
-              _buildRow('Response Code', response?.responseCode ?? ''),
+              if (response != null) ...[
+                _buildRow('Txn ID', response.txnId ?? ''),
+                _buildRow('Txn Ref', response.txnRef ?? ''),
+                _buildRow('Approval Ref', response.approvalRefNo ?? ''),
+                _buildRow('Response Code', response.responseCode ?? ''),
+              ],
             ]),
           ),
         ),
         const SizedBox(height: 24),
+        if (success) 
+          ElevatedButton.icon(
+            onPressed: () => _generatePdf(context, response!),
+            icon: const Icon(Icons.download),
+            label: const Text('Download Receipt'),
+             style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        if (success) const SizedBox(height: 12),
         ElevatedButton(
           onPressed: () => context.read<PaymentBloc>().add(LoadAppsEvent()),
           child: const Text('Pay Again'),
         ),
+        const SizedBox(height: 12),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(), 
+          child: const Text('Close'),
+        ),
       ]),
+    );
+  }
+
+  Future<void> _generatePdf(BuildContext context, UpiTransactionResponse response) async {
+    final doc = pw.Document();
+    final font = await PdfGoogleFonts.nunitoExtraLight();
+    
+    doc.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+             children: [
+              pw.Header(
+                level: 0,
+                child: pw.Text('Fee Payment Receipt', style: pw.TextStyle(font: font, fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Text('School: $_payeeName', style: pw.TextStyle(font: font, fontSize: 18)),
+              pw.SizedBox(height: 10),
+              pw.Text('Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.now())}', style: pw.TextStyle(font: font, fontSize: 14)),
+              pw.Divider(),
+              pw.SizedBox(height: 20),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Transaction ID:', style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
+                  pw.Text(response.txnId ?? 'N/A', style: pw.TextStyle(font: font)),
+                ]
+              ),
+              pw.SizedBox(height: 10),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Amount Paid:', style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
+                  pw.Text('INR ${amount.toStringAsFixed(2)}', style: pw.TextStyle(font: font, color: PdfColors.green)),
+                ]
+              ),
+               pw.SizedBox(height: 10),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Purpose:', style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
+                  pw.Text(purpose, style: pw.TextStyle(font: font)),
+                ]
+              ),
+               pw.SizedBox(height: 10),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Status:', style: pw.TextStyle(font: font, fontWeight: pw.FontWeight.bold)),
+                  pw.Text('SUCCESS', style: pw.TextStyle(font: font, color: PdfColors.green, fontWeight: pw.FontWeight.bold)),
+                ]
+              ),
+              pw.SizedBox(height: 40),
+              pw.Divider(),
+              pw.Center(
+                child: pw.Text('Thank you for your payment!', style: pw.TextStyle(font: font, fontStyle: pw.FontStyle.italic)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => doc.save(),
+      name: 'fee_receipt_${response.txnId}.pdf',
     );
   }
 

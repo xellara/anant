@@ -12,12 +12,15 @@ class InfinityPainter extends CustomPainter {
   late double width;
   late double height;
 
+  // Beautiful ocean to sunset gradient
   final colors = const [
-  Colors.white, // Deep blue
-  Color(0xFF2A9D8F), // Calming teal
-  Colors.white, // Warm golden yellow
-  Color(0xFF2A9D8F), 
-];
+    Color(0xFF0EA5E9), // Ocean blue
+    Color(0xFF2563EB), // Royal blue
+    Color(0xFF7C3AED), // Deep purple
+    Color(0xFF14B8A6), // Teal
+    Color(0xFF059669), // Emerald
+    Color(0xFFD97706), // Golden orange
+  ];
 
 
   @override
@@ -28,7 +31,7 @@ class InfinityPainter extends CustomPainter {
     for (int i = 0; i < infinitiesLength; i++) {
       _drawInfinitySymbols(
         canvas,
-        color: colors[i % 3],
+        color: colors[i % colors.length],
         index: i,
         strokeWidth: 1,
       );
@@ -107,7 +110,12 @@ class InfinityPainter extends CustomPainter {
 
 
 class AnantProgressIndicator extends StatefulWidget {
-  const AnantProgressIndicator({super.key});
+  final bool showBackground;
+  
+  const AnantProgressIndicator({
+    super.key,
+    this.showBackground = false, // Default: transparent for in-app use
+  });
 
   @override
   State<AnantProgressIndicator> createState() => _AnantProgressIndicatorState();
@@ -141,19 +149,34 @@ class _AnantProgressIndicatorState extends State<AnantProgressIndicator>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            return CustomPaint(
-              size: const Size(60, 60),
-              painter: InfinityPainter(
-                progress: _controller.value,
-                infinitiesLength: infinitiesLength,
-              ),
-            );
-          },
+      backgroundColor: widget.showBackground 
+          ? Colors.white // Opaque white background for splash
+          : Colors.transparent, // Transparent for in-app loading
+      body: Container(
+        decoration: widget.showBackground ? BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue.shade50,
+              Colors.purple.shade50,
+              Colors.teal.shade50,
+            ],
+          ),
+        ) : null,
+        child: Center(
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              return CustomPaint(
+                size: const Size(60, 60),
+                painter: InfinityPainter(
+                  progress: _controller.value,
+                  infinitiesLength: infinitiesLength,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

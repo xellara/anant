@@ -23,6 +23,8 @@ void main(List<String> args) async {
     // --- 1. CLEAR DATABASE ---
     print('🗑️ Clearing existing data...');
     // Delete children first to avoid foreign key constraints
+    await Notification.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await Announcement.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await FeeRecord.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Attendance.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Exam.db.deleteWhere(session, where: (t) => Constant.bool(true));
@@ -254,6 +256,93 @@ void main(List<String> args) async {
       await FeeRecord.db.insertRow(session, fee);
     }
     print('✅ Fee records created.');
+
+    // --- 11. CREATE ANNOUNCEMENTS ---
+    print('📢 Creating Announcements...');
+    final announcements = [
+      {
+        'title': 'School Annual Day',
+        'content': 'The Annual Day celebration will be held on December 24th from 5 PM onwards in the main auditorium. All students and parents are cordially invited.',
+        'priority': 'High',
+        'targetAudience': 'All',
+      },
+      {
+        'title': 'Winter Vacation Notice',
+        'content': 'The school will remain closed for winter vacation starting from Dec 25th. Classes will resume on Jan 6th.',
+        'priority': 'Normal',
+        'targetAudience': 'All',
+      },
+      {
+        'title': 'Parent-Teacher Meeting',
+        'content': 'Parent-Teacher meeting for Class 10 will be held on Dec 20th at 4 PM.',
+        'priority': 'High',
+        'targetAudience': 'Parents',
+      },
+      {
+        'title': 'Staff Meeting',
+        'content': 'All teaching staff are requested to attend the monthly meeting on Dec 22nd at 10 AM.',
+        'priority': 'Normal',
+        'targetAudience': 'Teachers',
+      },
+    ];
+    
+    for (var announcementData in announcements) {
+      final announcement = Announcement(
+        organizationId: orgId,
+        title: announcementData['title'] as String,
+        content: announcementData['content'] as String,
+        priority: announcementData['priority'] as String,
+        targetAudience: announcementData['targetAudience'] as String,
+        createdBy: teachers.isNotEmpty ? teachers.first.anantId! : 'system',
+        createdAt: DateTime.now().subtract(Duration(days: random.nextInt(5))),
+        isActive: true,
+      );
+      await Announcement.db.insertRow(session, announcement);
+    }
+    print('✅ Announcements created (${announcements.length}).');
+
+    // --- 12. CREATE NOTIFICATIONS ---
+    print('🔔 Creating Notifications...');
+    int notificationCount = 0;
+    
+    // Create fee due notifications for students with pending fees
+    for (var student in students) {
+      final pendingFees = await FeeRecord.db.find(
+        session,
+        where: (t) => t.studentId.equals(student.id!) & t.paidDate.equals(null),
+      );
+      
+      if (pendingFees.isNotEmpty) {
+        final notification = Notification(
+          organizationId: orgId,
+          userId: student.anantId!,
+          title: 'Fee Payment Due',
+          message: 'Your fee of ₹${pendingFees.first.amount} is due on ${pendingFees.first.dueDate?.toString().split(' ')[0]}',
+          type: 'fee',
+          relatedId: pendingFees.first.id.toString(),
+          timestamp: DateTime.now().subtract(Duration(hours: random.nextInt(48))),
+          isRead: random.nextBool(),
+        );
+        await Notification.db.insertRow(session, notification);
+        notificationCount++;
+      }
+    }
+    
+    // Create announcement notifications for all users
+    for (var user in [...students, ...teachers, ...createdUsers['admin']!]) {
+      final notification = Notification(
+        organizationId: orgId,
+        userId: user.anantId!,
+        title: 'School Annual Day',
+        message: 'The Annual Day celebration will be held on December 24th from 5 PM onwards.',
+        type: 'announcement',
+        timestamp: DateTime.now().subtract(Duration(hours: 5)),
+        isRead: random.nextBool(),
+      );
+      await Notification.db.insertRow(session, notification);
+      notificationCount++;
+    }
+    print('✅ Notifications created ($notificationCount).');
 
     print('\n✨ SEEDING COMPLETE! ✨');
     print('Created:');

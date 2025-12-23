@@ -1,0 +1,13 @@
+class: Announcement
+table: announcements
+fields:
+  organizationId: int, relation(parent=organization)
+  title: String
+  content: String
+  priority: String # Low, Normal, High, Urgent
+  targetAudience: String # All, Students, Teachers, Parents, Staff
+  targetClasses: String? # Comma-separated class IDs if targetAudience is Students
+  createdBy: String # anantId of creator
+  createdAt: DateTime, default=now
+  updatedAt: DateTime?
+  isActive: bool, default=true

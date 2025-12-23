@@ -1,0 +1,12 @@
+class: Notification
+table: notifications
+fields:
+  organizationId: int, relation(parent=organization)
+  userId: String # anantId of user
+  title: String
+  message: String
+  type: String # fee, announcement, attendance, general
+  relatedId: String? # ID of related entity (feeId, announcementId, etc)
+  timestamp: DateTime, default=now
+  isRead: bool, default=false
+  data: String? # JSON string for additional data

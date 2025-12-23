@@ -19,12 +19,14 @@ class AttendanceRecord extends Equatable {
 
 class SubjectAttendance extends Equatable {
   final String subjectName;
+  final String teacherName;
   final int presentCount;
   final int absentCount;
   final List<AttendanceRecord> records;
 
   const SubjectAttendance({
     required this.subjectName,
+    this.teacherName = 'Mr. Teacher', // Default for now
     required this.presentCount,
     required this.absentCount,
     required this.records,
@@ -35,5 +37,5 @@ class SubjectAttendance extends Equatable {
   double get percentage => totalClasses == 0 ? 0 : (presentCount / totalClasses) * 100;
 
   @override
-  List<Object> get props => [subjectName, presentCount, absentCount, records];
+  List<Object> get props => [subjectName, teacherName, presentCount, absentCount, records];
 }

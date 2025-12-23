@@ -1,8 +1,14 @@
+announcement:
+  - getAnnouncementsForUser:
+  - createAnnouncement:
+  - deleteAnnouncement:
+  - updateAnnouncement:
 attendance:
   - updateSingleAttendance:
   - submitCompleteAttendance:
   - getFilteredAttendanceStatus:
   - getUserAttendanceRecords:
+  - receiveAttendanceStream:
 auth:
   - signUp:
   - bulkSignUp:
@@ -19,6 +25,16 @@ course:
   - getCourse:
   - getAllCourses:
   - deleteCourse:
+exam:
+  - getExamSchedule:
+notification:
+  - getUserNotifications:
+  - markAsRead:
+  - markAllAsRead:
+  - deleteNotification:
+  - createNotification:
+  - getUnreadCount:
+  - receiveNotificationStream:
 organization:
   - createOrganization:
   - getOrganization:
@@ -31,6 +47,13 @@ permission:
   - updatePermission:
   - deletePermission:
   - initializeDefaultPermissions:
+report:
+  - getRevenueReport:
+  - getAttendanceReport:
+  - getStudentStatistics:
+  - getFeeStatistics:
+  - getClassWiseStatistics:
+  - exportReport:
 role:
   - createRole:
   - getRoles:
@@ -49,6 +72,11 @@ seed:
 settings:
   - getSettings:
   - updateSettings:
+timetable:
+  - getTimetable:
+  - upsertTimetableEntry:
+  - deleteTimetableEntry:
+  - getClassTimetable:
 transaction:
   - createMonthlyFeeTransaction:
   - getMonthlyFeeTransaction:

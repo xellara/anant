@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:anant_flutter/common/bottom_nav_bloc.dart';
 import 'package:anant_flutter/common/settings_bloc.dart';
 import 'package:anant_flutter/features/profile_screen.dart';
-import 'package:anant_flutter/features/transaction/organization/monthly_fee_transaction_page.dart';
+import 'package:anant_flutter/fee_screen.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -158,7 +158,7 @@ class _HomeScreenAState extends State<HomeScreenA> {
                     screenSize, statusBarHeight, contentTopPadding, statsCardHeight, featureCardHeight),
                 const TimetablePage(),
                 const StudentAttendancePage(),
-                const MonthlyFeeTransactionPage(),
+                const FeeScreen(),
                 const ProfileScreen(),
               ],
             ),

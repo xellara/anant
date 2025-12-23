@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:anant_client/anant_client.dart';
 import 'package:anant_flutter/main.dart';
+import 'package:anant_flutter/app.dart';
+import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -485,6 +487,64 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     );
   }
 
+  Widget _buildLegalLink(BuildContext context, IconData icon, String title, String route) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.pushNamed(context, route);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F4F6),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 22, color: const Color(0xFF6B7280)),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1F2937),
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _accountSwitcherWidget(BuildContext context, ProfileLoaded state) {
     if (state.accounts.isEmpty) return const SizedBox.shrink();
     
@@ -759,7 +819,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
             if (state.removeAll) {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const MyApp()),
+                MaterialPageRoute(builder: (context) => MyApp(client: client)),
                 (route) => false,
               );
             } else {
@@ -823,8 +883,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
               final roleColor = _getRoleColor(userRole);
               
               content = Scaffold(
-                body: Center(
-                  child: ConstrainedBox(
+                body: ResponsiveLayout(
+                  mobileBody: Center(
+                    child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 1000),
                     child: Container(
                       decoration: BoxDecoration(
@@ -1087,6 +1148,28 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                       
                                       const SizedBox(height: 10),
                                       
+                                      // Legal Links Section
+                                      _modernInfoCard(
+                                        title: "Legal & Privacy",
+                                        icon: Icons.policy_rounded,
+                                        children: [
+                                          _buildLegalLink(
+                                            context,
+                                            Icons.description_rounded,
+                                            'Terms of Use',
+                                            '/terms-of-use',
+                                          ),
+                                          _buildLegalLink(
+                                            context,
+                                            Icons.privacy_tip_rounded,
+                                            'Privacy Policy',
+                                            '/privacy-policy',
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                      const SizedBox(height: 10),
+                                      
                                       // Logout Button
                                       Container(
                                         width: double.infinity,
@@ -1145,7 +1228,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                     ),
                   ),
                 ),
-              );
+                desktopBody: _buildDesktopLayout(state, userData, roleColor, userRole),
+              ),
+            );
             } else {
               content = const SizedBox.shrink();
             }
@@ -1163,6 +1248,242 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 : content;
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout(ProfileLoaded state, User userData, Color roleColor, String userRole) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1200),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left Panel - Profile Card
+              SizedBox(
+                width: 380,
+                child: Column(
+                  children: [
+                    _buildDesktopProfileCard(userData, roleColor, userRole),
+                     const SizedBox(height: 24),
+                     if (state.accounts.isNotEmpty)
+                       Container(
+                         padding: const EdgeInsets.all(24),
+                         decoration: BoxDecoration(
+                           color: Colors.white,
+                           borderRadius: BorderRadius.circular(24),
+                           boxShadow: [
+                             BoxShadow(
+                               color: Colors.black.withOpacity(0.05),
+                               blurRadius: 20,
+                               offset: const Offset(0, 10),
+                             )
+                           ]
+                         ),
+                         child: _accountSwitcherWidget(context, state),
+                       ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 32),
+              // Right Panel - Details
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if ((userData.email != null && userData.email!.isNotEmpty) ||
+                          (userData.mobileNumber != null && userData.mobileNumber!.isNotEmpty))
+                        _modernInfoCard(
+                          title: "Contact Information",
+                          icon: Icons.contact_mail_rounded,
+                          children: [
+                            if (userData.email != null && userData.email!.isNotEmpty)
+                              _modernInfoTile(Icons.email_rounded, "Email", userData.email ?? ""),
+                            if (userData.mobileNumber != null && userData.mobileNumber!.isNotEmpty)
+                              _modernInfoTile(Icons.phone_rounded, "Phone", userData.mobileNumber ?? ""),
+                          ],
+                        ),
+                      if (_buildRoleSpecificDetails(userData).isNotEmpty)
+                        _modernInfoCard(
+                          title: userRole == 'student' ? "Academic Details" : "Professional Details",
+                          icon: userRole == 'student' ? Icons.school_rounded : Icons.work_rounded,
+                          children: _buildRoleSpecificDetails(userData),
+                        ),
+                       _modernInfoCard(
+                          title: "Legal & Privacy",
+                          icon: Icons.policy_rounded,
+                          children: [
+                            _buildLegalLink(context, Icons.description_rounded, 'Terms of Use', '/terms-of-use'),
+                            _buildLegalLink(context, Icons.privacy_tip_rounded, 'Privacy Policy', '/privacy-policy'),
+                          ],
+                        ),
+                        // Desktop Logout Button
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFEF4444).withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () {
+                                context.read<ProfileBloc>().add(LogoutEvent());
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.logout_rounded, color: Colors.white, size: 22),
+                                    SizedBox(width: 12),
+                                    Text(
+                                      "Logout",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopProfileCard(User userData, Color roleColor, String userRole) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: roleColor.withOpacity(0.1),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+          ),
+        ],
+        border: Border.all(color: roleColor.withOpacity(0.1)),
+      ),
+      child: Column(
+        children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: roleColor.withOpacity(0.2), width: 2),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [roleColor, roleColor.withOpacity(0.7)],
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Colors.transparent,
+                  child: Text(
+                    _getInitials(userData.fullName ?? ""),
+                    style: const TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              userData.fullName ?? '',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1F2937),
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: roleColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                userRole == 'student'
+                    ? 'Student'
+                    : userRole[0].toUpperCase() + userRole.substring(1),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: roleColor,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    "ANANT ID",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF9CA3AF),
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    userData.anantId ?? "",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF4B5563),
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -1,5 +1,5 @@
 import '../entities/timetable_entry.dart';
 
 abstract class TimetableRepository {
-  Future<List<TimetableSlot>> getTimetable();
+  Future<List<TimetableSlot>> getTimetable({String? role});
 }

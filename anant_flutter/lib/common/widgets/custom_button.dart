@@ -1,3 +1,4 @@
+import 'package:anant_flutter/config/role_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -20,14 +21,13 @@ class CustomButton extends StatelessWidget {
       width: double.infinity,
       child: Container(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFF335762),
-              Color(0xFF3C6673),
-              Color(0xFF457584),
-              Color(0xFF4E8596),
-            ],
-          ),
+          gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient ?? 
+             LinearGradient(
+               colors: [
+                 Theme.of(context).primaryColor, 
+                 Theme.of(context).primaryColor
+               ]
+             ),
           borderRadius: BorderRadius.circular(50),
         ),
         child: icon != null 

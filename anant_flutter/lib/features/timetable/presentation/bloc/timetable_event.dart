@@ -7,4 +7,11 @@ abstract class TimetableEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadTimetable extends TimetableEvent {}
+class LoadTimetable extends TimetableEvent {
+  final String? role;
+
+  const LoadTimetable({this.role});
+
+  @override
+  List<Object> get props => [role ?? ''];
+}

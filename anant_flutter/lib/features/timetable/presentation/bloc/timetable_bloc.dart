@@ -16,7 +16,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   ) async {
     emit(TimetableLoading());
     try {
-      final timetable = await getTimetable();
+      final timetable = await getTimetable(role: event.role);
       emit(TimetableLoaded(timetable));
     } catch (e) {
       emit(TimetableError(e.toString()));

@@ -419,220 +419,225 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                   child: Center(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 32),
-                      child: Card(
-                        color: Color(0xFF70D9CE).withAlpha(1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side: const BorderSide(
-                            color: Colors.white24,
-                            width: 1,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 420),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 32),
+                        child: Card(
+                          color: Color(0xFF70D9CE).withAlpha(1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: const BorderSide(
+                              color: Colors.white24,
+                              width: 1,
+                            ),
                           ),
-                        ),
-                        elevation: 6,
-                        margin: const EdgeInsets.all(16),
-                        child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                            // Form content wrapped in Padding.
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 10),
-                              child: Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                // Add spacing to account for the overlapping image.
-                                const SizedBox(height: 50),
-                                TextFormField(
-                                  controller: _usernameCtrl,
-                                  decoration: InputDecoration(
-                                  hintText: "Anant ID",
-                                  hintStyle: const TextStyle(
-                                    color: Colors.white70),
-                                  prefixIcon: const Icon(
-                                    Icons.person_outline,
-                                    color: Colors.white70,
+                          elevation: 6,
+                          margin: const EdgeInsets.all(16),
+                          child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                              // Form content wrapped in Padding.
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 10),
+                                child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                  // Add spacing to account for the overlapping image.
+                                  const SizedBox(height: 50),
+                                  TextFormField(
+                                    controller: _usernameCtrl,
+                                    decoration: InputDecoration(
+                                    hintText: "Anant ID",
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white70),
+                                    prefixIcon: const Icon(
+                                      Icons.person_outline,
+                                      color: Colors.white70,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.2),
+                                    
+                                    contentPadding:
+                                      const EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 16),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                        BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    ),
+                                    cursorColor: Colors.white,
+                                    style:
+                                      const TextStyle(color: Colors.white),
+                                    validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Username cannot be empty';
+                                    }
+                                    return null;
+                                    },
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.2),
-                                  
-                                  contentPadding:
+                                  const SizedBox(height: 20),
+                                  TextFormField(
+                                    controller: _passwordCtrl,
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                    hintText: "Password",
+                                    hintStyle: const TextStyle(
+                                    color: Colors.white70),
+                                    prefixIcon: const Icon(
+                                    Icons.lock_outline,
+                                    color: Colors.white70,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.2),
+                                    contentPadding:
                                     const EdgeInsets.symmetric(
                                       vertical: 16, horizontal: 16),
-                                  border: OutlineInputBorder(
+                                    border: OutlineInputBorder(
                                     borderRadius:
                                       BorderRadius.circular(12),
                                     borderSide: BorderSide.none,
-                                  ),
-                                  ),
-                                  cursorColor: Colors.white,
-                                  style:
+                                    ),
+                                    ),
+                                    style:
                                     const TextStyle(color: Colors.white),
-                                  validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Username cannot be empty';
-                                  }
-                                  return null;
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: _passwordCtrl,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: const TextStyle(
-                                  color: Colors.white70),
-                                  prefixIcon: const Icon(
-                                  Icons.lock_outline,
-                                  color: Colors.white70,
+                                    cursorColor: Colors.white,
+                                    validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                    return 'Password cannot be empty';
+                                    }
+                                    return null;
+                                    },
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.2),
-                                  contentPadding:
-                                  const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 16),
-                                  border: OutlineInputBorder(
-                                  borderRadius:
-                                    BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                  ),
-                                  ),
-                                  style:
-                                  const TextStyle(color: Colors.white),
-                                  cursorColor: Colors.white,
-                                  validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                  return 'Password cannot be empty';
-                                  }
-                                  return null;
-                                  },
-                                ),
-                                if (state is AuthError) ...[
-                                  const SizedBox(height: 8),
-                                  Text(
-                                  state.message,
-                                  style: const TextStyle(
-                                    color: Colors.red, fontSize: 12),
-                                  ),
-                                ],
-                                const SizedBox(height: 32),
-                                Center(
-                                  child: Column(
-                                  children: [
-                                    RichText(
-                                    text: TextSpan(
-                                      text:
-                                        'By continuing, you accept our ',
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.white70),
-                                      children: [
-                                      TextSpan(
-                                        text: 'Terms of Use',
-                                        style: const TextStyle(
-                                        decoration: TextDecoration
-                                          .underline,
-                                        color: Colors.white,
-                                        ),
-                                        recognizer:
-                                          TapGestureRecognizer()
-                                          ..onTap = () {
-                                            // Handle Terms tap.
-                                          },
-                                      ),
-                                      const TextSpan(text: ' and '),
-                                      TextSpan(
-                                        text: 'Privacy Policy',
-                                        style: const TextStyle(
-                                        decoration: TextDecoration
-                                                        .underline,
-                                                    color: Colors.white,
-                                                  ),
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () {
-                                                          // Handle Privacy Policy tap.
-                                                        },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                            const SizedBox(height: 24),
-                                            InkWell(
-                                            onTap: _isButtonEnabled
-                                              ? () {
-                                                if (_formKey.currentState!
-                                                  .validate()) {
-                                                  context
-                                                    .read<AuthBloc>()
-                                                    .add(AuthSignIn(
-                                                    username:
-                                                      _usernameCtrl
-                                                        .text
-                                                        .trim(),
-                                                    password:
-                                                      _passwordCtrl
-                                                        .text
-                                                        .trim(),
-                                                    ));
-                                                }
-                                                }
-                                              : null,
-                                            borderRadius:
-                                              BorderRadius.circular(50),
-                                            child: Ink(
-                                              decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color:Color(0xFF70D9CE)
-                                                  ,
-                                                width: 2,
-                                              ),
-                                              color: _isButtonEnabled
-                                                ? Color(0xFF70D9CE)
-                                                : Colors.transparent,
-                                              ),
-                                              child: Container(
-                                              alignment: Alignment.center,
-                                              height: 50,
-                                              width: 50,
-                                              child: Icon(
-                                                Icons
-                                                  .arrow_forward_ios_outlined,
-                                                color: _isButtonEnabled
-                                                  ? Colors.white
-                                                  : Color(0xFF70D9CE),
-                                              ),
-                                              ),
-                                            ),
-                                            ),
-                                          const SizedBox(height: 16),
-                                        ],
-                                      ),
-                                    )
+                                  if (state is AuthError) ...[
+                                    const SizedBox(height: 8),
+                                    Text(
+                                    state.message,
+                                    style: const TextStyle(
+                                      color: Colors.red, fontSize: 12),
+                                    ),
                                   ],
+                                  const SizedBox(height: 32),
+                                  Center(
+                                    child: Column(
+                                    children: [
+                                      RichText(
+                                      text: TextSpan(
+                                        text:
+                                          'By continuing, you accept our ',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.white70),
+                                        children: [
+                                        TextSpan(
+                                          text: 'Terms of Use',
+                                          style: const TextStyle(
+                                          decoration: TextDecoration
+                                            .underline,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer:
+                                            TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Navigator.pushNamed(context, '/terms-of-use');
+                                            },
+                                        ),
+                                        const TextSpan(text: ' and '),
+                                        TextSpan(
+                                          text: 'Privacy Policy',
+                                          style: const TextStyle(
+                                          decoration: TextDecoration
+                                                          .underline,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                    recognizer:
+                                                        TapGestureRecognizer()
+                                                          ..onTap = () {
+                                                            Navigator.pushNamed(context, '/privacy-policy');
+                                                          },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                              const SizedBox(height: 24),
+                                              InkWell(
+                                              onTap: _isButtonEnabled
+                                                ? () {
+                                                  if (_formKey.currentState!
+                                                    .validate()) {
+                                                    context
+                                                      .read<AuthBloc>()
+                                                      .add(AuthSignIn(
+                                                      username:
+                                                        _usernameCtrl
+                                                          .text
+                                                          .trim(),
+                                                      password:
+                                                        _passwordCtrl
+                                                          .text
+                                                          .trim(),
+                                                      ));
+                                                  }
+                                                  }
+                                                : null,
+                                              borderRadius:
+                                                BorderRadius.circular(50),
+                                              child: Ink(
+                                                decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color:Color(0xFF70D9CE)
+                                                    ,
+                                                  width: 2,
+                                                ),
+                                                color: _isButtonEnabled
+                                                  ? Color(0xFF70D9CE)
+                                                  : Colors.transparent,
+                                                ),
+                                                child: Container(
+                                                alignment: Alignment.center,
+                                                height: 50,
+                                                width: 50,
+                                                child: Icon(
+                                                  Icons
+                                                    .arrow_forward_ios_outlined,
+                                                  color: _isButtonEnabled
+                                                    ? Colors.white
+                                                    : Color(0xFF70D9CE),
+                                                ),
+                                                ),
+                                              ),
+                                              ),
+                                            const SizedBox(height: 16),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            // Positioned placeholder image overlapping at the top center.
-                            Positioned(
-                              top: -120,
-                              left: 0,
-                              right: 0,
-                              child: Center(
-                              child: Image.asset(
-                              'assets/images/login.png',
-                              height: 180,
+                              // Positioned placeholder image overlapping at the top center.
+                              Positioned(
+                                top: -120,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                child: Image.asset(
+                                'assets/images/login.png',
+                                height: 180,
+                                ),
+                                ),
                               ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

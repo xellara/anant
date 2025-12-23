@@ -6,7 +6,7 @@ class GetStudentAttendance {
 
   GetStudentAttendance(this.repository);
 
-  Future<List<SubjectAttendance>> call() async {
-    return await repository.getAttendanceSummary();
+  Future<List<SubjectAttendance>> call({String? studentId}) async {
+    return await repository.getAttendanceSummary(studentId: studentId);
   }
 }

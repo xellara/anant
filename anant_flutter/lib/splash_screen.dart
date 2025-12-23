@@ -116,6 +116,8 @@ class CustomCircularProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AnantProgressIndicator();
+    return const AnantProgressIndicator(
+      showBackground: true, // Show background on splash screen
+    );
   }
 }

@@ -6,6 +6,8 @@ import 'package:anant_flutter/splash_screen.dart';
 import 'package:anant_flutter/time_table_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:anant_flutter/features/role_dashboards/role_dashboards.dart';
+import 'package:anant_flutter/features/legal/terms_of_use_page.dart';
+import 'package:anant_flutter/features/legal/privacy_policy_page.dart';
 
 class AppRoutes {
   static const String home= "/home";
@@ -27,6 +29,10 @@ class AppRoutes {
   static const String transportHome = "/transport-home";
   static const String hostelHome = "/hostel-home";
   static const String parentHome = "/parent-home";
+  
+  // Legal Routes
+  static const String termsOfUse = "/terms-of-use";
+  static const String privacyPolicy = "/privacy-policy";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -65,6 +71,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const HostelDashboard());
       case parentHome:
         return MaterialPageRoute(builder: (_) => const ParentDashboard());
+      case termsOfUse:
+        return MaterialPageRoute(builder: (_) => const TermsOfUsePage());
+      case privacyPolicy:
+        return MaterialPageRoute(builder: (_) => const PrivacyPolicyPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
