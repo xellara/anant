@@ -1617,6 +1617,134 @@ class _PermissionEndpoint {
       }
     });
   }
+
+  _i3.Future<List<String>> getEffectivePermissions(
+    _i1.TestSessionBuilder sessionBuilder,
+    int targetUserId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'permission',
+        method: 'getEffectivePermissions',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'permission',
+          methodName: 'getEffectivePermissions',
+          parameters: _i1.testObjectToJson({'targetUserId': targetUserId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<String>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> grantUserPermission(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+    String permissionSlug,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'permission',
+        method: 'grantUserPermission',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'permission',
+          methodName: 'grantUserPermission',
+          parameters: _i1.testObjectToJson({
+            'userId': userId,
+            'permissionSlug': permissionSlug,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> revokeUserPermission(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+    String permissionSlug,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'permission',
+        method: 'revokeUserPermission',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'permission',
+          methodName: 'revokeUserPermission',
+          parameters: _i1.testObjectToJson({
+            'userId': userId,
+            'permissionSlug': permissionSlug,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> resetUserPermission(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+    String permissionSlug,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'permission',
+        method: 'resetUserPermission',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'permission',
+          methodName: 'resetUserPermission',
+          parameters: _i1.testObjectToJson({
+            'userId': userId,
+            'permissionSlug': permissionSlug,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _ReportEndpoint {

@@ -1,4 +1,5 @@
 import 'package:anant_client/anant_client.dart';
+import 'package:anant_flutter/features/admin/pages/bulk_import_users_page.dart';
 import 'package:anant_flutter/common/loading_indicator.dart';
 import 'package:anant_flutter/config/role_theme.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
@@ -153,6 +154,16 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
             gradient: Theme.of(context).extension<AppGradients>()?.primaryGradient,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.upload_file, color: Colors.white),
+            tooltip: 'Bulk Import Users',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const BulkImportUsersPage()));
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       floatingActionButton: _isLoading ? null : FloatingActionButton.extended(
         onPressed: _showAddUserDialog,

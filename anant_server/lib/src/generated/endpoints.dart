@@ -1262,6 +1262,100 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['permission'] as _i10.PermissionEndpoint)
                   .initializeDefaultPermissions(session),
         ),
+        'getEffectivePermissions': _i1.MethodConnector(
+          name: 'getEffectivePermissions',
+          params: {
+            'targetUserId': _i1.ParameterDescription(
+              name: 'targetUserId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['permission'] as _i10.PermissionEndpoint)
+                  .getEffectivePermissions(
+            session,
+            params['targetUserId'],
+          ),
+        ),
+        'grantUserPermission': _i1.MethodConnector(
+          name: 'grantUserPermission',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'permissionSlug': _i1.ParameterDescription(
+              name: 'permissionSlug',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['permission'] as _i10.PermissionEndpoint)
+                  .grantUserPermission(
+            session,
+            params['userId'],
+            params['permissionSlug'],
+          ),
+        ),
+        'revokeUserPermission': _i1.MethodConnector(
+          name: 'revokeUserPermission',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'permissionSlug': _i1.ParameterDescription(
+              name: 'permissionSlug',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['permission'] as _i10.PermissionEndpoint)
+                  .revokeUserPermission(
+            session,
+            params['userId'],
+            params['permissionSlug'],
+          ),
+        ),
+        'resetUserPermission': _i1.MethodConnector(
+          name: 'resetUserPermission',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'permissionSlug': _i1.ParameterDescription(
+              name: 'permissionSlug',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['permission'] as _i10.PermissionEndpoint)
+                  .resetUserPermission(
+            session,
+            params['userId'],
+            params['permissionSlug'],
+          ),
+        ),
       },
     );
     connectors['report'] = _i1.EndpointConnector(

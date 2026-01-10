@@ -2,6 +2,7 @@
 enum: UserRole
 serialized: byName   # Use name for serialization (recommended)
 values:
+  - anant           # Super Admin (Company Level)
   - admin           
   - teacher
   - student

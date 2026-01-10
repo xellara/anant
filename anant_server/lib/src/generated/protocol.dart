@@ -27,28 +27,29 @@ import 'auth/resource_permission.dart' as _i15;
 import 'auth/role.dart' as _i16;
 import 'auth/role_permission.dart' as _i17;
 import 'auth/user_credentials.dart' as _i18;
-import 'auth/user_role_assignment.dart' as _i19;
-import 'enrollement.dart' as _i20;
-import 'exam.dart' as _i21;
-import 'fee_record.dart' as _i22;
-import 'notification.dart' as _i23;
-import 'subject.dart' as _i24;
-import 'time_table_entry.dart' as _i25;
-import 'transaction/montly_fee_transaction.dart' as _i26;
-import 'user/user.dart' as _i27;
-import 'user/user_role.dart' as _i28;
-import 'package:anant_server/src/generated/announcement.dart' as _i29;
-import 'package:anant_server/src/generated/attendance/attendance.dart' as _i30;
-import 'package:anant_server/src/generated/user/user.dart' as _i31;
-import 'package:anant_server/src/generated/attendance/class.dart' as _i32;
-import 'package:anant_server/src/generated/attendance/course.dart' as _i33;
-import 'package:anant_server/src/generated/notification.dart' as _i34;
-import 'package:anant_server/src/generated/auth/organization.dart' as _i35;
-import 'package:anant_server/src/generated/auth/permission.dart' as _i36;
-import 'package:anant_server/src/generated/auth/role.dart' as _i37;
-import 'package:anant_server/src/generated/attendance/section.dart' as _i38;
+import 'auth/user_permission_override.dart' as _i19;
+import 'auth/user_role_assignment.dart' as _i20;
+import 'enrollement.dart' as _i21;
+import 'exam.dart' as _i22;
+import 'fee_record.dart' as _i23;
+import 'notification.dart' as _i24;
+import 'subject.dart' as _i25;
+import 'time_table_entry.dart' as _i26;
+import 'transaction/montly_fee_transaction.dart' as _i27;
+import 'user/user.dart' as _i28;
+import 'user/user_role.dart' as _i29;
+import 'package:anant_server/src/generated/announcement.dart' as _i30;
+import 'package:anant_server/src/generated/attendance/attendance.dart' as _i31;
+import 'package:anant_server/src/generated/user/user.dart' as _i32;
+import 'package:anant_server/src/generated/attendance/class.dart' as _i33;
+import 'package:anant_server/src/generated/attendance/course.dart' as _i34;
+import 'package:anant_server/src/generated/notification.dart' as _i35;
+import 'package:anant_server/src/generated/auth/organization.dart' as _i36;
+import 'package:anant_server/src/generated/auth/permission.dart' as _i37;
+import 'package:anant_server/src/generated/auth/role.dart' as _i38;
+import 'package:anant_server/src/generated/attendance/section.dart' as _i39;
 import 'package:anant_server/src/generated/transaction/montly_fee_transaction.dart'
-    as _i39;
+    as _i40;
 export 'announcement.dart';
 export 'attendance/attendance.dart';
 export 'attendance/class.dart';
@@ -64,6 +65,7 @@ export 'auth/resource_permission.dart';
 export 'auth/role.dart';
 export 'auth/role_permission.dart';
 export 'auth/user_credentials.dart';
+export 'auth/user_permission_override.dart';
 export 'auth/user_role_assignment.dart';
 export 'enrollement.dart';
 export 'exam.dart';
@@ -2618,6 +2620,95 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
+      name: 'user_permission_override',
+      dartName: 'UserPermissionOverride',
+      schema: 'public',
+      module: 'anant',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault:
+              'nextval(\'user_permission_override_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'permissionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isGranted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_permission_override_fk_0',
+          columns: ['userId'],
+          referenceTable: 'user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_permission_override_fk_1',
+          columns: ['permissionId'],
+          referenceTable: 'permission',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'user_permission_override_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_perm_override_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'permissionId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
       name: 'user_role_assignment',
       dartName: 'UserRoleAssignment',
       schema: 'public',
@@ -2786,35 +2877,38 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i18.UserCredentials) {
       return _i18.UserCredentials.fromJson(data) as T;
     }
-    if (t == _i19.UserRoleAssignment) {
-      return _i19.UserRoleAssignment.fromJson(data) as T;
+    if (t == _i19.UserPermissionOverride) {
+      return _i19.UserPermissionOverride.fromJson(data) as T;
     }
-    if (t == _i20.Enrollment) {
-      return _i20.Enrollment.fromJson(data) as T;
+    if (t == _i20.UserRoleAssignment) {
+      return _i20.UserRoleAssignment.fromJson(data) as T;
     }
-    if (t == _i21.Exam) {
-      return _i21.Exam.fromJson(data) as T;
+    if (t == _i21.Enrollment) {
+      return _i21.Enrollment.fromJson(data) as T;
     }
-    if (t == _i22.FeeRecord) {
-      return _i22.FeeRecord.fromJson(data) as T;
+    if (t == _i22.Exam) {
+      return _i22.Exam.fromJson(data) as T;
     }
-    if (t == _i23.Notification) {
-      return _i23.Notification.fromJson(data) as T;
+    if (t == _i23.FeeRecord) {
+      return _i23.FeeRecord.fromJson(data) as T;
     }
-    if (t == _i24.Subject) {
-      return _i24.Subject.fromJson(data) as T;
+    if (t == _i24.Notification) {
+      return _i24.Notification.fromJson(data) as T;
     }
-    if (t == _i25.TimetableEntry) {
-      return _i25.TimetableEntry.fromJson(data) as T;
+    if (t == _i25.Subject) {
+      return _i25.Subject.fromJson(data) as T;
     }
-    if (t == _i26.MonthlyFeeTransaction) {
-      return _i26.MonthlyFeeTransaction.fromJson(data) as T;
+    if (t == _i26.TimetableEntry) {
+      return _i26.TimetableEntry.fromJson(data) as T;
     }
-    if (t == _i27.User) {
-      return _i27.User.fromJson(data) as T;
+    if (t == _i27.MonthlyFeeTransaction) {
+      return _i27.MonthlyFeeTransaction.fromJson(data) as T;
     }
-    if (t == _i28.UserRole) {
-      return _i28.UserRole.fromJson(data) as T;
+    if (t == _i28.User) {
+      return _i28.User.fromJson(data) as T;
+    }
+    if (t == _i29.UserRole) {
+      return _i29.UserRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.Announcement?>()) {
       return (data != null ? _i4.Announcement.fromJson(data) : null) as T;
@@ -2865,37 +2959,41 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i18.UserCredentials?>()) {
       return (data != null ? _i18.UserCredentials.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.UserRoleAssignment?>()) {
-      return (data != null ? _i19.UserRoleAssignment.fromJson(data) : null)
+    if (t == _i1.getType<_i19.UserPermissionOverride?>()) {
+      return (data != null ? _i19.UserPermissionOverride.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i20.Enrollment?>()) {
-      return (data != null ? _i20.Enrollment.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i21.Exam?>()) {
-      return (data != null ? _i21.Exam.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i22.FeeRecord?>()) {
-      return (data != null ? _i22.FeeRecord.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i23.Notification?>()) {
-      return (data != null ? _i23.Notification.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i24.Subject?>()) {
-      return (data != null ? _i24.Subject.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i25.TimetableEntry?>()) {
-      return (data != null ? _i25.TimetableEntry.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i26.MonthlyFeeTransaction?>()) {
-      return (data != null ? _i26.MonthlyFeeTransaction.fromJson(data) : null)
+    if (t == _i1.getType<_i20.UserRoleAssignment?>()) {
+      return (data != null ? _i20.UserRoleAssignment.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i27.User?>()) {
-      return (data != null ? _i27.User.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.Enrollment?>()) {
+      return (data != null ? _i21.Enrollment.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.UserRole?>()) {
-      return (data != null ? _i28.UserRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i22.Exam?>()) {
+      return (data != null ? _i22.Exam.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.FeeRecord?>()) {
+      return (data != null ? _i23.FeeRecord.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i24.Notification?>()) {
+      return (data != null ? _i24.Notification.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i25.Subject?>()) {
+      return (data != null ? _i25.Subject.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i26.TimetableEntry?>()) {
+      return (data != null ? _i26.TimetableEntry.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i27.MonthlyFeeTransaction?>()) {
+      return (data != null ? _i27.MonthlyFeeTransaction.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i28.User?>()) {
+      return (data != null ? _i28.User.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i29.UserRole?>()) {
+      return (data != null ? _i29.UserRole.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<Map<String, double>?>()) {
       return (data != null
@@ -2922,13 +3020,13 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i29.Announcement>) {
+    if (t == List<_i30.Announcement>) {
       return (data as List)
-          .map((e) => deserialize<_i29.Announcement>(e))
+          .map((e) => deserialize<_i30.Announcement>(e))
           .toList() as T;
     }
-    if (t == List<_i30.Attendance>) {
-      return (data as List).map((e) => deserialize<_i30.Attendance>(e)).toList()
+    if (t == List<_i31.Attendance>) {
+      return (data as List).map((e) => deserialize<_i31.Attendance>(e)).toList()
           as T;
     }
     if (t == Map<String, String>) {
@@ -2952,41 +3050,41 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<Map<String, dynamic>>(e))
           .toList() as T;
     }
-    if (t == List<_i31.User>) {
-      return (data as List).map((e) => deserialize<_i31.User>(e)).toList() as T;
+    if (t == List<_i32.User>) {
+      return (data as List).map((e) => deserialize<_i32.User>(e)).toList() as T;
     }
-    if (t == List<_i32.Classes>) {
-      return (data as List).map((e) => deserialize<_i32.Classes>(e)).toList()
+    if (t == List<_i33.Classes>) {
+      return (data as List).map((e) => deserialize<_i33.Classes>(e)).toList()
           as T;
     }
-    if (t == List<_i33.Course>) {
-      return (data as List).map((e) => deserialize<_i33.Course>(e)).toList()
+    if (t == List<_i34.Course>) {
+      return (data as List).map((e) => deserialize<_i34.Course>(e)).toList()
           as T;
     }
-    if (t == List<_i34.Notification>) {
+    if (t == List<_i35.Notification>) {
       return (data as List)
-          .map((e) => deserialize<_i34.Notification>(e))
+          .map((e) => deserialize<_i35.Notification>(e))
           .toList() as T;
     }
-    if (t == List<_i35.Organization>) {
+    if (t == List<_i36.Organization>) {
       return (data as List)
-          .map((e) => deserialize<_i35.Organization>(e))
+          .map((e) => deserialize<_i36.Organization>(e))
           .toList() as T;
     }
-    if (t == List<_i36.Permission>) {
-      return (data as List).map((e) => deserialize<_i36.Permission>(e)).toList()
+    if (t == List<_i37.Permission>) {
+      return (data as List).map((e) => deserialize<_i37.Permission>(e)).toList()
           as T;
     }
-    if (t == List<_i37.Role>) {
-      return (data as List).map((e) => deserialize<_i37.Role>(e)).toList() as T;
+    if (t == List<_i38.Role>) {
+      return (data as List).map((e) => deserialize<_i38.Role>(e)).toList() as T;
     }
-    if (t == List<_i38.Section>) {
-      return (data as List).map((e) => deserialize<_i38.Section>(e)).toList()
+    if (t == List<_i39.Section>) {
+      return (data as List).map((e) => deserialize<_i39.Section>(e)).toList()
           as T;
     }
-    if (t == List<_i39.MonthlyFeeTransaction>) {
+    if (t == List<_i40.MonthlyFeeTransaction>) {
       return (data as List)
-          .map((e) => deserialize<_i39.MonthlyFeeTransaction>(e))
+          .map((e) => deserialize<_i40.MonthlyFeeTransaction>(e))
           .toList() as T;
     }
     try {
@@ -3047,34 +3145,37 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i18.UserCredentials) {
       return 'UserCredentials';
     }
-    if (data is _i19.UserRoleAssignment) {
+    if (data is _i19.UserPermissionOverride) {
+      return 'UserPermissionOverride';
+    }
+    if (data is _i20.UserRoleAssignment) {
       return 'UserRoleAssignment';
     }
-    if (data is _i20.Enrollment) {
+    if (data is _i21.Enrollment) {
       return 'Enrollment';
     }
-    if (data is _i21.Exam) {
+    if (data is _i22.Exam) {
       return 'Exam';
     }
-    if (data is _i22.FeeRecord) {
+    if (data is _i23.FeeRecord) {
       return 'FeeRecord';
     }
-    if (data is _i23.Notification) {
+    if (data is _i24.Notification) {
       return 'Notification';
     }
-    if (data is _i24.Subject) {
+    if (data is _i25.Subject) {
       return 'Subject';
     }
-    if (data is _i25.TimetableEntry) {
+    if (data is _i26.TimetableEntry) {
       return 'TimetableEntry';
     }
-    if (data is _i26.MonthlyFeeTransaction) {
+    if (data is _i27.MonthlyFeeTransaction) {
       return 'MonthlyFeeTransaction';
     }
-    if (data is _i27.User) {
+    if (data is _i28.User) {
       return 'User';
     }
-    if (data is _i28.UserRole) {
+    if (data is _i29.UserRole) {
       return 'UserRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -3139,35 +3240,38 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'UserCredentials') {
       return deserialize<_i18.UserCredentials>(data['data']);
     }
+    if (dataClassName == 'UserPermissionOverride') {
+      return deserialize<_i19.UserPermissionOverride>(data['data']);
+    }
     if (dataClassName == 'UserRoleAssignment') {
-      return deserialize<_i19.UserRoleAssignment>(data['data']);
+      return deserialize<_i20.UserRoleAssignment>(data['data']);
     }
     if (dataClassName == 'Enrollment') {
-      return deserialize<_i20.Enrollment>(data['data']);
+      return deserialize<_i21.Enrollment>(data['data']);
     }
     if (dataClassName == 'Exam') {
-      return deserialize<_i21.Exam>(data['data']);
+      return deserialize<_i22.Exam>(data['data']);
     }
     if (dataClassName == 'FeeRecord') {
-      return deserialize<_i22.FeeRecord>(data['data']);
+      return deserialize<_i23.FeeRecord>(data['data']);
     }
     if (dataClassName == 'Notification') {
-      return deserialize<_i23.Notification>(data['data']);
+      return deserialize<_i24.Notification>(data['data']);
     }
     if (dataClassName == 'Subject') {
-      return deserialize<_i24.Subject>(data['data']);
+      return deserialize<_i25.Subject>(data['data']);
     }
     if (dataClassName == 'TimetableEntry') {
-      return deserialize<_i25.TimetableEntry>(data['data']);
+      return deserialize<_i26.TimetableEntry>(data['data']);
     }
     if (dataClassName == 'MonthlyFeeTransaction') {
-      return deserialize<_i26.MonthlyFeeTransaction>(data['data']);
+      return deserialize<_i27.MonthlyFeeTransaction>(data['data']);
     }
     if (dataClassName == 'User') {
-      return deserialize<_i27.User>(data['data']);
+      return deserialize<_i28.User>(data['data']);
     }
     if (dataClassName == 'UserRole') {
-      return deserialize<_i28.UserRole>(data['data']);
+      return deserialize<_i29.UserRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -3225,24 +3329,26 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i17.RolePermission.t;
       case _i18.UserCredentials:
         return _i18.UserCredentials.t;
-      case _i19.UserRoleAssignment:
-        return _i19.UserRoleAssignment.t;
-      case _i20.Enrollment:
-        return _i20.Enrollment.t;
-      case _i21.Exam:
-        return _i21.Exam.t;
-      case _i22.FeeRecord:
-        return _i22.FeeRecord.t;
-      case _i23.Notification:
-        return _i23.Notification.t;
-      case _i24.Subject:
-        return _i24.Subject.t;
-      case _i25.TimetableEntry:
-        return _i25.TimetableEntry.t;
-      case _i26.MonthlyFeeTransaction:
-        return _i26.MonthlyFeeTransaction.t;
-      case _i27.User:
-        return _i27.User.t;
+      case _i19.UserPermissionOverride:
+        return _i19.UserPermissionOverride.t;
+      case _i20.UserRoleAssignment:
+        return _i20.UserRoleAssignment.t;
+      case _i21.Enrollment:
+        return _i21.Enrollment.t;
+      case _i22.Exam:
+        return _i22.Exam.t;
+      case _i23.FeeRecord:
+        return _i23.FeeRecord.t;
+      case _i24.Notification:
+        return _i24.Notification.t;
+      case _i25.Subject:
+        return _i25.Subject.t;
+      case _i26.TimetableEntry:
+        return _i26.TimetableEntry.t;
+      case _i27.MonthlyFeeTransaction:
+        return _i27.MonthlyFeeTransaction.t;
+      case _i28.User:
+        return _i28.User.t;
     }
     return null;
   }

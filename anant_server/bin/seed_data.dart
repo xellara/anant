@@ -153,6 +153,7 @@ void main(List<String> args) async {
     }
 
     // Execute creation for all roles
+    await createUsersForRole(UserRole.anant, 1, 'anant'); // System Super Admin
     await createUsersForRole(UserRole.admin, 2, 'admin');
     await createUsersForRole(UserRole.principal, 2, 'principal');
     await createUsersForRole(UserRole.teacher, 2, 'teacher'); // Request said 2 members of each role (except student)

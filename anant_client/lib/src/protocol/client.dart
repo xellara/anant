@@ -572,6 +572,57 @@ class EndpointPermission extends _i1.EndpointRef {
         'initializeDefaultPermissions',
         {},
       );
+
+  /// Get effective list of permission slugs for a given user.
+  /// Considers: Org Settings -> Role Permissions -> User Overrides.
+  _i2.Future<List<String>> getEffectivePermissions(int targetUserId) =>
+      caller.callServerEndpoint<List<String>>(
+        'permission',
+        'getEffectivePermissions',
+        {'targetUserId': targetUserId},
+      );
+
+  /// Grant a specific permission to a user (Override).
+  _i2.Future<bool> grantUserPermission(
+    int userId,
+    String permissionSlug,
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'permission',
+        'grantUserPermission',
+        {
+          'userId': userId,
+          'permissionSlug': permissionSlug,
+        },
+      );
+
+  /// Revoke a specific permission from a user (Override).
+  _i2.Future<bool> revokeUserPermission(
+    int userId,
+    String permissionSlug,
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'permission',
+        'revokeUserPermission',
+        {
+          'userId': userId,
+          'permissionSlug': permissionSlug,
+        },
+      );
+
+  /// Reset a user's permission override (Back to Role default).
+  _i2.Future<bool> resetUserPermission(
+    int userId,
+    String permissionSlug,
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'permission',
+        'resetUserPermission',
+        {
+          'userId': userId,
+          'permissionSlug': permissionSlug,
+        },
+      );
 }
 
 /// {@category Endpoint}

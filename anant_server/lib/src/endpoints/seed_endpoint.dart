@@ -193,6 +193,7 @@ class SeedEndpoint extends Endpoint {
     }
 
     await create(UserRole.admin, 2, 'admin');
+    await create(UserRole.anant, 1, 'anant'); // Seeding Super Admin
     await create(UserRole.principal, 2, 'principal');
     await create(UserRole.teacher, 10, 'teacher');
     await create(UserRole.student, 35, 'student');

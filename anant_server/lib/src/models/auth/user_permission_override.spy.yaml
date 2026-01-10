@@ -1,0 +1,11 @@
+class: UserPermissionOverride
+table: user_permission_override
+fields:
+  user: User?, relation
+  permission: Permission?, relation
+  isGranted: bool 
+  # If true, specific grant. If false, specific deny (overrides role).
+indexes:
+  user_perm_override_idx:
+    fields: userId, permissionId
+    unique: true

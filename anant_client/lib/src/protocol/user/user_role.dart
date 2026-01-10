@@ -13,6 +13,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 /// Enum for user roles (RBAC)
 enum UserRole implements _i1.SerializableModel {
+  anant,
   admin,
   teacher,
   student,
@@ -26,6 +27,8 @@ enum UserRole implements _i1.SerializableModel {
 
   static UserRole fromJson(String name) {
     switch (name) {
+      case 'anant':
+        return UserRole.anant;
       case 'admin':
         return UserRole.admin;
       case 'teacher':

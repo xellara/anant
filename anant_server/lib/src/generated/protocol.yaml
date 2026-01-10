@@ -47,6 +47,10 @@ permission:
   - updatePermission:
   - deletePermission:
   - initializeDefaultPermissions:
+  - getEffectivePermissions:
+  - grantUserPermission:
+  - revokeUserPermission:
+  - resetUserPermission:
 report:
   - getRevenueReport:
   - getAttendanceReport:
