@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../user/user.dart' as _i2;
 import '../auth/permission.dart' as _i3;
+import 'package:anant_client/src/protocol/protocol.dart' as _i4;
 
 abstract class UserPermissionOverride implements _i1.SerializableModel {
   UserPermissionOverride._({
@@ -33,19 +35,20 @@ abstract class UserPermissionOverride implements _i1.SerializableModel {
   }) = _UserPermissionOverrideImpl;
 
   factory UserPermissionOverride.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return UserPermissionOverride(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       permissionId: jsonSerialization['permissionId'] as int,
       permission: jsonSerialization['permission'] == null
           ? null
-          : _i3.Permission.fromJson(
-              (jsonSerialization['permission'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i3.Permission>(
+              jsonSerialization['permission'],
+            ),
       isGranted: jsonSerialization['isGranted'] as bool,
     );
   }
@@ -79,6 +82,7 @@ abstract class UserPermissionOverride implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'UserPermissionOverride',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -105,13 +109,13 @@ class _UserPermissionOverrideImpl extends UserPermissionOverride {
     _i3.Permission? permission,
     required bool isGranted,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          permissionId: permissionId,
-          permission: permission,
-          isGranted: isGranted,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         permissionId: permissionId,
+         permission: permission,
+         isGranted: isGranted,
+       );
 
   /// Returns a shallow copy of this [UserPermissionOverride]
   /// with some or all fields replaced by the given arguments.

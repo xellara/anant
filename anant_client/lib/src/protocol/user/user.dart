@@ -7,10 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../user/user_role.dart' as _i2;
+import 'package:anant_client/src/protocol/protocol.dart' as _i3;
 
 /// User
 abstract class User implements _i1.SerializableModel {
@@ -46,10 +48,10 @@ abstract class User implements _i1.SerializableModel {
     bool? isPremiumUser,
     this.createdAt,
     this.updatedAt,
-  })  : country = country ?? 'India',
-        isPasswordCreated = isPasswordCreated ?? false,
-        isActive = isActive ?? false,
-        isPremiumUser = isPremiumUser ?? false;
+  }) : country = country ?? 'India',
+       isPasswordCreated = isPasswordCreated ?? false,
+       isActive = isActive ?? false,
+       isPremiumUser = isPremiumUser ?? false;
 
   factory User({
     int? id,
@@ -107,20 +109,24 @@ abstract class User implements _i1.SerializableModel {
       address: jsonSerialization['address'] as String?,
       city: jsonSerialization['city'] as String?,
       state: jsonSerialization['state'] as String?,
-      country: jsonSerialization['country'] as String,
+      country: jsonSerialization['country'] as String?,
       pincode: jsonSerialization['pincode'] as String?,
       parentMobileNumber: jsonSerialization['parentMobileNumber'] as String?,
       parentEmail: jsonSerialization['parentEmail'] as String?,
-      subjectTeaching: (jsonSerialization['subjectTeaching'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      subjectTeaching: jsonSerialization['subjectTeaching'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['subjectTeaching'],
+            ),
       classAndSectionTeaching:
-          (jsonSerialization['classAndSectionTeaching'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      isPasswordCreated: jsonSerialization['isPasswordCreated'] as bool,
-      isActive: jsonSerialization['isActive'] as bool,
-      isPremiumUser: jsonSerialization['isPremiumUser'] as bool,
+          jsonSerialization['classAndSectionTeaching'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['classAndSectionTeaching'],
+            ),
+      isPasswordCreated: jsonSerialization['isPasswordCreated'] as bool?,
+      isActive: jsonSerialization['isActive'] as bool?,
+      isPremiumUser: jsonSerialization['isPremiumUser'] as bool?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -234,6 +240,7 @@ abstract class User implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'User',
       if (id != null) 'id': id,
       if (uid != null) 'uid': uid,
       if (anantId != null) 'anantId': anantId,
@@ -311,38 +318,38 @@ class _UserImpl extends User {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          uid: uid,
-          anantId: anantId,
-          email: email,
-          mobileNumber: mobileNumber,
-          role: role,
-          fullName: fullName,
-          profileImageUrl: profileImageUrl,
-          organizationName: organizationName,
-          className: className,
-          sectionName: sectionName,
-          rollNumber: rollNumber,
-          admissionNumber: admissionNumber,
-          gender: gender,
-          dob: dob,
-          bloodGroup: bloodGroup,
-          aadharNumber: aadharNumber,
-          address: address,
-          city: city,
-          state: state,
-          country: country,
-          pincode: pincode,
-          parentMobileNumber: parentMobileNumber,
-          parentEmail: parentEmail,
-          subjectTeaching: subjectTeaching,
-          classAndSectionTeaching: classAndSectionTeaching,
-          isPasswordCreated: isPasswordCreated,
-          isActive: isActive,
-          isPremiumUser: isPremiumUser,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         uid: uid,
+         anantId: anantId,
+         email: email,
+         mobileNumber: mobileNumber,
+         role: role,
+         fullName: fullName,
+         profileImageUrl: profileImageUrl,
+         organizationName: organizationName,
+         className: className,
+         sectionName: sectionName,
+         rollNumber: rollNumber,
+         admissionNumber: admissionNumber,
+         gender: gender,
+         dob: dob,
+         bloodGroup: bloodGroup,
+         aadharNumber: aadharNumber,
+         address: address,
+         city: city,
+         state: state,
+         country: country,
+         pincode: pincode,
+         parentMobileNumber: parentMobileNumber,
+         parentEmail: parentEmail,
+         subjectTeaching: subjectTeaching,
+         classAndSectionTeaching: classAndSectionTeaching,
+         isPasswordCreated: isPasswordCreated,
+         isActive: isActive,
+         isPremiumUser: isPremiumUser,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [User]
   /// with some or all fields replaced by the given arguments.
@@ -389,14 +396,16 @@ class _UserImpl extends User {
       mobileNumber: mobileNumber is String? ? mobileNumber : this.mobileNumber,
       role: role ?? this.role,
       fullName: fullName is String? ? fullName : this.fullName,
-      profileImageUrl:
-          profileImageUrl is String? ? profileImageUrl : this.profileImageUrl,
+      profileImageUrl: profileImageUrl is String?
+          ? profileImageUrl
+          : this.profileImageUrl,
       organizationName: organizationName ?? this.organizationName,
       className: className is String? ? className : this.className,
       sectionName: sectionName is String? ? sectionName : this.sectionName,
       rollNumber: rollNumber is String? ? rollNumber : this.rollNumber,
-      admissionNumber:
-          admissionNumber is String? ? admissionNumber : this.admissionNumber,
+      admissionNumber: admissionNumber is String?
+          ? admissionNumber
+          : this.admissionNumber,
       gender: gender is String? ? gender : this.gender,
       dob: dob is String? ? dob : this.dob,
       bloodGroup: bloodGroup is String? ? bloodGroup : this.bloodGroup,

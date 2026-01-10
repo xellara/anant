@@ -5,11 +5,8 @@ class SettingsEndpoint extends Endpoint {
   
   /// Get settings for the user's organization.
   Future<OrganizationSettings?> getSettings(Session session) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
-      return null;
-    }
-    final userId = authInfo.userId;
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) return null;
 
     // Fetch the full User record to get the organizationName
     final fullUser = await User.db.findById(session, userId);
@@ -25,11 +22,8 @@ class SettingsEndpoint extends Endpoint {
 
   /// Update settings (Admin/Principal only)
   Future<void> updateSettings(Session session, List<String> enabledModules) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
-      throw Exception('Not authenticated');
-    }
-    final userId = authInfo.userId;
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) throw Exception('Not authenticated');
     
     final fullUser = await User.db.findById(session, userId);
     if (fullUser == null) throw Exception('User not found');

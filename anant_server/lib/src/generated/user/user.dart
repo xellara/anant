@@ -7,10 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../user/user_role.dart' as _i2;
+import 'package:anant_server/src/generated/protocol.dart' as _i3;
 
 /// User
 abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -46,10 +48,10 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     bool? isPremiumUser,
     this.createdAt,
     this.updatedAt,
-  })  : country = country ?? 'India',
-        isPasswordCreated = isPasswordCreated ?? false,
-        isActive = isActive ?? false,
-        isPremiumUser = isPremiumUser ?? false;
+  }) : country = country ?? 'India',
+       isPasswordCreated = isPasswordCreated ?? false,
+       isActive = isActive ?? false,
+       isPremiumUser = isPremiumUser ?? false;
 
   factory User({
     int? id,
@@ -107,20 +109,24 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       address: jsonSerialization['address'] as String?,
       city: jsonSerialization['city'] as String?,
       state: jsonSerialization['state'] as String?,
-      country: jsonSerialization['country'] as String,
+      country: jsonSerialization['country'] as String?,
       pincode: jsonSerialization['pincode'] as String?,
       parentMobileNumber: jsonSerialization['parentMobileNumber'] as String?,
       parentEmail: jsonSerialization['parentEmail'] as String?,
-      subjectTeaching: (jsonSerialization['subjectTeaching'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      subjectTeaching: jsonSerialization['subjectTeaching'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['subjectTeaching'],
+            ),
       classAndSectionTeaching:
-          (jsonSerialization['classAndSectionTeaching'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      isPasswordCreated: jsonSerialization['isPasswordCreated'] as bool,
-      isActive: jsonSerialization['isActive'] as bool,
-      isPremiumUser: jsonSerialization['isPremiumUser'] as bool,
+          jsonSerialization['classAndSectionTeaching'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['classAndSectionTeaching'],
+            ),
+      isPasswordCreated: jsonSerialization['isPasswordCreated'] as bool?,
+      isActive: jsonSerialization['isActive'] as bool?,
+      isPremiumUser: jsonSerialization['isPremiumUser'] as bool?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -239,6 +245,7 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'User',
       if (id != null) 'id': id,
       if (uid != null) 'uid': uid,
       if (anantId != null) 'anantId': anantId,
@@ -277,6 +284,7 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'User',
       if (id != null) 'id': id,
       if (uid != null) 'uid': uid,
       if (anantId != null) 'anantId': anantId,
@@ -378,38 +386,38 @@ class _UserImpl extends User {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          uid: uid,
-          anantId: anantId,
-          email: email,
-          mobileNumber: mobileNumber,
-          role: role,
-          fullName: fullName,
-          profileImageUrl: profileImageUrl,
-          organizationName: organizationName,
-          className: className,
-          sectionName: sectionName,
-          rollNumber: rollNumber,
-          admissionNumber: admissionNumber,
-          gender: gender,
-          dob: dob,
-          bloodGroup: bloodGroup,
-          aadharNumber: aadharNumber,
-          address: address,
-          city: city,
-          state: state,
-          country: country,
-          pincode: pincode,
-          parentMobileNumber: parentMobileNumber,
-          parentEmail: parentEmail,
-          subjectTeaching: subjectTeaching,
-          classAndSectionTeaching: classAndSectionTeaching,
-          isPasswordCreated: isPasswordCreated,
-          isActive: isActive,
-          isPremiumUser: isPremiumUser,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         uid: uid,
+         anantId: anantId,
+         email: email,
+         mobileNumber: mobileNumber,
+         role: role,
+         fullName: fullName,
+         profileImageUrl: profileImageUrl,
+         organizationName: organizationName,
+         className: className,
+         sectionName: sectionName,
+         rollNumber: rollNumber,
+         admissionNumber: admissionNumber,
+         gender: gender,
+         dob: dob,
+         bloodGroup: bloodGroup,
+         aadharNumber: aadharNumber,
+         address: address,
+         city: city,
+         state: state,
+         country: country,
+         pincode: pincode,
+         parentMobileNumber: parentMobileNumber,
+         parentEmail: parentEmail,
+         subjectTeaching: subjectTeaching,
+         classAndSectionTeaching: classAndSectionTeaching,
+         isPasswordCreated: isPasswordCreated,
+         isActive: isActive,
+         isPremiumUser: isPremiumUser,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [User]
   /// with some or all fields replaced by the given arguments.
@@ -456,14 +464,16 @@ class _UserImpl extends User {
       mobileNumber: mobileNumber is String? ? mobileNumber : this.mobileNumber,
       role: role ?? this.role,
       fullName: fullName is String? ? fullName : this.fullName,
-      profileImageUrl:
-          profileImageUrl is String? ? profileImageUrl : this.profileImageUrl,
+      profileImageUrl: profileImageUrl is String?
+          ? profileImageUrl
+          : this.profileImageUrl,
       organizationName: organizationName ?? this.organizationName,
       className: className is String? ? className : this.className,
       sectionName: sectionName is String? ? sectionName : this.sectionName,
       rollNumber: rollNumber is String? ? rollNumber : this.rollNumber,
-      admissionNumber:
-          admissionNumber is String? ? admissionNumber : this.admissionNumber,
+      admissionNumber: admissionNumber is String?
+          ? admissionNumber
+          : this.admissionNumber,
       gender: gender is String? ? gender : this.gender,
       dob: dob is String? ? dob : this.dob,
       bloodGroup: bloodGroup is String? ? bloodGroup : this.bloodGroup,
@@ -492,8 +502,176 @@ class _UserImpl extends User {
   }
 }
 
+class UserUpdateTable extends _i1.UpdateTable<UserTable> {
+  UserUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> uid(String? value) => _i1.ColumnValue(
+    table.uid,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> anantId(String? value) => _i1.ColumnValue(
+    table.anantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> mobileNumber(String? value) =>
+      _i1.ColumnValue(
+        table.mobileNumber,
+        value,
+      );
+
+  _i1.ColumnValue<_i2.UserRole, _i2.UserRole> role(_i2.UserRole value) =>
+      _i1.ColumnValue(
+        table.role,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> fullName(String? value) => _i1.ColumnValue(
+    table.fullName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> profileImageUrl(String? value) =>
+      _i1.ColumnValue(
+        table.profileImageUrl,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> organizationName(String value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> className(String? value) => _i1.ColumnValue(
+    table.className,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> sectionName(String? value) => _i1.ColumnValue(
+    table.sectionName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> rollNumber(String? value) => _i1.ColumnValue(
+    table.rollNumber,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> admissionNumber(String? value) =>
+      _i1.ColumnValue(
+        table.admissionNumber,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> gender(String? value) => _i1.ColumnValue(
+    table.gender,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> dob(String? value) => _i1.ColumnValue(
+    table.dob,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> bloodGroup(String? value) => _i1.ColumnValue(
+    table.bloodGroup,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> aadharNumber(String? value) =>
+      _i1.ColumnValue(
+        table.aadharNumber,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> address(String? value) => _i1.ColumnValue(
+    table.address,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> city(String? value) => _i1.ColumnValue(
+    table.city,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> state(String? value) => _i1.ColumnValue(
+    table.state,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> country(String value) => _i1.ColumnValue(
+    table.country,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> pincode(String? value) => _i1.ColumnValue(
+    table.pincode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> parentMobileNumber(String? value) =>
+      _i1.ColumnValue(
+        table.parentMobileNumber,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> parentEmail(String? value) => _i1.ColumnValue(
+    table.parentEmail,
+    value,
+  );
+
+  _i1.ColumnValue<List<String>, List<String>> subjectTeaching(
+    List<String>? value,
+  ) => _i1.ColumnValue(
+    table.subjectTeaching,
+    value,
+  );
+
+  _i1.ColumnValue<List<String>, List<String>> classAndSectionTeaching(
+    List<String>? value,
+  ) => _i1.ColumnValue(
+    table.classAndSectionTeaching,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isPasswordCreated(bool value) => _i1.ColumnValue(
+    table.isPasswordCreated,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isPremiumUser(bool value) => _i1.ColumnValue(
+    table.isPremiumUser,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+}
+
 class UserTable extends _i1.Table<int?> {
   UserTable({super.tableRelation}) : super(tableName: 'user') {
+    updateTable = UserUpdateTable(this);
     uid = _i1.ColumnString(
       'uid',
       this,
@@ -588,11 +766,11 @@ class UserTable extends _i1.Table<int?> {
       'parentEmail',
       this,
     );
-    subjectTeaching = _i1.ColumnSerializable(
+    subjectTeaching = _i1.ColumnSerializable<List<String>>(
       'subjectTeaching',
       this,
     );
-    classAndSectionTeaching = _i1.ColumnSerializable(
+    classAndSectionTeaching = _i1.ColumnSerializable<List<String>>(
       'classAndSectionTeaching',
       this,
     );
@@ -620,6 +798,8 @@ class UserTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final UserUpdateTable updateTable;
 
   late final _i1.ColumnString uid;
 
@@ -667,9 +847,9 @@ class UserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString parentEmail;
 
-  late final _i1.ColumnSerializable subjectTeaching;
+  late final _i1.ColumnSerializable<List<String>> subjectTeaching;
 
-  late final _i1.ColumnSerializable classAndSectionTeaching;
+  late final _i1.ColumnSerializable<List<String>> classAndSectionTeaching;
 
   late final _i1.ColumnBool isPasswordCreated;
 
@@ -683,38 +863,38 @@ class UserTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        uid,
-        anantId,
-        email,
-        mobileNumber,
-        role,
-        fullName,
-        profileImageUrl,
-        organizationName,
-        className,
-        sectionName,
-        rollNumber,
-        admissionNumber,
-        gender,
-        dob,
-        bloodGroup,
-        aadharNumber,
-        address,
-        city,
-        state,
-        country,
-        pincode,
-        parentMobileNumber,
-        parentEmail,
-        subjectTeaching,
-        classAndSectionTeaching,
-        isPasswordCreated,
-        isActive,
-        isPremiumUser,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    uid,
+    anantId,
+    email,
+    mobileNumber,
+    role,
+    fullName,
+    profileImageUrl,
+    organizationName,
+    className,
+    sectionName,
+    rollNumber,
+    admissionNumber,
+    gender,
+    dob,
+    bloodGroup,
+    aadharNumber,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    parentMobileNumber,
+    parentEmail,
+    subjectTeaching,
+    classAndSectionTeaching,
+    isPasswordCreated,
+    isActive,
+    isPremiumUser,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 class UserInclude extends _i1.IncludeObject {
@@ -902,6 +1082,46 @@ class UserRepository {
     return session.db.updateRow<User>(
       row,
       columns: columns?.call(User.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [User] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<User?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<UserUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<User>(
+      id,
+      columnValues: columnValues(User.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [User]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<User>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<UserUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<UserTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<UserTable>? orderBy,
+    _i1.OrderByListBuilder<UserTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<User>(
+      columnValues: columnValues(User.t.updateTable),
+      where: where(User.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(User.t),
+      orderByList: orderByList?.call(User.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

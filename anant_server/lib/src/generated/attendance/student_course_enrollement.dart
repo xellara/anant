@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -31,14 +32,16 @@ abstract class StudentCourseEnrollment
   }) = _StudentCourseEnrollmentImpl;
 
   factory StudentCourseEnrollment.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StudentCourseEnrollment(
       id: jsonSerialization['id'] as int?,
       studentAnantId: jsonSerialization['studentAnantId'] as String,
       courseName: jsonSerialization['courseName'] as String,
       organizationId: jsonSerialization['organizationId'] as int?,
-      enrolledOn:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['enrolledOn']),
+      enrolledOn: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['enrolledOn'],
+      ),
     );
   }
 
@@ -73,6 +76,7 @@ abstract class StudentCourseEnrollment
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StudentCourseEnrollment',
       if (id != null) 'id': id,
       'studentAnantId': studentAnantId,
       'courseName': courseName,
@@ -84,6 +88,7 @@ abstract class StudentCourseEnrollment
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StudentCourseEnrollment',
       if (id != null) 'id': id,
       'studentAnantId': studentAnantId,
       'courseName': courseName,
@@ -132,12 +137,12 @@ class _StudentCourseEnrollmentImpl extends StudentCourseEnrollment {
     int? organizationId,
     required DateTime enrolledOn,
   }) : super._(
-          id: id,
-          studentAnantId: studentAnantId,
-          courseName: courseName,
-          organizationId: organizationId,
-          enrolledOn: enrolledOn,
-        );
+         id: id,
+         studentAnantId: studentAnantId,
+         courseName: courseName,
+         organizationId: organizationId,
+         enrolledOn: enrolledOn,
+       );
 
   /// Returns a shallow copy of this [StudentCourseEnrollment]
   /// with some or all fields replaced by the given arguments.
@@ -154,16 +159,45 @@ class _StudentCourseEnrollmentImpl extends StudentCourseEnrollment {
       id: id is int? ? id : this.id,
       studentAnantId: studentAnantId ?? this.studentAnantId,
       courseName: courseName ?? this.courseName,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       enrolledOn: enrolledOn ?? this.enrolledOn,
     );
   }
 }
 
+class StudentCourseEnrollmentUpdateTable
+    extends _i1.UpdateTable<StudentCourseEnrollmentTable> {
+  StudentCourseEnrollmentUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> studentAnantId(String value) =>
+      _i1.ColumnValue(
+        table.studentAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> courseName(String value) => _i1.ColumnValue(
+    table.courseName,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> organizationId(int? value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> enrolledOn(DateTime value) =>
+      _i1.ColumnValue(
+        table.enrolledOn,
+        value,
+      );
+}
+
 class StudentCourseEnrollmentTable extends _i1.Table<int?> {
   StudentCourseEnrollmentTable({super.tableRelation})
-      : super(tableName: 'student_course_enrollment') {
+    : super(tableName: 'student_course_enrollment') {
+    updateTable = StudentCourseEnrollmentUpdateTable(this);
     studentAnantId = _i1.ColumnString(
       'studentAnantId',
       this,
@@ -182,6 +216,8 @@ class StudentCourseEnrollmentTable extends _i1.Table<int?> {
     );
   }
 
+  late final StudentCourseEnrollmentUpdateTable updateTable;
+
   late final _i1.ColumnString studentAnantId;
 
   late final _i1.ColumnString courseName;
@@ -192,12 +228,12 @@ class StudentCourseEnrollmentTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        studentAnantId,
-        courseName,
-        organizationId,
-        enrolledOn,
-      ];
+    id,
+    studentAnantId,
+    courseName,
+    organizationId,
+    enrolledOn,
+  ];
 }
 
 class StudentCourseEnrollmentInclude extends _i1.IncludeObject {
@@ -385,6 +421,48 @@ class StudentCourseEnrollmentRepository {
     return session.db.updateRow<StudentCourseEnrollment>(
       row,
       columns: columns?.call(StudentCourseEnrollment.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [StudentCourseEnrollment] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StudentCourseEnrollment?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StudentCourseEnrollmentUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StudentCourseEnrollment>(
+      id,
+      columnValues: columnValues(StudentCourseEnrollment.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StudentCourseEnrollment]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<StudentCourseEnrollment>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StudentCourseEnrollmentUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<StudentCourseEnrollmentTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StudentCourseEnrollmentTable>? orderBy,
+    _i1.OrderByListBuilder<StudentCourseEnrollmentTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<StudentCourseEnrollment>(
+      columnValues: columnValues(StudentCourseEnrollment.t.updateTable),
+      where: where(StudentCourseEnrollment.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StudentCourseEnrollment.t),
+      orderByList: orderByList?.call(StudentCourseEnrollment.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

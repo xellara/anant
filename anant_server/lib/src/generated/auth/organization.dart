@@ -7,9 +7,11 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:anant_server/src/generated/protocol.dart' as _i2;
 
 /// Organization
 abstract class Organization
@@ -36,8 +38,8 @@ abstract class Organization
     this.admissionFee,
     this.gstNumber,
     this.panNumber,
-  })  : country = country ?? 'India',
-        isActive = isActive ?? true;
+  }) : country = country ?? 'India',
+       isActive = isActive ?? true;
 
   factory Organization({
     int? id,
@@ -73,25 +75,26 @@ abstract class Organization
       address: jsonSerialization['address'] as String?,
       city: jsonSerialization['city'] as String?,
       state: jsonSerialization['state'] as String?,
-      country: jsonSerialization['country'] as String,
+      country: jsonSerialization['country'] as String?,
       pincode: jsonSerialization['pincode'] as String?,
       contactNumber: jsonSerialization['contactNumber'] as String?,
       email: jsonSerialization['email'] as String?,
       website: jsonSerialization['website'] as String?,
       logoUrl: jsonSerialization['logoUrl'] as String?,
-      isActive: jsonSerialization['isActive'] as bool,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      monthlyFees:
-          (jsonSerialization['monthlyFees'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                (v as num).toDouble(),
-              )),
-      feeStartAndEndMonth: (jsonSerialization['feeStartAndEndMonth'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as String,
-              )),
+      isActive: jsonSerialization['isActive'] as bool?,
+      createdAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
+      monthlyFees: jsonSerialization['monthlyFees'] == null
+          ? null
+          : _i2.Protocol().deserialize<Map<String, double>>(
+              jsonSerialization['monthlyFees'],
+            ),
+      feeStartAndEndMonth: jsonSerialization['feeStartAndEndMonth'] == null
+          ? null
+          : _i2.Protocol().deserialize<Map<String, String>>(
+              jsonSerialization['feeStartAndEndMonth'],
+            ),
       admissionFee: (jsonSerialization['admissionFee'] as num?)?.toDouble(),
       gstNumber: jsonSerialization['gstNumber'] as String?,
       panNumber: jsonSerialization['panNumber'] as String?,
@@ -177,6 +180,7 @@ abstract class Organization
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Organization',
       if (id != null) 'id': id,
       'name': name,
       'organizationName': organizationName,
@@ -205,6 +209,7 @@ abstract class Organization
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Organization',
       if (id != null) 'id': id,
       'name': name,
       'organizationName': organizationName,
@@ -286,28 +291,28 @@ class _OrganizationImpl extends Organization {
     String? gstNumber,
     String? panNumber,
   }) : super._(
-          id: id,
-          name: name,
-          organizationName: organizationName,
-          code: code,
-          type: type,
-          address: address,
-          city: city,
-          state: state,
-          country: country,
-          pincode: pincode,
-          contactNumber: contactNumber,
-          email: email,
-          website: website,
-          logoUrl: logoUrl,
-          isActive: isActive,
-          createdAt: createdAt,
-          monthlyFees: monthlyFees,
-          feeStartAndEndMonth: feeStartAndEndMonth,
-          admissionFee: admissionFee,
-          gstNumber: gstNumber,
-          panNumber: panNumber,
-        );
+         id: id,
+         name: name,
+         organizationName: organizationName,
+         code: code,
+         type: type,
+         address: address,
+         city: city,
+         state: state,
+         country: country,
+         pincode: pincode,
+         contactNumber: contactNumber,
+         email: email,
+         website: website,
+         logoUrl: logoUrl,
+         isActive: isActive,
+         createdAt: createdAt,
+         monthlyFees: monthlyFees,
+         feeStartAndEndMonth: feeStartAndEndMonth,
+         admissionFee: admissionFee,
+         gstNumber: gstNumber,
+         panNumber: panNumber,
+       );
 
   /// Returns a shallow copy of this [Organization]
   /// with some or all fields replaced by the given arguments.
@@ -347,8 +352,9 @@ class _OrganizationImpl extends Organization {
       state: state is String? ? state : this.state,
       country: country ?? this.country,
       pincode: pincode is String? ? pincode : this.pincode,
-      contactNumber:
-          contactNumber is String? ? contactNumber : this.contactNumber,
+      contactNumber: contactNumber is String?
+          ? contactNumber
+          : this.contactNumber,
       email: email is String? ? email : this.email,
       website: website is String? ? website : this.website,
       logoUrl: logoUrl is String? ? logoUrl : this.logoUrl,
@@ -356,24 +362,26 @@ class _OrganizationImpl extends Organization {
       createdAt: createdAt ?? this.createdAt,
       monthlyFees: monthlyFees is Map<String, double>?
           ? monthlyFees
-          : this.monthlyFees?.map((
+          : this.monthlyFees?.map(
+              (
                 key0,
                 value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+              ) => MapEntry(
+                key0,
+                value0,
+              ),
+            ),
       feeStartAndEndMonth: feeStartAndEndMonth is Map<String, String>?
           ? feeStartAndEndMonth
-          : this.feeStartAndEndMonth?.map((
+          : this.feeStartAndEndMonth?.map(
+              (
                 key0,
                 value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+              ) => MapEntry(
+                key0,
+                value0,
+              ),
+            ),
       admissionFee: admissionFee is double? ? admissionFee : this.admissionFee,
       gstNumber: gstNumber is String? ? gstNumber : this.gstNumber,
       panNumber: panNumber is String? ? panNumber : this.panNumber,
@@ -381,8 +389,121 @@ class _OrganizationImpl extends Organization {
   }
 }
 
+class OrganizationUpdateTable extends _i1.UpdateTable<OrganizationTable> {
+  OrganizationUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> organizationName(String value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> code(String? value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> address(String? value) => _i1.ColumnValue(
+    table.address,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> city(String? value) => _i1.ColumnValue(
+    table.city,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> state(String? value) => _i1.ColumnValue(
+    table.state,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> country(String value) => _i1.ColumnValue(
+    table.country,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> pincode(String? value) => _i1.ColumnValue(
+    table.pincode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contactNumber(String? value) =>
+      _i1.ColumnValue(
+        table.contactNumber,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> website(String? value) => _i1.ColumnValue(
+    table.website,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> logoUrl(String? value) => _i1.ColumnValue(
+    table.logoUrl,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<Map<String, double>, Map<String, double>> monthlyFees(
+    Map<String, double>? value,
+  ) => _i1.ColumnValue(
+    table.monthlyFees,
+    value,
+  );
+
+  _i1.ColumnValue<Map<String, String>, Map<String, String>> feeStartAndEndMonth(
+    Map<String, String>? value,
+  ) => _i1.ColumnValue(
+    table.feeStartAndEndMonth,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> admissionFee(double? value) =>
+      _i1.ColumnValue(
+        table.admissionFee,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> gstNumber(String? value) => _i1.ColumnValue(
+    table.gstNumber,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> panNumber(String? value) => _i1.ColumnValue(
+    table.panNumber,
+    value,
+  );
+}
+
 class OrganizationTable extends _i1.Table<int?> {
   OrganizationTable({super.tableRelation}) : super(tableName: 'organization') {
+    updateTable = OrganizationUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -445,11 +566,11 @@ class OrganizationTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
-    monthlyFees = _i1.ColumnSerializable(
+    monthlyFees = _i1.ColumnSerializable<Map<String, double>>(
       'monthlyFees',
       this,
     );
-    feeStartAndEndMonth = _i1.ColumnSerializable(
+    feeStartAndEndMonth = _i1.ColumnSerializable<Map<String, String>>(
       'feeStartAndEndMonth',
       this,
     );
@@ -466,6 +587,8 @@ class OrganizationTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final OrganizationUpdateTable updateTable;
 
   late final _i1.ColumnString name;
 
@@ -497,9 +620,9 @@ class OrganizationTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
-  late final _i1.ColumnSerializable monthlyFees;
+  late final _i1.ColumnSerializable<Map<String, double>> monthlyFees;
 
-  late final _i1.ColumnSerializable feeStartAndEndMonth;
+  late final _i1.ColumnSerializable<Map<String, String>> feeStartAndEndMonth;
 
   late final _i1.ColumnDouble admissionFee;
 
@@ -509,28 +632,28 @@ class OrganizationTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        organizationName,
-        code,
-        type,
-        address,
-        city,
-        state,
-        country,
-        pincode,
-        contactNumber,
-        email,
-        website,
-        logoUrl,
-        isActive,
-        createdAt,
-        monthlyFees,
-        feeStartAndEndMonth,
-        admissionFee,
-        gstNumber,
-        panNumber,
-      ];
+    id,
+    name,
+    organizationName,
+    code,
+    type,
+    address,
+    city,
+    state,
+    country,
+    pincode,
+    contactNumber,
+    email,
+    website,
+    logoUrl,
+    isActive,
+    createdAt,
+    monthlyFees,
+    feeStartAndEndMonth,
+    admissionFee,
+    gstNumber,
+    panNumber,
+  ];
 }
 
 class OrganizationInclude extends _i1.IncludeObject {
@@ -718,6 +841,46 @@ class OrganizationRepository {
     return session.db.updateRow<Organization>(
       row,
       columns: columns?.call(Organization.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Organization] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Organization?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<OrganizationUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Organization>(
+      id,
+      columnValues: columnValues(Organization.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Organization]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Organization>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<OrganizationUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<OrganizationTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<OrganizationTable>? orderBy,
+    _i1.OrderByListBuilder<OrganizationTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Organization>(
+      columnValues: columnValues(Organization.t.updateTable),
+      where: where(Organization.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Organization.t),
+      orderByList: orderByList?.call(Organization.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

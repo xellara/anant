@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -50,7 +51,8 @@ abstract class MonthlyFeeTransaction
   }) = _MonthlyFeeTransactionImpl;
 
   factory MonthlyFeeTransaction.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return MonthlyFeeTransaction(
       id: jsonSerialization['id'] as int?,
       anantId: jsonSerialization['anantId'] as String,
@@ -60,14 +62,15 @@ abstract class MonthlyFeeTransaction
       discount: (jsonSerialization['discount'] as num).toDouble(),
       fine: (jsonSerialization['fine'] as num).toDouble(),
       transactionDate: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['transactionDate']),
+        jsonSerialization['transactionDate'],
+      ),
       transactionGateway: jsonSerialization['transactionGateway'] as String,
       transactionRef: jsonSerialization['transactionRef'] as String,
       transactionId: jsonSerialization['transactionId'] as String,
       transactionStatus: jsonSerialization['transactionStatus'] as String,
       transactionType: jsonSerialization['transactionType'] as String,
       markedByAnantId: jsonSerialization['markedByAnantId'] as String,
-      isRefunded: jsonSerialization['isRefunded'] as bool,
+      isRefunded: jsonSerialization['isRefunded'] as bool?,
     );
   }
 
@@ -132,6 +135,7 @@ abstract class MonthlyFeeTransaction
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'MonthlyFeeTransaction',
       if (id != null) 'id': id,
       'anantId': anantId,
       'organizationName': organizationName,
@@ -153,6 +157,7 @@ abstract class MonthlyFeeTransaction
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'MonthlyFeeTransaction',
       if (id != null) 'id': id,
       'anantId': anantId,
       'organizationName': organizationName,
@@ -221,22 +226,22 @@ class _MonthlyFeeTransactionImpl extends MonthlyFeeTransaction {
     required String markedByAnantId,
     bool? isRefunded,
   }) : super._(
-          id: id,
-          anantId: anantId,
-          organizationName: organizationName,
-          month: month,
-          feeAmount: feeAmount,
-          discount: discount,
-          fine: fine,
-          transactionDate: transactionDate,
-          transactionGateway: transactionGateway,
-          transactionRef: transactionRef,
-          transactionId: transactionId,
-          transactionStatus: transactionStatus,
-          transactionType: transactionType,
-          markedByAnantId: markedByAnantId,
-          isRefunded: isRefunded,
-        );
+         id: id,
+         anantId: anantId,
+         organizationName: organizationName,
+         month: month,
+         feeAmount: feeAmount,
+         discount: discount,
+         fine: fine,
+         transactionDate: transactionDate,
+         transactionGateway: transactionGateway,
+         transactionRef: transactionRef,
+         transactionId: transactionId,
+         transactionStatus: transactionStatus,
+         transactionType: transactionType,
+         markedByAnantId: markedByAnantId,
+         isRefunded: isRefunded,
+       );
 
   /// Returns a shallow copy of this [MonthlyFeeTransaction]
   /// with some or all fields replaced by the given arguments.
@@ -279,9 +284,93 @@ class _MonthlyFeeTransactionImpl extends MonthlyFeeTransaction {
   }
 }
 
+class MonthlyFeeTransactionUpdateTable
+    extends _i1.UpdateTable<MonthlyFeeTransactionTable> {
+  MonthlyFeeTransactionUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> anantId(String value) => _i1.ColumnValue(
+    table.anantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> organizationName(String value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> month(String value) => _i1.ColumnValue(
+    table.month,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> feeAmount(double value) => _i1.ColumnValue(
+    table.feeAmount,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> discount(double value) => _i1.ColumnValue(
+    table.discount,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> fine(double value) => _i1.ColumnValue(
+    table.fine,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> transactionDate(DateTime value) =>
+      _i1.ColumnValue(
+        table.transactionDate,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> transactionGateway(String value) =>
+      _i1.ColumnValue(
+        table.transactionGateway,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> transactionRef(String value) =>
+      _i1.ColumnValue(
+        table.transactionRef,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> transactionId(String value) =>
+      _i1.ColumnValue(
+        table.transactionId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> transactionStatus(String value) =>
+      _i1.ColumnValue(
+        table.transactionStatus,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> transactionType(String value) =>
+      _i1.ColumnValue(
+        table.transactionType,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> markedByAnantId(String value) =>
+      _i1.ColumnValue(
+        table.markedByAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isRefunded(bool value) => _i1.ColumnValue(
+    table.isRefunded,
+    value,
+  );
+}
+
 class MonthlyFeeTransactionTable extends _i1.Table<int?> {
   MonthlyFeeTransactionTable({super.tableRelation})
-      : super(tableName: 'monthly_fee_transaction') {
+    : super(tableName: 'monthly_fee_transaction') {
+    updateTable = MonthlyFeeTransactionUpdateTable(this);
     anantId = _i1.ColumnString(
       'anantId',
       this,
@@ -341,6 +430,8 @@ class MonthlyFeeTransactionTable extends _i1.Table<int?> {
     );
   }
 
+  late final MonthlyFeeTransactionUpdateTable updateTable;
+
   late final _i1.ColumnString anantId;
 
   late final _i1.ColumnString organizationName;
@@ -371,22 +462,22 @@ class MonthlyFeeTransactionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        anantId,
-        organizationName,
-        month,
-        feeAmount,
-        discount,
-        fine,
-        transactionDate,
-        transactionGateway,
-        transactionRef,
-        transactionId,
-        transactionStatus,
-        transactionType,
-        markedByAnantId,
-        isRefunded,
-      ];
+    id,
+    anantId,
+    organizationName,
+    month,
+    feeAmount,
+    discount,
+    fine,
+    transactionDate,
+    transactionGateway,
+    transactionRef,
+    transactionId,
+    transactionStatus,
+    transactionType,
+    markedByAnantId,
+    isRefunded,
+  ];
 }
 
 class MonthlyFeeTransactionInclude extends _i1.IncludeObject {
@@ -574,6 +665,48 @@ class MonthlyFeeTransactionRepository {
     return session.db.updateRow<MonthlyFeeTransaction>(
       row,
       columns: columns?.call(MonthlyFeeTransaction.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [MonthlyFeeTransaction] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<MonthlyFeeTransaction?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<MonthlyFeeTransactionUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<MonthlyFeeTransaction>(
+      id,
+      columnValues: columnValues(MonthlyFeeTransaction.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [MonthlyFeeTransaction]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<MonthlyFeeTransaction>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<MonthlyFeeTransactionUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<MonthlyFeeTransactionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<MonthlyFeeTransactionTable>? orderBy,
+    _i1.OrderByListBuilder<MonthlyFeeTransactionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<MonthlyFeeTransaction>(
+      columnValues: columnValues(MonthlyFeeTransaction.t.updateTable),
+      where: where(MonthlyFeeTransaction.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(MonthlyFeeTransaction.t),
+      orderByList: orderByList?.call(MonthlyFeeTransaction.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -37,7 +38,7 @@ abstract class Role implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       slug: jsonSerialization['slug'] as String,
       description: jsonSerialization['description'] as String?,
       organizationName: jsonSerialization['organizationName'] as String?,
-      isSystemRole: jsonSerialization['isSystemRole'] as bool,
+      isSystemRole: jsonSerialization['isSystemRole'] as bool?,
     );
   }
 
@@ -75,6 +76,7 @@ abstract class Role implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Role',
       if (id != null) 'id': id,
       'name': name,
       'slug': slug,
@@ -87,6 +89,7 @@ abstract class Role implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Role',
       if (id != null) 'id': id,
       'name': name,
       'slug': slug,
@@ -137,13 +140,13 @@ class _RoleImpl extends Role {
     String? organizationName,
     bool? isSystemRole,
   }) : super._(
-          id: id,
-          name: name,
-          slug: slug,
-          description: description,
-          organizationName: organizationName,
-          isSystemRole: isSystemRole,
-        );
+         id: id,
+         name: name,
+         slug: slug,
+         description: description,
+         organizationName: organizationName,
+         isSystemRole: isSystemRole,
+       );
 
   /// Returns a shallow copy of this [Role]
   /// with some or all fields replaced by the given arguments.
@@ -170,8 +173,39 @@ class _RoleImpl extends Role {
   }
 }
 
+class RoleUpdateTable extends _i1.UpdateTable<RoleTable> {
+  RoleUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> slug(String value) => _i1.ColumnValue(
+    table.slug,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> organizationName(String? value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isSystemRole(bool value) => _i1.ColumnValue(
+    table.isSystemRole,
+    value,
+  );
+}
+
 class RoleTable extends _i1.Table<int?> {
   RoleTable({super.tableRelation}) : super(tableName: 'role') {
+    updateTable = RoleUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -195,6 +229,8 @@ class RoleTable extends _i1.Table<int?> {
     );
   }
 
+  late final RoleUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString slug;
@@ -207,13 +243,13 @@ class RoleTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        slug,
-        description,
-        organizationName,
-        isSystemRole,
-      ];
+    id,
+    name,
+    slug,
+    description,
+    organizationName,
+    isSystemRole,
+  ];
 }
 
 class RoleInclude extends _i1.IncludeObject {
@@ -401,6 +437,46 @@ class RoleRepository {
     return session.db.updateRow<Role>(
       row,
       columns: columns?.call(Role.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Role] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Role?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<RoleUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Role>(
+      id,
+      columnValues: columnValues(Role.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Role]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Role>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<RoleUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<RoleTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<RoleTable>? orderBy,
+    _i1.OrderByListBuilder<RoleTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Role>(
+      columnValues: columnValues(Role.t.updateTable),
+      where: where(Role.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Role.t),
+      orderByList: orderByList?.call(Role.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

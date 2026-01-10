@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -64,6 +65,7 @@ abstract class Subject
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Subject',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'name': name,
@@ -74,6 +76,7 @@ abstract class Subject
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Subject',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'name': name,
@@ -120,11 +123,11 @@ class _SubjectImpl extends Subject {
     required String name,
     String? description,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          name: name,
-          description: description,
-        );
+         id: id,
+         organizationId: organizationId,
+         name: name,
+         description: description,
+       );
 
   /// Returns a shallow copy of this [Subject]
   /// with some or all fields replaced by the given arguments.
@@ -145,8 +148,28 @@ class _SubjectImpl extends Subject {
   }
 }
 
+class SubjectUpdateTable extends _i1.UpdateTable<SubjectTable> {
+  SubjectUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+}
+
 class SubjectTable extends _i1.Table<int?> {
   SubjectTable({super.tableRelation}) : super(tableName: 'subject') {
+    updateTable = SubjectUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -161,6 +184,8 @@ class SubjectTable extends _i1.Table<int?> {
     );
   }
 
+  late final SubjectUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnString name;
@@ -169,11 +194,11 @@ class SubjectTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        name,
-        description,
-      ];
+    id,
+    organizationId,
+    name,
+    description,
+  ];
 }
 
 class SubjectInclude extends _i1.IncludeObject {
@@ -361,6 +386,46 @@ class SubjectRepository {
     return session.db.updateRow<Subject>(
       row,
       columns: columns?.call(Subject.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Subject] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Subject?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SubjectUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Subject>(
+      id,
+      columnValues: columnValues(Subject.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Subject]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Subject>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SubjectUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SubjectTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SubjectTable>? orderBy,
+    _i1.OrderByListBuilder<SubjectTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Subject>(
+      columnValues: columnValues(Subject.t.updateTable),
+      where: where(Subject.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Subject.t),
+      orderByList: orderByList?.call(Subject.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

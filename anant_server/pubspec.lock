@@ -61,10 +61,10 @@ packages:
     dependency: "direct main"
     description:
       name: bcrypt
-      sha256: "9dc3f234d5935a76917a6056613e1a6d9b53f7fa56f98e24cd49b8969307764b"
+      sha256: "6073a700cbbc59f1d4ab27cd532755e3de5e676c4941f535f351374df849270b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.2.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -165,10 +165,10 @@ packages:
     dependency: transitive
     description:
       name: code_builder
-      sha256: "11654819532ba94c34de52ff5feb52bd81cba1de00ef2ed622fd50295f9d4243"
+      sha256: "6a6cab2ba4680d6423f34a9b972a4c9a94ebe1b62ecec4e1a1f2cba91fd1319d"
       url: "https://pub.dev"
     source: hosted
-    version: "4.11.0"
+    version: "4.11.1"
   collection:
     dependency: transitive
     description:
@@ -205,10 +205,10 @@ packages:
     dependency: transitive
     description:
       name: crypto_keys
-      sha256: acc19abf34623d990a0e8aec69463d74a824c31f137128f42e2810befc509ad0
+      sha256: "2ed305a11a3e5d16dd7f489121c956fd19b9816938bb68bc7ed3a379827a304e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0+1"
+    version: "0.3.0+2"
   dart_style:
     dependency: transitive
     description:
@@ -229,10 +229,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "289279317b4b16eb2bb7e271abccd4bf84ec9bdcbe999e278a94b804f5630418"
+      sha256: d07d37192dbf97461359c1518788f203b0c9102cfd2c35a716b823741219542c
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   file:
     dependency: transitive
     description:
@@ -285,10 +285,10 @@ packages:
     dependency: transitive
     description:
       name: googleapis
-      sha256: "5c9e0f25be1dec13d8d2158263141104c51b5ba83487537c17a2330581e505ee"
+      sha256: "692fb9e90c321b61a7a2123de0353ec8a20691cd979db2553d8d732f710f6535"
       url: "https://pub.dev"
     source: hosted
-    version: "14.0.0"
+    version: "15.0.0"
   googleapis_auth:
     dependency: transitive
     description:
@@ -333,10 +333,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "4e973fcf4caae1a4be2fa0a13157aa38a8f9cb049db6529aa00b4d71abc4d928"
+      sha256: "492bd52f6c4fbb6ee41f781ff27765ce5f627910e1e0cbecfa3d9add5562604c"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.4"
+    version: "4.7.2"
   io:
     dependency: transitive
     description:
@@ -353,14 +353,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.5"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: "53385261521cc4a0c4658fd0ad07a7d14591cf8fc33abbceae306ddb974888dc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.2"
   json_annotation:
     dependency: transitive
     description:
@@ -421,10 +413,10 @@ packages:
     dependency: transitive
     description:
       name: mustache_template
-      sha256: daa42be75f2ccfb287c24a75e7ac594f2ea0b32bf9ebe7c15154aa45b2dfb2de
+      sha256: "4326d0002ff58c74b9486990ccbdab08157fca3c996fe9e197aff9d61badf307"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   node_preamble:
     dependency: transitive
     description:
@@ -437,10 +429,10 @@ packages:
     dependency: transitive
     description:
       name: openid_client
-      sha256: "9f09d107a8bcb540e0c5d3aa5601440c5eea7043a665dfbf8bcff10383049e03"
+      sha256: d7c229b849eaf4ff0ac77c22f8f1c4c522f6830b8c58d7b73953514ad6980954
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.9+1"
+    version: "0.4.9+2"
   package_config:
     dependency: transitive
     description:
@@ -469,10 +461,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
+      sha256: "92aa3841d083cc4b0f4709b5c74fd6409a3e6ba833ffc7dc6a8fee096366acf5"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.1"
+    version: "4.0.0"
   pool:
     dependency: transitive
     description:
@@ -529,6 +521,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  relic:
+    dependency: transitive
+    description:
+      name: relic
+      sha256: "400bc37b0ee5f8d02c911fb4213a5f3cb3f39496fc806c81f22ad25f1930bd15"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   retry:
     dependency: transitive
     description:
@@ -541,50 +541,50 @@ packages:
     dependency: "direct main"
     description:
       name: serverpod
-      sha256: e9d57fa4185c2d5ed093745fbc4ca4e8b8dc351d00c2fc7a76bd1aabd509ee6e
+      sha256: "6e7410d7d2a8088e1f6334f79cc4ce57834afbd1f9f27fe5676a8eac43d36c82"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   serverpod_auth_server:
     dependency: "direct main"
     description:
       name: serverpod_auth_server
-      sha256: "10f3c97d9598a840cc0d5fa770b3a69044fa4b843e3de3cbd3c43ba59499aa4b"
+      sha256: "0dec291076aec997ca72907402f13e6fa8c242207648f7461ad79cfbc3e442c5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   serverpod_lints:
     dependency: transitive
     description:
       name: serverpod_lints
-      sha256: d1dd6ebe72eb63ad89986814025cd9d59225ac00d2e0c214a76043c839e709d4
+      sha256: "11512827207a241aeedef8198bfbb4c77492bd1c67210eb6eabbba8317944635"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   serverpod_serialization:
     dependency: transitive
     description:
       name: serverpod_serialization
-      sha256: e68bee9f9e5d609ae6249365826748c43742fd05080bae8549eabf939294271c
+      sha256: "03348a7d1a8ad9c70e4d3cdc0ead89cf2e1172a5e4eebfb0c37c11bad4e664e4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   serverpod_shared:
     dependency: transitive
     description:
       name: serverpod_shared
-      sha256: "5a35101167050fdb2213407248bc0063c0eea523606da35b9f29cf567ee13a48"
+      sha256: daaa9d84ff40a746ef3a60de9aa43773fb883b45458669e81a43517e41496aab
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   serverpod_test:
     dependency: "direct dev"
     description:
       name: serverpod_test
-      sha256: "63b166b2c3f2d5ae6f536c7794f6004f2415b4296770efd3cf958bb8d438221a"
+      sha256: bd58bc73efda8fc757b5cfc5f04c159585fb34a483a1df5e6f47ac57b37be729
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.2"
+    version: "3.2.0"
   shelf:
     dependency: transitive
     description:
@@ -717,26 +717,26 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "77cc98ea27006c84e71a7356cf3daf9ddbde2d91d84f77dbfe64cf0e4d9611ae"
+      sha256: "54c516bbb7cee2754d327ad4fca637f78abfc3cbcc5ace83b3eda117e42cd71a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.28.0"
+    version: "1.29.0"
   test_api:
     dependency: transitive
     description:
       name: test_api
-      sha256: "19a78f63e83d3a61f00826d09bc2f60e191bf3504183c001262be6ac75589fb8"
+      sha256: "93167629bfc610f71560ab9312acdda4959de4df6fac7492c89ff0d3886f6636"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.8"
+    version: "0.7.9"
   test_core:
     dependency: transitive
     description:
       name: test_core
-      sha256: f1072617a6657e5fc09662e721307f7fb009b4ed89b19f47175d11d5254a62d4
+      sha256: "394f07d21f0f2255ec9e3989f21e54d3c7dc0e6e9dbce160e5a9c1a6be0e2943"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.14"
+    version: "0.6.15"
   typed_data:
     dependency: transitive
     description:
@@ -765,10 +765,10 @@ packages:
     dependency: transitive
     description:
       name: watcher
-      sha256: "592ab6e2892f67760543fb712ff0177f4ec76c031f02f5b4ff8d3fc5eb9fb61a"
+      sha256: "1398c9f081a753f9226febe8900fce8f7d0a67163334e1c94a2438339d79d635"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.2.1"
   web:
     dependency: transitive
     description:

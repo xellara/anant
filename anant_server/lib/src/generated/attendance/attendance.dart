@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -59,7 +60,7 @@ abstract class Attendance
       date: jsonSerialization['date'] as String,
       markedByAnantId: jsonSerialization['markedByAnantId'] as String,
       status: jsonSerialization['status'] as String,
-      isSubmitted: jsonSerialization['isSubmitted'] as bool,
+      isSubmitted: jsonSerialization['isSubmitted'] as bool?,
       remarks: jsonSerialization['remarks'] as String?,
     );
   }
@@ -119,6 +120,7 @@ abstract class Attendance
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Attendance',
       if (id != null) 'id': id,
       'organizationName': organizationName,
       'className': className,
@@ -138,6 +140,7 @@ abstract class Attendance
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Attendance',
       if (id != null) 'id': id,
       'organizationName': organizationName,
       'className': className,
@@ -202,20 +205,20 @@ class _AttendanceImpl extends Attendance {
     bool? isSubmitted,
     String? remarks,
   }) : super._(
-          id: id,
-          organizationName: organizationName,
-          className: className,
-          sectionName: sectionName,
-          subjectName: subjectName,
-          studentAnantId: studentAnantId,
-          startTime: startTime,
-          endTime: endTime,
-          date: date,
-          markedByAnantId: markedByAnantId,
-          status: status,
-          isSubmitted: isSubmitted,
-          remarks: remarks,
-        );
+         id: id,
+         organizationName: organizationName,
+         className: className,
+         sectionName: sectionName,
+         subjectName: subjectName,
+         studentAnantId: studentAnantId,
+         startTime: startTime,
+         endTime: endTime,
+         date: date,
+         markedByAnantId: markedByAnantId,
+         status: status,
+         isSubmitted: isSubmitted,
+         remarks: remarks,
+       );
 
   /// Returns a shallow copy of this [Attendance]
   /// with some or all fields replaced by the given arguments.
@@ -254,8 +257,76 @@ class _AttendanceImpl extends Attendance {
   }
 }
 
+class AttendanceUpdateTable extends _i1.UpdateTable<AttendanceTable> {
+  AttendanceUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> organizationName(String value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> className(String value) => _i1.ColumnValue(
+    table.className,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> sectionName(String value) => _i1.ColumnValue(
+    table.sectionName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> subjectName(String? value) => _i1.ColumnValue(
+    table.subjectName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> studentAnantId(String value) =>
+      _i1.ColumnValue(
+        table.studentAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> startTime(String value) => _i1.ColumnValue(
+    table.startTime,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> endTime(String value) => _i1.ColumnValue(
+    table.endTime,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> date(String value) => _i1.ColumnValue(
+    table.date,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> markedByAnantId(String value) =>
+      _i1.ColumnValue(
+        table.markedByAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> status(String value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isSubmitted(bool value) => _i1.ColumnValue(
+    table.isSubmitted,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remarks(String? value) => _i1.ColumnValue(
+    table.remarks,
+    value,
+  );
+}
+
 class AttendanceTable extends _i1.Table<int?> {
   AttendanceTable({super.tableRelation}) : super(tableName: 'attendance') {
+    updateTable = AttendanceUpdateTable(this);
     organizationName = _i1.ColumnString(
       'organizationName',
       this,
@@ -307,6 +378,8 @@ class AttendanceTable extends _i1.Table<int?> {
     );
   }
 
+  late final AttendanceUpdateTable updateTable;
+
   late final _i1.ColumnString organizationName;
 
   late final _i1.ColumnString className;
@@ -333,20 +406,20 @@ class AttendanceTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationName,
-        className,
-        sectionName,
-        subjectName,
-        studentAnantId,
-        startTime,
-        endTime,
-        date,
-        markedByAnantId,
-        status,
-        isSubmitted,
-        remarks,
-      ];
+    id,
+    organizationName,
+    className,
+    sectionName,
+    subjectName,
+    studentAnantId,
+    startTime,
+    endTime,
+    date,
+    markedByAnantId,
+    status,
+    isSubmitted,
+    remarks,
+  ];
 }
 
 class AttendanceInclude extends _i1.IncludeObject {
@@ -534,6 +607,46 @@ class AttendanceRepository {
     return session.db.updateRow<Attendance>(
       row,
       columns: columns?.call(Attendance.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Attendance] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Attendance?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<AttendanceUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Attendance>(
+      id,
+      columnValues: columnValues(Attendance.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Attendance]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Attendance>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<AttendanceUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<AttendanceTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<AttendanceTable>? orderBy,
+    _i1.OrderByListBuilder<AttendanceTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Attendance>(
+      columnValues: columnValues(Attendance.t.updateTable),
+      where: where(Attendance.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Attendance.t),
+      orderByList: orderByList?.call(Attendance.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

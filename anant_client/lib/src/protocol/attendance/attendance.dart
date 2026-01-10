@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -58,7 +59,7 @@ abstract class Attendance implements _i1.SerializableModel {
       date: jsonSerialization['date'] as String,
       markedByAnantId: jsonSerialization['markedByAnantId'] as String,
       status: jsonSerialization['status'] as String,
-      isSubmitted: jsonSerialization['isSubmitted'] as bool,
+      isSubmitted: jsonSerialization['isSubmitted'] as bool?,
       remarks: jsonSerialization['remarks'] as String?,
     );
   }
@@ -113,6 +114,7 @@ abstract class Attendance implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Attendance',
       if (id != null) 'id': id,
       'organizationName': organizationName,
       'className': className,
@@ -153,20 +155,20 @@ class _AttendanceImpl extends Attendance {
     bool? isSubmitted,
     String? remarks,
   }) : super._(
-          id: id,
-          organizationName: organizationName,
-          className: className,
-          sectionName: sectionName,
-          subjectName: subjectName,
-          studentAnantId: studentAnantId,
-          startTime: startTime,
-          endTime: endTime,
-          date: date,
-          markedByAnantId: markedByAnantId,
-          status: status,
-          isSubmitted: isSubmitted,
-          remarks: remarks,
-        );
+         id: id,
+         organizationName: organizationName,
+         className: className,
+         sectionName: sectionName,
+         subjectName: subjectName,
+         studentAnantId: studentAnantId,
+         startTime: startTime,
+         endTime: endTime,
+         date: date,
+         markedByAnantId: markedByAnantId,
+         status: status,
+         isSubmitted: isSubmitted,
+         remarks: remarks,
+       );
 
   /// Returns a shallow copy of this [Attendance]
   /// with some or all fields replaced by the given arguments.

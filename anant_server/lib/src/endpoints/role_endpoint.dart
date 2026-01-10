@@ -13,12 +13,12 @@ class RoleEndpoint extends Endpoint {
     String? organizationName,
     bool isSystemRole,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     
-    final userId = authInfo.userId;
+    final userId = (authInfo as dynamic).userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -53,7 +53,7 @@ class RoleEndpoint extends Endpoint {
   
   /// Get all roles for an organization.
   Future<List<Role>> getRoles(Session session, {String? organizationName}) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
@@ -82,12 +82,12 @@ class RoleEndpoint extends Endpoint {
     String? name,
     String? description,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     
-    final userId = authInfo.userId;
+    final userId = (authInfo as dynamic).userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -114,12 +114,12 @@ class RoleEndpoint extends Endpoint {
   
   /// Delete a role.
   Future<bool> deleteRole(Session session, int roleId) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     
-    final userId = authInfo.userId;
+    final userId = (authInfo as dynamic).userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -146,12 +146,12 @@ class RoleEndpoint extends Endpoint {
     int roleId,
     int permissionId,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     
-    final userId = authInfo.userId;
+    final userId = (authInfo as dynamic).userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -194,12 +194,12 @@ class RoleEndpoint extends Endpoint {
     int roleId,
     int permissionId,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     
-    final userId = authInfo.userId;
+    final userId = (authInfo as dynamic).userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -222,7 +222,7 @@ class RoleEndpoint extends Endpoint {
     Session session,
     int roleId,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }

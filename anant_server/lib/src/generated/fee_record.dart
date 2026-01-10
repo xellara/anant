@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -87,6 +88,7 @@ abstract class FeeRecord
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeeRecord',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'studentId': studentId,
@@ -100,6 +102,7 @@ abstract class FeeRecord
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeeRecord',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'studentId': studentId,
@@ -152,14 +155,14 @@ class _FeeRecordImpl extends FeeRecord {
     DateTime? paidDate,
     String? description,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          studentId: studentId,
-          amount: amount,
-          dueDate: dueDate,
-          paidDate: paidDate,
-          description: description,
-        );
+         id: id,
+         organizationId: organizationId,
+         studentId: studentId,
+         amount: amount,
+         dueDate: dueDate,
+         paidDate: paidDate,
+         description: description,
+       );
 
   /// Returns a shallow copy of this [FeeRecord]
   /// with some or all fields replaced by the given arguments.
@@ -186,8 +189,45 @@ class _FeeRecordImpl extends FeeRecord {
   }
 }
 
+class FeeRecordUpdateTable extends _i1.UpdateTable<FeeRecordTable> {
+  FeeRecordUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> studentId(int value) => _i1.ColumnValue(
+    table.studentId,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> amount(double value) => _i1.ColumnValue(
+    table.amount,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> dueDate(DateTime? value) =>
+      _i1.ColumnValue(
+        table.dueDate,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> paidDate(DateTime? value) =>
+      _i1.ColumnValue(
+        table.paidDate,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+}
+
 class FeeRecordTable extends _i1.Table<int?> {
   FeeRecordTable({super.tableRelation}) : super(tableName: 'fee_record') {
+    updateTable = FeeRecordUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -214,6 +254,8 @@ class FeeRecordTable extends _i1.Table<int?> {
     );
   }
 
+  late final FeeRecordUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnInt studentId;
@@ -228,14 +270,14 @@ class FeeRecordTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        studentId,
-        amount,
-        dueDate,
-        paidDate,
-        description,
-      ];
+    id,
+    organizationId,
+    studentId,
+    amount,
+    dueDate,
+    paidDate,
+    description,
+  ];
 }
 
 class FeeRecordInclude extends _i1.IncludeObject {
@@ -423,6 +465,46 @@ class FeeRecordRepository {
     return session.db.updateRow<FeeRecord>(
       row,
       columns: columns?.call(FeeRecord.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [FeeRecord] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeeRecord?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<FeeRecordUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeeRecord>(
+      id,
+      columnValues: columnValues(FeeRecord.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeeRecord]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<FeeRecord>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<FeeRecordUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<FeeRecordTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<FeeRecordTable>? orderBy,
+    _i1.OrderByListBuilder<FeeRecordTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<FeeRecord>(
+      columnValues: columnValues(FeeRecord.t.updateTable),
+      where: where(FeeRecord.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeeRecord.t),
+      orderByList: orderByList?.call(FeeRecord.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

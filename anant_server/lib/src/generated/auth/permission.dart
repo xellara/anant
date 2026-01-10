@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -64,6 +65,7 @@ abstract class Permission
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Permission',
       if (id != null) 'id': id,
       'slug': slug,
       if (description != null) 'description': description,
@@ -74,6 +76,7 @@ abstract class Permission
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Permission',
       if (id != null) 'id': id,
       'slug': slug,
       if (description != null) 'description': description,
@@ -120,11 +123,11 @@ class _PermissionImpl extends Permission {
     String? description,
     String? module,
   }) : super._(
-          id: id,
-          slug: slug,
-          description: description,
-          module: module,
-        );
+         id: id,
+         slug: slug,
+         description: description,
+         module: module,
+       );
 
   /// Returns a shallow copy of this [Permission]
   /// with some or all fields replaced by the given arguments.
@@ -145,8 +148,28 @@ class _PermissionImpl extends Permission {
   }
 }
 
+class PermissionUpdateTable extends _i1.UpdateTable<PermissionTable> {
+  PermissionUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> slug(String value) => _i1.ColumnValue(
+    table.slug,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> module(String? value) => _i1.ColumnValue(
+    table.module,
+    value,
+  );
+}
+
 class PermissionTable extends _i1.Table<int?> {
   PermissionTable({super.tableRelation}) : super(tableName: 'permission') {
+    updateTable = PermissionUpdateTable(this);
     slug = _i1.ColumnString(
       'slug',
       this,
@@ -161,6 +184,8 @@ class PermissionTable extends _i1.Table<int?> {
     );
   }
 
+  late final PermissionUpdateTable updateTable;
+
   late final _i1.ColumnString slug;
 
   late final _i1.ColumnString description;
@@ -169,11 +194,11 @@ class PermissionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        slug,
-        description,
-        module,
-      ];
+    id,
+    slug,
+    description,
+    module,
+  ];
 }
 
 class PermissionInclude extends _i1.IncludeObject {
@@ -361,6 +386,46 @@ class PermissionRepository {
     return session.db.updateRow<Permission>(
       row,
       columns: columns?.call(Permission.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Permission] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Permission?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<PermissionUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Permission>(
+      id,
+      columnValues: columnValues(Permission.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Permission]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Permission>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<PermissionUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<PermissionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<PermissionTable>? orderBy,
+    _i1.OrderByListBuilder<PermissionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Permission>(
+      columnValues: columnValues(Permission.t.updateTable),
+      where: where(Permission.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Permission.t),
+      orderByList: orderByList?.call(Permission.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

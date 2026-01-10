@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -58,6 +59,7 @@ abstract class Permission implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Permission',
       if (id != null) 'id': id,
       'slug': slug,
       if (description != null) 'description': description,
@@ -80,11 +82,11 @@ class _PermissionImpl extends Permission {
     String? description,
     String? module,
   }) : super._(
-          id: id,
-          slug: slug,
-          description: description,
-          module: module,
-        );
+         id: id,
+         slug: slug,
+         description: description,
+         module: module,
+       );
 
   /// Returns a shallow copy of this [Permission]
   /// with some or all fields replaced by the given arguments.

@@ -362,16 +362,10 @@ class MockSession extends _i1.Mock implements _i4.Session {
       ) as DateTime);
 
   @override
-  _i7.Future<_i4.AuthenticationInfo?> get authenticated => (super.noSuchMethod(
-        Invocation.getter(#authenticated),
-        returnValue: _i7.Future<_i4.AuthenticationInfo?>.value(),
-      ) as _i7.Future<_i4.AuthenticationInfo?>);
-
-  @override
-  _i7.Future<bool> get isUserSignedIn => (super.noSuchMethod(
+  bool get isUserSignedIn => (super.noSuchMethod(
         Invocation.getter(#isUserSignedIn),
-        returnValue: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: false,
+      ) as bool);
 
   @override
   _i4.Database get db => (super.noSuchMethod(

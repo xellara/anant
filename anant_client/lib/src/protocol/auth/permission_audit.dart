@@ -7,10 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../user/user.dart' as _i2;
+import 'package:anant_client/src/protocol/protocol.dart' as _i3;
 
 /// Audit log for permission checks and usage
 abstract class PermissionAudit implements _i1.SerializableModel {
@@ -52,8 +54,7 @@ abstract class PermissionAudit implements _i1.SerializableModel {
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i3.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       permissionSlug: jsonSerialization['permissionSlug'] as String,
       action: jsonSerialization['action'] as String,
       resourceType: jsonSerialization['resourceType'] as String?,
@@ -63,8 +64,9 @@ abstract class PermissionAudit implements _i1.SerializableModel {
       failureReason: jsonSerialization['failureReason'] as String?,
       ipAddress: jsonSerialization['ipAddress'] as String?,
       userAgent: jsonSerialization['userAgent'] as String?,
-      timestamp:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
+      timestamp: jsonSerialization['timestamp'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
     );
   }
 
@@ -118,6 +120,7 @@ abstract class PermissionAudit implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'PermissionAudit',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -158,20 +161,20 @@ class _PermissionAuditImpl extends PermissionAudit {
     String? userAgent,
     DateTime? timestamp,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          permissionSlug: permissionSlug,
-          action: action,
-          resourceType: resourceType,
-          resourceId: resourceId,
-          organizationName: organizationName,
-          success: success,
-          failureReason: failureReason,
-          ipAddress: ipAddress,
-          userAgent: userAgent,
-          timestamp: timestamp,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         permissionSlug: permissionSlug,
+         action: action,
+         resourceType: resourceType,
+         resourceId: resourceId,
+         organizationName: organizationName,
+         success: success,
+         failureReason: failureReason,
+         ipAddress: ipAddress,
+         userAgent: userAgent,
+         timestamp: timestamp,
+       );
 
   /// Returns a shallow copy of this [PermissionAudit]
   /// with some or all fields replaced by the given arguments.
@@ -204,8 +207,9 @@ class _PermissionAuditImpl extends PermissionAudit {
           ? organizationName
           : this.organizationName,
       success: success ?? this.success,
-      failureReason:
-          failureReason is String? ? failureReason : this.failureReason,
+      failureReason: failureReason is String?
+          ? failureReason
+          : this.failureReason,
       ipAddress: ipAddress is String? ? ipAddress : this.ipAddress,
       userAgent: userAgent is String? ? userAgent : this.userAgent,
       timestamp: timestamp ?? this.timestamp,

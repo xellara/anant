@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../auth/role.dart' as _i2;
 import '../auth/permission.dart' as _i3;
+import 'package:anant_client/src/protocol/protocol.dart' as _i4;
 
 /// Resource-based access control for fine-grained permissions
 abstract class ResourcePermission implements _i1.SerializableModel {
@@ -49,19 +51,20 @@ abstract class ResourcePermission implements _i1.SerializableModel {
       roleId: jsonSerialization['roleId'] as int,
       role: jsonSerialization['role'] == null
           ? null
-          : _i2.Role.fromJson(
-              (jsonSerialization['role'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.Role>(jsonSerialization['role']),
       permissionId: jsonSerialization['permissionId'] as int,
       permission: jsonSerialization['permission'] == null
           ? null
-          : _i3.Permission.fromJson(
-              (jsonSerialization['permission'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i3.Permission>(
+              jsonSerialization['permission'],
+            ),
       resourceType: jsonSerialization['resourceType'] as String,
       resourceId: jsonSerialization['resourceId'] as String,
       organizationName: jsonSerialization['organizationName'] as String?,
       conditions: jsonSerialization['conditions'] as String?,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       createdById: jsonSerialization['createdById'] as int?,
     );
   }
@@ -110,6 +113,7 @@ abstract class ResourcePermission implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ResourcePermission',
       if (id != null) 'id': id,
       'roleId': roleId,
       if (role != null) 'role': role?.toJson(),
@@ -146,18 +150,18 @@ class _ResourcePermissionImpl extends ResourcePermission {
     DateTime? createdAt,
     int? createdById,
   }) : super._(
-          id: id,
-          roleId: roleId,
-          role: role,
-          permissionId: permissionId,
-          permission: permission,
-          resourceType: resourceType,
-          resourceId: resourceId,
-          organizationName: organizationName,
-          conditions: conditions,
-          createdAt: createdAt,
-          createdById: createdById,
-        );
+         id: id,
+         roleId: roleId,
+         role: role,
+         permissionId: permissionId,
+         permission: permission,
+         resourceType: resourceType,
+         resourceId: resourceId,
+         organizationName: organizationName,
+         conditions: conditions,
+         createdAt: createdAt,
+         createdById: createdById,
+       );
 
   /// Returns a shallow copy of this [ResourcePermission]
   /// with some or all fields replaced by the given arguments.

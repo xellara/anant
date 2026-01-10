@@ -405,12 +405,12 @@ class _DashboardViewState extends State<_DashboardView> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 24,
                 offset: const Offset(4, 4),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.02),
+                color: Colors.black.withValues(alpha: 0.02),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -424,7 +424,7 @@ class _DashboardViewState extends State<_DashboardView> {
                  margin: const EdgeInsets.only(bottom: 32),
                  padding: const EdgeInsets.all(10),
                  decoration: BoxDecoration(
-                   color: Theme.of(context).primaryColor.withOpacity(0.1),
+                   color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                    shape: BoxShape.circle,
                  ),
                  child: Icon(
@@ -467,7 +467,7 @@ class _DashboardViewState extends State<_DashboardView> {
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: Theme.of(context).primaryColor.withOpacity(0.4),
+                                    color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
                                     blurRadius: 12,
                                     offset: const Offset(0, 6),
                                   )
@@ -538,7 +538,7 @@ class _DashboardViewState extends State<_DashboardView> {
                     height: 300,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.pink.withOpacity(0.2),
+                      color: Colors.pink.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
@@ -553,7 +553,7 @@ class _DashboardViewState extends State<_DashboardView> {
                     height: 250,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blueAccent.withOpacity(0.2),
+                      color: Colors.blueAccent.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
@@ -606,10 +606,10 @@ class _DashboardViewState extends State<_DashboardView> {
                             padding: const EdgeInsets.all(2), // Space for border
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                  color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
                                   blurRadius: 12,
                                   spreadRadius: 2,
                                 ),
@@ -653,7 +653,7 @@ class _DashboardViewState extends State<_DashboardView> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(Icons.notifications_outlined, color: Colors.white, size: 24),
@@ -711,7 +711,7 @@ class _DashboardViewState extends State<_DashboardView> {
                               Text(
                                 state.greetingMessage.toUpperCase(),
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: Colors.white.withValues(alpha: 0.9),
                                   fontSize: 13,
                                   letterSpacing: 1.5,
                                   fontWeight: FontWeight.w600,
@@ -757,9 +757,9 @@ class _DashboardViewState extends State<_DashboardView> {
                    child: Container(
                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                      decoration: BoxDecoration(
-                       color: Colors.white.withOpacity(0.1),
+                       color: Colors.white.withValues(alpha: 0.1),
                        borderRadius: BorderRadius.circular(30),
-                       border: Border.all(color: Colors.white.withOpacity(0.15)),
+                       border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
                      ),
                      child: const Row(
                        mainAxisSize: MainAxisSize.min,
@@ -863,7 +863,7 @@ class _DashboardViewState extends State<_DashboardView> {
                 borderRadius: BorderRadius.circular(32),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -878,7 +878,7 @@ class _DashboardViewState extends State<_DashboardView> {
                          width: 200,
                          height: 200,
                          decoration: BoxDecoration(
-                           color: Colors.white.withOpacity(0.1),
+                           color: Colors.white.withValues(alpha: 0.1),
                            shape: BoxShape.circle,
                          ),
                        ),
@@ -920,7 +920,7 @@ class _DashboardViewState extends State<_DashboardView> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
@@ -1007,7 +1007,7 @@ class _DashboardViewState extends State<_DashboardView> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -1123,12 +1123,12 @@ class _DashboardViewState extends State<_DashboardView> {
         gradient: Theme.of(context).extension<AppGradients>()?.cardGradient,
         boxShadow: [
           BoxShadow(
-            color: feature.color.withOpacity(0.15),
+            color: feature.color.withValues(alpha: 0.15),
             offset: const Offset(0, 8),
             blurRadius: 20,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             offset: const Offset(0, 2),
             blurRadius: 4,
           ),
@@ -1154,7 +1154,7 @@ class _DashboardViewState extends State<_DashboardView> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: feature.color.withOpacity(0.05),
+                    color: feature.color.withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -1169,7 +1169,7 @@ class _DashboardViewState extends State<_DashboardView> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            feature.color.withOpacity(0.8),
+                            feature.color.withValues(alpha: 0.8),
                             feature.color,
                           ],
                           begin: Alignment.topLeft,
@@ -1178,7 +1178,7 @@ class _DashboardViewState extends State<_DashboardView> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: feature.color.withOpacity(0.3),
+                            color: feature.color.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -1257,7 +1257,7 @@ class _DashboardViewState extends State<_DashboardView> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

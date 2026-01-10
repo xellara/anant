@@ -385,12 +385,12 @@ class _HomeScreenAState extends State<HomeScreenA> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             offset: const Offset(2, 2),
             blurRadius: 4,
           ),
           BoxShadow(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             offset: const Offset(-2, -2),
             blurRadius: 4,
           ),
@@ -512,7 +512,7 @@ class CustomFloatingNavBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -596,7 +596,7 @@ class HomeBannerPainter extends CustomPainter {
 
     double radius = size.width * 1.2;
     for (int i = 0; i < circleColors.length; i++) {
-      paint.color = circleColors[i].withOpacity(0.6);
+      paint.color = circleColors[i].withValues(alpha: 0.6);
       final rect = Rect.fromCircle(center: center, radius: radius);
       const double startAngle = -0.5;
       const double sweepAngle = 2.5;
@@ -669,7 +669,7 @@ class _TwinklingStarsWidgetState extends State<TwinklingStarsWidget>
                       height: _starSizes[i],
                       child: CustomStarWidget(
                         size: _starSizes[i],
-                        color: Colors.white.withOpacity(opacity),
+                        color: Colors.white.withValues(alpha: opacity),
                       ),
                     ),
                   );

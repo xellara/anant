@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -24,8 +25,8 @@ abstract class Announcement implements _i1.SerializableModel {
     DateTime? createdAt,
     this.updatedAt,
     bool? isActive,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        isActive = isActive ?? true;
+  }) : createdAt = createdAt ?? DateTime.now(),
+       isActive = isActive ?? true;
 
   factory Announcement({
     int? id,
@@ -51,12 +52,13 @@ abstract class Announcement implements _i1.SerializableModel {
       targetAudience: jsonSerialization['targetAudience'] as String,
       targetClasses: jsonSerialization['targetClasses'] as String?,
       createdBy: jsonSerialization['createdBy'] as String,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -104,6 +106,7 @@ abstract class Announcement implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Announcement',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'title': title,
@@ -140,18 +143,18 @@ class _AnnouncementImpl extends Announcement {
     DateTime? updatedAt,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          title: title,
-          content: content,
-          priority: priority,
-          targetAudience: targetAudience,
-          targetClasses: targetClasses,
-          createdBy: createdBy,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         title: title,
+         content: content,
+         priority: priority,
+         targetAudience: targetAudience,
+         targetClasses: targetClasses,
+         createdBy: createdBy,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Announcement]
   /// with some or all fields replaced by the given arguments.
@@ -177,8 +180,9 @@ class _AnnouncementImpl extends Announcement {
       content: content ?? this.content,
       priority: priority ?? this.priority,
       targetAudience: targetAudience ?? this.targetAudience,
-      targetClasses:
-          targetClasses is String? ? targetClasses : this.targetClasses,
+      targetClasses: targetClasses is String?
+          ? targetClasses
+          : this.targetClasses,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,

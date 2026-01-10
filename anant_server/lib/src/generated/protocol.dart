@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -171,7 +172,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -181,12 +182,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -286,12 +287,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -368,7 +369,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -378,12 +379,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -473,7 +474,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -483,12 +484,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -564,7 +565,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -577,7 +578,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'classId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -590,7 +591,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'studentId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -689,7 +690,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -780,7 +781,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -810,7 +811,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'uid',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -899,7 +900,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1034,12 +1035,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -1123,7 +1124,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -1133,12 +1134,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -1287,7 +1288,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1300,7 +1301,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'organizationName',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1344,7 +1345,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1357,7 +1358,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'organizationName',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1407,7 +1408,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1420,7 +1421,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'slug',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1520,7 +1521,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -1530,7 +1531,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1560,7 +1561,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'timestamp',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -1679,7 +1680,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1780,7 +1781,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1862,7 +1863,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -1943,7 +1944,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -1953,12 +1954,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -2011,7 +2012,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -2021,12 +2022,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
       ],
       managed: true,
     ),
@@ -2072,7 +2073,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -2082,7 +2083,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2095,7 +2096,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'organizationId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -2227,7 +2228,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2460,7 +2461,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2473,7 +2474,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'uid',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2486,7 +2487,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'anantId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2499,7 +2500,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'email',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2584,7 +2585,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2597,7 +2598,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'uid',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2610,7 +2611,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'userId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2682,7 +2683,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2796,7 +2797,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2826,12 +2827,33 @@ class Protocol extends _i1.SerializationManagerServer {
     ..._i2.Protocol.targetTableDefinitions,
   ];
 
+  static String? getClassNameFromObjectJson(dynamic data) {
+    if (data is! Map) return null;
+    final className = data['__className__'] as String?;
+    return className;
+  }
+
   @override
   T deserialize<T>(
     dynamic data, [
     Type? t,
   ]) {
     t ??= T;
+
+    final dataClassName = getClassNameFromObjectJson(data);
+    if (dataClassName != null && dataClassName != getClassNameForType(t)) {
+      try {
+        return deserializeByClassName({
+          'className': dataClassName,
+          'data': data,
+        });
+      } on FormatException catch (_) {
+        // If the className is not recognized (e.g., older client receiving
+        // data with a new subtype), fall back to deserializing without the
+        // className, using the expected type T.
+      }
+    }
+
     if (t == _i4.Announcement) {
       return _i4.Announcement.fromJson(data) as T;
     }
@@ -2995,60 +3017,81 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i29.UserRole?>()) {
       return (data != null ? _i29.UserRole.fromJson(data) : null) as T;
     }
+    if (t == Map<String, double>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<double>(v)),
+          )
+          as T;
+    }
     if (t == _i1.getType<Map<String, double>?>()) {
       return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<double>(v)))
-          : null) as T;
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<double>(v)),
+                )
+              : null)
+          as T;
+    }
+    if (t == Map<String, String>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
     }
     if (t == _i1.getType<Map<String, String>?>()) {
       return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<String>(v)),
+                )
+              : null)
+          as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<_i30.Announcement>) {
       return (data as List)
-          .map((e) => deserialize<_i30.Announcement>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i30.Announcement>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i31.Attendance>) {
       return (data as List).map((e) => deserialize<_i31.Attendance>(e)).toList()
           as T;
     }
     if (t == Map<String, String>) {
-      return (data as Map).map((k, v) =>
-          MapEntry(deserialize<String>(k), deserialize<String>(v))) as T;
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == Map<String, dynamic>) {
-      return (data as Map).map((k, v) =>
-          MapEntry(deserialize<String>(k), deserialize<dynamic>(v))) as T;
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<dynamic>(v)),
+          )
+          as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<Map<String, dynamic>>) {
       return (data as List)
-          .map((e) => deserialize<Map<String, dynamic>>(e))
-          .toList() as T;
+              .map((e) => deserialize<Map<String, dynamic>>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i32.User>) {
       return (data as List).map((e) => deserialize<_i32.User>(e)).toList() as T;
@@ -3063,13 +3106,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == List<_i35.Notification>) {
       return (data as List)
-          .map((e) => deserialize<_i35.Notification>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i35.Notification>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i36.Organization>) {
       return (data as List)
-          .map((e) => deserialize<_i36.Organization>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i36.Organization>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i37.Permission>) {
       return (data as List).map((e) => deserialize<_i37.Permission>(e)).toList()
@@ -3084,8 +3129,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == List<_i40.MonthlyFeeTransaction>) {
       return (data as List)
-          .map((e) => deserialize<_i40.MonthlyFeeTransaction>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i40.MonthlyFeeTransaction>(e))
+              .toList()
+          as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -3096,87 +3142,100 @@ class Protocol extends _i1.SerializationManagerServer {
     return super.deserialize<T>(data, t);
   }
 
+  static String? getClassNameForType(Type type) {
+    return switch (type) {
+      _i4.Announcement => 'Announcement',
+      _i5.Attendance => 'Attendance',
+      _i6.Classes => 'Classes',
+      _i7.Course => 'Course',
+      _i8.Section => 'Section',
+      _i9.StudentCourseEnrollment => 'StudentCourseEnrollment',
+      _i10.ExternalAuthProvider => 'ExternalAuthProvider',
+      _i11.Organization => 'Organization',
+      _i12.OrganizationSettings => 'OrganizationSettings',
+      _i13.Permission => 'Permission',
+      _i14.PermissionAudit => 'PermissionAudit',
+      _i15.ResourcePermission => 'ResourcePermission',
+      _i16.Role => 'Role',
+      _i17.RolePermission => 'RolePermission',
+      _i18.UserCredentials => 'UserCredentials',
+      _i19.UserPermissionOverride => 'UserPermissionOverride',
+      _i20.UserRoleAssignment => 'UserRoleAssignment',
+      _i21.Enrollment => 'Enrollment',
+      _i22.Exam => 'Exam',
+      _i23.FeeRecord => 'FeeRecord',
+      _i24.Notification => 'Notification',
+      _i25.Subject => 'Subject',
+      _i26.TimetableEntry => 'TimetableEntry',
+      _i27.MonthlyFeeTransaction => 'MonthlyFeeTransaction',
+      _i28.User => 'User',
+      _i29.UserRole => 'UserRole',
+      _ => null,
+    };
+  }
+
   @override
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.Announcement) {
-      return 'Announcement';
+
+    if (data is Map<String, dynamic> && data['__className__'] is String) {
+      return (data['__className__'] as String).replaceFirst('anant.', '');
     }
-    if (data is _i5.Attendance) {
-      return 'Attendance';
-    }
-    if (data is _i6.Classes) {
-      return 'Classes';
-    }
-    if (data is _i7.Course) {
-      return 'Course';
-    }
-    if (data is _i8.Section) {
-      return 'Section';
-    }
-    if (data is _i9.StudentCourseEnrollment) {
-      return 'StudentCourseEnrollment';
-    }
-    if (data is _i10.ExternalAuthProvider) {
-      return 'ExternalAuthProvider';
-    }
-    if (data is _i11.Organization) {
-      return 'Organization';
-    }
-    if (data is _i12.OrganizationSettings) {
-      return 'OrganizationSettings';
-    }
-    if (data is _i13.Permission) {
-      return 'Permission';
-    }
-    if (data is _i14.PermissionAudit) {
-      return 'PermissionAudit';
-    }
-    if (data is _i15.ResourcePermission) {
-      return 'ResourcePermission';
-    }
-    if (data is _i16.Role) {
-      return 'Role';
-    }
-    if (data is _i17.RolePermission) {
-      return 'RolePermission';
-    }
-    if (data is _i18.UserCredentials) {
-      return 'UserCredentials';
-    }
-    if (data is _i19.UserPermissionOverride) {
-      return 'UserPermissionOverride';
-    }
-    if (data is _i20.UserRoleAssignment) {
-      return 'UserRoleAssignment';
-    }
-    if (data is _i21.Enrollment) {
-      return 'Enrollment';
-    }
-    if (data is _i22.Exam) {
-      return 'Exam';
-    }
-    if (data is _i23.FeeRecord) {
-      return 'FeeRecord';
-    }
-    if (data is _i24.Notification) {
-      return 'Notification';
-    }
-    if (data is _i25.Subject) {
-      return 'Subject';
-    }
-    if (data is _i26.TimetableEntry) {
-      return 'TimetableEntry';
-    }
-    if (data is _i27.MonthlyFeeTransaction) {
-      return 'MonthlyFeeTransaction';
-    }
-    if (data is _i28.User) {
-      return 'User';
-    }
-    if (data is _i29.UserRole) {
-      return 'UserRole';
+
+    switch (data) {
+      case _i4.Announcement():
+        return 'Announcement';
+      case _i5.Attendance():
+        return 'Attendance';
+      case _i6.Classes():
+        return 'Classes';
+      case _i7.Course():
+        return 'Course';
+      case _i8.Section():
+        return 'Section';
+      case _i9.StudentCourseEnrollment():
+        return 'StudentCourseEnrollment';
+      case _i10.ExternalAuthProvider():
+        return 'ExternalAuthProvider';
+      case _i11.Organization():
+        return 'Organization';
+      case _i12.OrganizationSettings():
+        return 'OrganizationSettings';
+      case _i13.Permission():
+        return 'Permission';
+      case _i14.PermissionAudit():
+        return 'PermissionAudit';
+      case _i15.ResourcePermission():
+        return 'ResourcePermission';
+      case _i16.Role():
+        return 'Role';
+      case _i17.RolePermission():
+        return 'RolePermission';
+      case _i18.UserCredentials():
+        return 'UserCredentials';
+      case _i19.UserPermissionOverride():
+        return 'UserPermissionOverride';
+      case _i20.UserRoleAssignment():
+        return 'UserRoleAssignment';
+      case _i21.Enrollment():
+        return 'Enrollment';
+      case _i22.Exam():
+        return 'Exam';
+      case _i23.FeeRecord():
+        return 'FeeRecord';
+      case _i24.Notification():
+        return 'Notification';
+      case _i25.Subject():
+        return 'Subject';
+      case _i26.TimetableEntry():
+        return 'TimetableEntry';
+      case _i27.MonthlyFeeTransaction():
+        return 'MonthlyFeeTransaction';
+      case _i28.User():
+        return 'User';
+      case _i29.UserRole():
+        return 'UserRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -3359,4 +3418,19 @@ class Protocol extends _i1.SerializationManagerServer {
 
   @override
   String getModuleName() => 'anant';
+
+  /// Maps any `Record`s known to this [Protocol] to their JSON representation
+  ///
+  /// Throws in case the record type is not known.
+  ///
+  /// This method will return `null` (only) for `null` inputs.
+  Map<String, dynamic>? mapRecordToJson(Record? record) {
+    if (record == null) {
+      return null;
+    }
+    try {
+      return _i3.Protocol().mapRecordToJson(record);
+    } catch (_) {}
+    throw Exception('Unsupported record type ${record.runtimeType}');
+  }
 }

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -49,7 +50,8 @@ abstract class MonthlyFeeTransaction implements _i1.SerializableModel {
   }) = _MonthlyFeeTransactionImpl;
 
   factory MonthlyFeeTransaction.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return MonthlyFeeTransaction(
       id: jsonSerialization['id'] as int?,
       anantId: jsonSerialization['anantId'] as String,
@@ -59,14 +61,15 @@ abstract class MonthlyFeeTransaction implements _i1.SerializableModel {
       discount: (jsonSerialization['discount'] as num).toDouble(),
       fine: (jsonSerialization['fine'] as num).toDouble(),
       transactionDate: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['transactionDate']),
+        jsonSerialization['transactionDate'],
+      ),
       transactionGateway: jsonSerialization['transactionGateway'] as String,
       transactionRef: jsonSerialization['transactionRef'] as String,
       transactionId: jsonSerialization['transactionId'] as String,
       transactionStatus: jsonSerialization['transactionStatus'] as String,
       transactionType: jsonSerialization['transactionType'] as String,
       markedByAnantId: jsonSerialization['markedByAnantId'] as String,
-      isRefunded: jsonSerialization['isRefunded'] as bool,
+      isRefunded: jsonSerialization['isRefunded'] as bool?,
     );
   }
 
@@ -126,6 +129,7 @@ abstract class MonthlyFeeTransaction implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'MonthlyFeeTransaction',
       if (id != null) 'id': id,
       'anantId': anantId,
       'organizationName': organizationName,
@@ -170,22 +174,22 @@ class _MonthlyFeeTransactionImpl extends MonthlyFeeTransaction {
     required String markedByAnantId,
     bool? isRefunded,
   }) : super._(
-          id: id,
-          anantId: anantId,
-          organizationName: organizationName,
-          month: month,
-          feeAmount: feeAmount,
-          discount: discount,
-          fine: fine,
-          transactionDate: transactionDate,
-          transactionGateway: transactionGateway,
-          transactionRef: transactionRef,
-          transactionId: transactionId,
-          transactionStatus: transactionStatus,
-          transactionType: transactionType,
-          markedByAnantId: markedByAnantId,
-          isRefunded: isRefunded,
-        );
+         id: id,
+         anantId: anantId,
+         organizationName: organizationName,
+         month: month,
+         feeAmount: feeAmount,
+         discount: discount,
+         fine: fine,
+         transactionDate: transactionDate,
+         transactionGateway: transactionGateway,
+         transactionRef: transactionRef,
+         transactionId: transactionId,
+         transactionStatus: transactionStatus,
+         transactionType: transactionType,
+         markedByAnantId: markedByAnantId,
+         isRefunded: isRefunded,
+       );
 
   /// Returns a shallow copy of this [MonthlyFeeTransaction]
   /// with some or all fields replaced by the given arguments.

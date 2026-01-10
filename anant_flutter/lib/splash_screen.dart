@@ -1,4 +1,5 @@
 import 'package:anant_flutter/anant_progress_indicator.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:anant_flutter/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // Check for existence of userId and sessionKey
     if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty) {
       // Restore session key into the client's authentication manager.
-      await client.authenticationKeyManager?.put(sessionKey);
+      var keyManager = client.authKeyProvider as FlutterAuthenticationKeyManager?;
+      await keyManager?.put(sessionKey);
       
       // Fetch the user data using the restored session key.
       final userData = await client.user.me(userId);

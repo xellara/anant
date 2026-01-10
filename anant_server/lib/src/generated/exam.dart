@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -82,6 +83,7 @@ abstract class Exam implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Exam',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -95,6 +97,7 @@ abstract class Exam implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Exam',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -147,14 +150,14 @@ class _ExamImpl extends Exam {
     required DateTime date,
     required int totalMarks,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          classId: classId,
-          subjectId: subjectId,
-          name: name,
-          date: date,
-          totalMarks: totalMarks,
-        );
+         id: id,
+         organizationId: organizationId,
+         classId: classId,
+         subjectId: subjectId,
+         name: name,
+         date: date,
+         totalMarks: totalMarks,
+       );
 
   /// Returns a shallow copy of this [Exam]
   /// with some or all fields replaced by the given arguments.
@@ -181,8 +184,43 @@ class _ExamImpl extends Exam {
   }
 }
 
+class ExamUpdateTable extends _i1.UpdateTable<ExamTable> {
+  ExamUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> classId(int value) => _i1.ColumnValue(
+    table.classId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> subjectId(int value) => _i1.ColumnValue(
+    table.subjectId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> date(DateTime value) => _i1.ColumnValue(
+    table.date,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> totalMarks(int value) => _i1.ColumnValue(
+    table.totalMarks,
+    value,
+  );
+}
+
 class ExamTable extends _i1.Table<int?> {
   ExamTable({super.tableRelation}) : super(tableName: 'exam') {
+    updateTable = ExamUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -209,6 +247,8 @@ class ExamTable extends _i1.Table<int?> {
     );
   }
 
+  late final ExamUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnInt classId;
@@ -223,14 +263,14 @@ class ExamTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        classId,
-        subjectId,
-        name,
-        date,
-        totalMarks,
-      ];
+    id,
+    organizationId,
+    classId,
+    subjectId,
+    name,
+    date,
+    totalMarks,
+  ];
 }
 
 class ExamInclude extends _i1.IncludeObject {
@@ -418,6 +458,46 @@ class ExamRepository {
     return session.db.updateRow<Exam>(
       row,
       columns: columns?.call(Exam.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Exam] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Exam?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<ExamUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Exam>(
+      id,
+      columnValues: columnValues(Exam.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Exam]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Exam>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<ExamUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<ExamTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<ExamTable>? orderBy,
+    _i1.OrderByListBuilder<ExamTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Exam>(
+      columnValues: columnValues(Exam.t.updateTable),
+      where: where(Exam.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Exam.t),
+      orderByList: orderByList?.call(Exam.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

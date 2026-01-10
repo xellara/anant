@@ -3,7 +3,7 @@ import '../../domain/usecases/get_student_attendance.dart';
 import 'student_attendance_event.dart';
 import 'student_attendance_state.dart';
 import 'package:anant_flutter/main.dart'; // for client
-import 'package:anant_client/anant_client.dart'; // for types
+
 import 'dart:async';
 
 class StudentAttendanceBloc extends Bloc<StudentAttendanceEvent, StudentAttendanceState> {
@@ -26,7 +26,7 @@ class StudentAttendanceBloc extends Bloc<StudentAttendanceEvent, StudentAttendan
       await _subscription?.cancel();
       _subscribedStudentId = event.studentId;
       try {
-        await client.openStreamingConnection();
+        // await client.openStreamingConnection(); // Removed deprecated call
         _subscription = client.attendance.receiveAttendanceStream(event.studentId!).listen((_) {
           add(LoadStudentAttendance(studentId: event.studentId));
         });

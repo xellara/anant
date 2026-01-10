@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
+// ignore_for_file: invalid_use_of_internal_member
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../user/user.dart' as _i2;
 import '../auth/permission.dart' as _i3;
+import 'package:anant_server/src/generated/protocol.dart' as _i4;
 
 abstract class UserPermissionOverride
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -36,19 +37,20 @@ abstract class UserPermissionOverride
   }) = _UserPermissionOverrideImpl;
 
   factory UserPermissionOverride.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return UserPermissionOverride(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       permissionId: jsonSerialization['permissionId'] as int,
       permission: jsonSerialization['permission'] == null
           ? null
-          : _i3.Permission.fromJson(
-              (jsonSerialization['permission'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i3.Permission>(
+              jsonSerialization['permission'],
+            ),
       isGranted: jsonSerialization['isGranted'] as bool,
     );
   }
@@ -87,6 +89,7 @@ abstract class UserPermissionOverride
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'UserPermissionOverride',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -99,6 +102,7 @@ abstract class UserPermissionOverride
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'UserPermissionOverride',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJsonForProtocol(),
@@ -155,13 +159,13 @@ class _UserPermissionOverrideImpl extends UserPermissionOverride {
     _i3.Permission? permission,
     required bool isGranted,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          permissionId: permissionId,
-          permission: permission,
-          isGranted: isGranted,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         permissionId: permissionId,
+         permission: permission,
+         isGranted: isGranted,
+       );
 
   /// Returns a shallow copy of this [UserPermissionOverride]
   /// with some or all fields replaced by the given arguments.
@@ -188,9 +192,30 @@ class _UserPermissionOverrideImpl extends UserPermissionOverride {
   }
 }
 
+class UserPermissionOverrideUpdateTable
+    extends _i1.UpdateTable<UserPermissionOverrideTable> {
+  UserPermissionOverrideUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> permissionId(int value) => _i1.ColumnValue(
+    table.permissionId,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isGranted(bool value) => _i1.ColumnValue(
+    table.isGranted,
+    value,
+  );
+}
+
 class UserPermissionOverrideTable extends _i1.Table<int?> {
   UserPermissionOverrideTable({super.tableRelation})
-      : super(tableName: 'user_permission_override') {
+    : super(tableName: 'user_permission_override') {
+    updateTable = UserPermissionOverrideUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -204,6 +229,8 @@ class UserPermissionOverrideTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final UserPermissionOverrideUpdateTable updateTable;
 
   late final _i1.ColumnInt userId;
 
@@ -243,11 +270,11 @@ class UserPermissionOverrideTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        permissionId,
-        isGranted,
-      ];
+    id,
+    userId,
+    permissionId,
+    isGranted,
+  ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -276,9 +303,9 @@ class UserPermissionOverrideInclude extends _i1.IncludeObject {
 
   @override
   Map<String, _i1.Include?> get includes => {
-        'user': _user,
-        'permission': _permission,
-      };
+    'user': _user,
+    'permission': _permission,
+  };
 
   @override
   _i1.Table<int?> get table => UserPermissionOverride.t;
@@ -471,6 +498,48 @@ class UserPermissionOverrideRepository {
     );
   }
 
+  /// Updates a single [UserPermissionOverride] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<UserPermissionOverride?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<UserPermissionOverrideUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<UserPermissionOverride>(
+      id,
+      columnValues: columnValues(UserPermissionOverride.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [UserPermissionOverride]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<UserPermissionOverride>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<UserPermissionOverrideUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<UserPermissionOverrideTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<UserPermissionOverrideTable>? orderBy,
+    _i1.OrderByListBuilder<UserPermissionOverrideTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<UserPermissionOverride>(
+      columnValues: columnValues(UserPermissionOverride.t.updateTable),
+      where: where(UserPermissionOverride.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(UserPermissionOverride.t),
+      orderByList: orderByList?.call(UserPermissionOverride.t),
+      orderDescending: orderDescending,
+      transaction: transaction,
+    );
+  }
+
   /// Deletes all [UserPermissionOverride]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
@@ -543,8 +612,9 @@ class UserPermissionOverrideAttachRowRepository {
       throw ArgumentError.notNull('user.id');
     }
 
-    var $userPermissionOverride =
-        userPermissionOverride.copyWith(userId: user.id);
+    var $userPermissionOverride = userPermissionOverride.copyWith(
+      userId: user.id,
+    );
     await session.db.updateRow<UserPermissionOverride>(
       $userPermissionOverride,
       columns: [UserPermissionOverride.t.userId],
@@ -567,8 +637,9 @@ class UserPermissionOverrideAttachRowRepository {
       throw ArgumentError.notNull('permission.id');
     }
 
-    var $userPermissionOverride =
-        userPermissionOverride.copyWith(permissionId: permission.id);
+    var $userPermissionOverride = userPermissionOverride.copyWith(
+      permissionId: permission.id,
+    );
     await session.db.updateRow<UserPermissionOverride>(
       $userPermissionOverride,
       columns: [UserPermissionOverride.t.permissionId],

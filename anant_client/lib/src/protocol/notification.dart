@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -23,8 +24,8 @@ abstract class Notification implements _i1.SerializableModel {
     DateTime? timestamp,
     bool? isRead,
     this.data,
-  })  : timestamp = timestamp ?? DateTime.now(),
-        isRead = isRead ?? false;
+  }) : timestamp = timestamp ?? DateTime.now(),
+       isRead = isRead ?? false;
 
   factory Notification({
     int? id,
@@ -48,9 +49,10 @@ abstract class Notification implements _i1.SerializableModel {
       message: jsonSerialization['message'] as String,
       type: jsonSerialization['type'] as String,
       relatedId: jsonSerialization['relatedId'] as String?,
-      timestamp:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
-      isRead: jsonSerialization['isRead'] as bool,
+      timestamp: jsonSerialization['timestamp'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
+      isRead: jsonSerialization['isRead'] as bool?,
       data: jsonSerialization['data'] as String?,
     );
   }
@@ -96,6 +98,7 @@ abstract class Notification implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Notification',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'userId': userId,
@@ -130,17 +133,17 @@ class _NotificationImpl extends Notification {
     bool? isRead,
     String? data,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          userId: userId,
-          title: title,
-          message: message,
-          type: type,
-          relatedId: relatedId,
-          timestamp: timestamp,
-          isRead: isRead,
-          data: data,
-        );
+         id: id,
+         organizationId: organizationId,
+         userId: userId,
+         title: title,
+         message: message,
+         type: type,
+         relatedId: relatedId,
+         timestamp: timestamp,
+         isRead: isRead,
+         data: data,
+       );
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.

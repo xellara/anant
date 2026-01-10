@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -37,7 +38,7 @@ abstract class Role implements _i1.SerializableModel {
       slug: jsonSerialization['slug'] as String,
       description: jsonSerialization['description'] as String?,
       organizationName: jsonSerialization['organizationName'] as String?,
-      isSystemRole: jsonSerialization['isSystemRole'] as bool,
+      isSystemRole: jsonSerialization['isSystemRole'] as bool?,
     );
   }
 
@@ -70,6 +71,7 @@ abstract class Role implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Role',
       if (id != null) 'id': id,
       'name': name,
       'slug': slug,
@@ -96,13 +98,13 @@ class _RoleImpl extends Role {
     String? organizationName,
     bool? isSystemRole,
   }) : super._(
-          id: id,
-          name: name,
-          slug: slug,
-          description: description,
-          organizationName: organizationName,
-          isSystemRole: isSystemRole,
-        );
+         id: id,
+         name: name,
+         slug: slug,
+         description: description,
+         organizationName: organizationName,
+         isSystemRole: isSystemRole,
+       );
 
   /// Returns a shallow copy of this [Role]
   /// with some or all fields replaced by the given arguments.

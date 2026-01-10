@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -40,7 +41,7 @@ abstract class Section
       name: jsonSerialization['name'] as String,
       sectionTeacherAnantId:
           jsonSerialization['sectionTeacherAnantId'] as String?,
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -78,6 +79,7 @@ abstract class Section
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Section',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'className': className,
@@ -91,6 +93,7 @@ abstract class Section
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Section',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'className': className,
@@ -142,13 +145,13 @@ class _SectionImpl extends Section {
     String? sectionTeacherAnantId,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          className: className,
-          name: name,
-          sectionTeacherAnantId: sectionTeacherAnantId,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         className: className,
+         name: name,
+         sectionTeacherAnantId: sectionTeacherAnantId,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
@@ -164,8 +167,9 @@ class _SectionImpl extends Section {
   }) {
     return Section(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       className: className ?? this.className,
       name: name ?? this.name,
       sectionTeacherAnantId: sectionTeacherAnantId is String?
@@ -176,8 +180,39 @@ class _SectionImpl extends Section {
   }
 }
 
+class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
+  SectionUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int? value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> className(String value) => _i1.ColumnValue(
+    table.className,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> sectionTeacherAnantId(String? value) =>
+      _i1.ColumnValue(
+        table.sectionTeacherAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+}
+
 class SectionTable extends _i1.Table<int?> {
   SectionTable({super.tableRelation}) : super(tableName: 'section') {
+    updateTable = SectionUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -201,6 +236,8 @@ class SectionTable extends _i1.Table<int?> {
     );
   }
 
+  late final SectionUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnString className;
@@ -213,13 +250,13 @@ class SectionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        className,
-        name,
-        sectionTeacherAnantId,
-        isActive,
-      ];
+    id,
+    organizationId,
+    className,
+    name,
+    sectionTeacherAnantId,
+    isActive,
+  ];
 }
 
 class SectionInclude extends _i1.IncludeObject {
@@ -407,6 +444,46 @@ class SectionRepository {
     return session.db.updateRow<Section>(
       row,
       columns: columns?.call(Section.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Section] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Section?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Section>(
+      id,
+      columnValues: columnValues(Section.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Section]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Section>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SectionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Section>(
+      columnValues: columnValues(Section.t.updateTable),
+      where: where(Section.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

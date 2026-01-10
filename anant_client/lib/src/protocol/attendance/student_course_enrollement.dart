@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -30,14 +31,16 @@ abstract class StudentCourseEnrollment implements _i1.SerializableModel {
   }) = _StudentCourseEnrollmentImpl;
 
   factory StudentCourseEnrollment.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StudentCourseEnrollment(
       id: jsonSerialization['id'] as int?,
       studentAnantId: jsonSerialization['studentAnantId'] as String,
       courseName: jsonSerialization['courseName'] as String,
       organizationId: jsonSerialization['organizationId'] as int?,
-      enrolledOn:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['enrolledOn']),
+      enrolledOn: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['enrolledOn'],
+      ),
     );
   }
 
@@ -67,6 +70,7 @@ abstract class StudentCourseEnrollment implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StudentCourseEnrollment',
       if (id != null) 'id': id,
       'studentAnantId': studentAnantId,
       'courseName': courseName,
@@ -91,12 +95,12 @@ class _StudentCourseEnrollmentImpl extends StudentCourseEnrollment {
     int? organizationId,
     required DateTime enrolledOn,
   }) : super._(
-          id: id,
-          studentAnantId: studentAnantId,
-          courseName: courseName,
-          organizationId: organizationId,
-          enrolledOn: enrolledOn,
-        );
+         id: id,
+         studentAnantId: studentAnantId,
+         courseName: courseName,
+         organizationId: organizationId,
+         enrolledOn: enrolledOn,
+       );
 
   /// Returns a shallow copy of this [StudentCourseEnrollment]
   /// with some or all fields replaced by the given arguments.
@@ -113,8 +117,9 @@ class _StudentCourseEnrollmentImpl extends StudentCourseEnrollment {
       id: id is int? ? id : this.id,
       studentAnantId: studentAnantId ?? this.studentAnantId,
       courseName: courseName ?? this.courseName,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       enrolledOn: enrolledOn ?? this.enrolledOn,
     );
   }

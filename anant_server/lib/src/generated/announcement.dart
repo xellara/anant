@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -25,8 +26,8 @@ abstract class Announcement
     DateTime? createdAt,
     this.updatedAt,
     bool? isActive,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        isActive = isActive ?? true;
+  }) : createdAt = createdAt ?? DateTime.now(),
+       isActive = isActive ?? true;
 
   factory Announcement({
     int? id,
@@ -52,12 +53,13 @@ abstract class Announcement
       targetAudience: jsonSerialization['targetAudience'] as String,
       targetClasses: jsonSerialization['targetClasses'] as String?,
       createdBy: jsonSerialization['createdBy'] as String,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -110,6 +112,7 @@ abstract class Announcement
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Announcement',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'title': title,
@@ -127,6 +130,7 @@ abstract class Announcement
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Announcement',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'title': title,
@@ -187,18 +191,18 @@ class _AnnouncementImpl extends Announcement {
     DateTime? updatedAt,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          title: title,
-          content: content,
-          priority: priority,
-          targetAudience: targetAudience,
-          targetClasses: targetClasses,
-          createdBy: createdBy,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         title: title,
+         content: content,
+         priority: priority,
+         targetAudience: targetAudience,
+         targetClasses: targetClasses,
+         createdBy: createdBy,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Announcement]
   /// with some or all fields replaced by the given arguments.
@@ -224,8 +228,9 @@ class _AnnouncementImpl extends Announcement {
       content: content ?? this.content,
       priority: priority ?? this.priority,
       targetAudience: targetAudience ?? this.targetAudience,
-      targetClasses:
-          targetClasses is String? ? targetClasses : this.targetClasses,
+      targetClasses: targetClasses is String?
+          ? targetClasses
+          : this.targetClasses,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
@@ -234,8 +239,67 @@ class _AnnouncementImpl extends Announcement {
   }
 }
 
+class AnnouncementUpdateTable extends _i1.UpdateTable<AnnouncementTable> {
+  AnnouncementUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
+    table.content,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> priority(String value) => _i1.ColumnValue(
+    table.priority,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> targetAudience(String value) =>
+      _i1.ColumnValue(
+        table.targetAudience,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> targetClasses(String? value) =>
+      _i1.ColumnValue(
+        table.targetClasses,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> createdBy(String value) => _i1.ColumnValue(
+    table.createdBy,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+}
+
 class AnnouncementTable extends _i1.Table<int?> {
   AnnouncementTable({super.tableRelation}) : super(tableName: 'announcements') {
+    updateTable = AnnouncementUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -280,6 +344,8 @@ class AnnouncementTable extends _i1.Table<int?> {
     );
   }
 
+  late final AnnouncementUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnString title;
@@ -302,18 +368,18 @@ class AnnouncementTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        title,
-        content,
-        priority,
-        targetAudience,
-        targetClasses,
-        createdBy,
-        createdAt,
-        updatedAt,
-        isActive,
-      ];
+    id,
+    organizationId,
+    title,
+    content,
+    priority,
+    targetAudience,
+    targetClasses,
+    createdBy,
+    createdAt,
+    updatedAt,
+    isActive,
+  ];
 }
 
 class AnnouncementInclude extends _i1.IncludeObject {
@@ -501,6 +567,46 @@ class AnnouncementRepository {
     return session.db.updateRow<Announcement>(
       row,
       columns: columns?.call(Announcement.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Announcement] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Announcement?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<AnnouncementUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Announcement>(
+      id,
+      columnValues: columnValues(Announcement.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Announcement]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Announcement>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<AnnouncementUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<AnnouncementTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<AnnouncementTable>? orderBy,
+    _i1.OrderByListBuilder<AnnouncementTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Announcement>(
+      columnValues: columnValues(Announcement.t.updateTable),
+      where: where(Announcement.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Announcement.t),
+      orderByList: orderByList?.call(Announcement.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

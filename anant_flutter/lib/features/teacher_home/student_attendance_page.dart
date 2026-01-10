@@ -760,7 +760,7 @@ class _CircleProgressPainter extends CustomPainter {
     final progressGradient = SweepGradient(
       startAngle: -math.pi / 2,
       endAngle: 3 * math.pi / 2,
-      colors: [color.withOpacity(0.5), color],
+      colors: [color.withValues(alpha: 0.5), color],
     );
     final progressPaint = Paint()
       ..shader =
@@ -779,7 +779,7 @@ class _CircleProgressPainter extends CustomPainter {
 
     // Optionally, draw an inner shadow.
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.1)
+      ..color = Colors.black.withValues(alpha: 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = lineWidth
       ..strokeCap = StrokeCap.round;

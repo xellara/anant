@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -43,8 +44,9 @@ abstract class TimetableEntry
       subjectId: jsonSerialization['subjectId'] as int,
       teacherId: jsonSerialization['teacherId'] as int,
       dayOfWeek: jsonSerialization['dayOfWeek'] as int,
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       durationMinutes: jsonSerialization['durationMinutes'] as int,
     );
   }
@@ -89,6 +91,7 @@ abstract class TimetableEntry
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'TimetableEntry',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -103,6 +106,7 @@ abstract class TimetableEntry
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'TimetableEntry',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -157,15 +161,15 @@ class _TimetableEntryImpl extends TimetableEntry {
     required DateTime startTime,
     required int durationMinutes,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          classId: classId,
-          subjectId: subjectId,
-          teacherId: teacherId,
-          dayOfWeek: dayOfWeek,
-          startTime: startTime,
-          durationMinutes: durationMinutes,
-        );
+         id: id,
+         organizationId: organizationId,
+         classId: classId,
+         subjectId: subjectId,
+         teacherId: teacherId,
+         dayOfWeek: dayOfWeek,
+         startTime: startTime,
+         durationMinutes: durationMinutes,
+       );
 
   /// Returns a shallow copy of this [TimetableEntry]
   /// with some or all fields replaced by the given arguments.
@@ -194,9 +198,50 @@ class _TimetableEntryImpl extends TimetableEntry {
   }
 }
 
+class TimetableEntryUpdateTable extends _i1.UpdateTable<TimetableEntryTable> {
+  TimetableEntryUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> classId(int value) => _i1.ColumnValue(
+    table.classId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> subjectId(int value) => _i1.ColumnValue(
+    table.subjectId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> teacherId(int value) => _i1.ColumnValue(
+    table.teacherId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> dayOfWeek(int value) => _i1.ColumnValue(
+    table.dayOfWeek,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.startTime,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> durationMinutes(int value) => _i1.ColumnValue(
+    table.durationMinutes,
+    value,
+  );
+}
+
 class TimetableEntryTable extends _i1.Table<int?> {
   TimetableEntryTable({super.tableRelation})
-      : super(tableName: 'timetable_entry') {
+    : super(tableName: 'timetable_entry') {
+    updateTable = TimetableEntryUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -227,6 +272,8 @@ class TimetableEntryTable extends _i1.Table<int?> {
     );
   }
 
+  late final TimetableEntryUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnInt classId;
@@ -243,15 +290,15 @@ class TimetableEntryTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        classId,
-        subjectId,
-        teacherId,
-        dayOfWeek,
-        startTime,
-        durationMinutes,
-      ];
+    id,
+    organizationId,
+    classId,
+    subjectId,
+    teacherId,
+    dayOfWeek,
+    startTime,
+    durationMinutes,
+  ];
 }
 
 class TimetableEntryInclude extends _i1.IncludeObject {
@@ -439,6 +486,46 @@ class TimetableEntryRepository {
     return session.db.updateRow<TimetableEntry>(
       row,
       columns: columns?.call(TimetableEntry.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [TimetableEntry] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<TimetableEntry?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<TimetableEntryUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<TimetableEntry>(
+      id,
+      columnValues: columnValues(TimetableEntry.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [TimetableEntry]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<TimetableEntry>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<TimetableEntryUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<TimetableEntryTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<TimetableEntryTable>? orderBy,
+    _i1.OrderByListBuilder<TimetableEntryTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<TimetableEntry>(
+      columnValues: columnValues(TimetableEntry.t.updateTable),
+      where: where(TimetableEntry.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(TimetableEntry.t),
+      orderByList: orderByList?.call(TimetableEntry.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

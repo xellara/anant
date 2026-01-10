@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
+// ignore_for_file: invalid_use_of_internal_member
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../user/user.dart' as _i2;
+import 'package:anant_server/src/generated/protocol.dart' as _i3;
 
 /// Audit log for permission checks and usage
 abstract class PermissionAudit
@@ -55,8 +56,7 @@ abstract class PermissionAudit
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i3.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       permissionSlug: jsonSerialization['permissionSlug'] as String,
       action: jsonSerialization['action'] as String,
       resourceType: jsonSerialization['resourceType'] as String?,
@@ -66,8 +66,9 @@ abstract class PermissionAudit
       failureReason: jsonSerialization['failureReason'] as String?,
       ipAddress: jsonSerialization['ipAddress'] as String?,
       userAgent: jsonSerialization['userAgent'] as String?,
-      timestamp:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
+      timestamp: jsonSerialization['timestamp'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
     );
   }
 
@@ -126,6 +127,7 @@ abstract class PermissionAudit
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'PermissionAudit',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -145,6 +147,7 @@ abstract class PermissionAudit
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'PermissionAudit',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJsonForProtocol(),
@@ -209,20 +212,20 @@ class _PermissionAuditImpl extends PermissionAudit {
     String? userAgent,
     DateTime? timestamp,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          permissionSlug: permissionSlug,
-          action: action,
-          resourceType: resourceType,
-          resourceId: resourceId,
-          organizationName: organizationName,
-          success: success,
-          failureReason: failureReason,
-          ipAddress: ipAddress,
-          userAgent: userAgent,
-          timestamp: timestamp,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         permissionSlug: permissionSlug,
+         action: action,
+         resourceType: resourceType,
+         resourceId: resourceId,
+         organizationName: organizationName,
+         success: success,
+         failureReason: failureReason,
+         ipAddress: ipAddress,
+         userAgent: userAgent,
+         timestamp: timestamp,
+       );
 
   /// Returns a shallow copy of this [PermissionAudit]
   /// with some or all fields replaced by the given arguments.
@@ -255,8 +258,9 @@ class _PermissionAuditImpl extends PermissionAudit {
           ? organizationName
           : this.organizationName,
       success: success ?? this.success,
-      failureReason:
-          failureReason is String? ? failureReason : this.failureReason,
+      failureReason: failureReason is String?
+          ? failureReason
+          : this.failureReason,
       ipAddress: ipAddress is String? ? ipAddress : this.ipAddress,
       userAgent: userAgent is String? ? userAgent : this.userAgent,
       timestamp: timestamp ?? this.timestamp,
@@ -264,9 +268,74 @@ class _PermissionAuditImpl extends PermissionAudit {
   }
 }
 
+class PermissionAuditUpdateTable extends _i1.UpdateTable<PermissionAuditTable> {
+  PermissionAuditUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> permissionSlug(String value) =>
+      _i1.ColumnValue(
+        table.permissionSlug,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> action(String value) => _i1.ColumnValue(
+    table.action,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> resourceType(String? value) =>
+      _i1.ColumnValue(
+        table.resourceType,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> resourceId(String? value) => _i1.ColumnValue(
+    table.resourceId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> organizationName(String? value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> success(bool value) => _i1.ColumnValue(
+    table.success,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> failureReason(String? value) =>
+      _i1.ColumnValue(
+        table.failureReason,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> ipAddress(String? value) => _i1.ColumnValue(
+    table.ipAddress,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userAgent(String? value) => _i1.ColumnValue(
+    table.userAgent,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> timestamp(DateTime value) =>
+      _i1.ColumnValue(
+        table.timestamp,
+        value,
+      );
+}
+
 class PermissionAuditTable extends _i1.Table<int?> {
   PermissionAuditTable({super.tableRelation})
-      : super(tableName: 'permission_audit') {
+    : super(tableName: 'permission_audit') {
+    updateTable = PermissionAuditUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -314,6 +383,8 @@ class PermissionAuditTable extends _i1.Table<int?> {
     );
   }
 
+  late final PermissionAuditUpdateTable updateTable;
+
   late final _i1.ColumnInt userId;
 
   _i2.UserTable? _user;
@@ -353,19 +424,19 @@ class PermissionAuditTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        permissionSlug,
-        action,
-        resourceType,
-        resourceId,
-        organizationName,
-        success,
-        failureReason,
-        ipAddress,
-        userAgent,
-        timestamp,
-      ];
+    id,
+    userId,
+    permissionSlug,
+    action,
+    resourceType,
+    resourceId,
+    organizationName,
+    success,
+    failureReason,
+    ipAddress,
+    userAgent,
+    timestamp,
+  ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -573,6 +644,48 @@ class PermissionAuditRepository {
     return session.db.updateRow<PermissionAudit>(
       row,
       columns: columns?.call(PermissionAudit.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [PermissionAudit] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<PermissionAudit?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<PermissionAuditUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<PermissionAudit>(
+      id,
+      columnValues: columnValues(PermissionAudit.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [PermissionAudit]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<PermissionAudit>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<PermissionAuditUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<PermissionAuditTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<PermissionAuditTable>? orderBy,
+    _i1.OrderByListBuilder<PermissionAuditTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<PermissionAudit>(
+      columnValues: columnValues(PermissionAudit.t.updateTable),
+      where: where(PermissionAudit.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(PermissionAudit.t),
+      orderByList: orderByList?.call(PermissionAudit.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

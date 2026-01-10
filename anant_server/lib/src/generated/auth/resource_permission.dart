@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
+// ignore_for_file: invalid_use_of_internal_member
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../auth/role.dart' as _i2;
 import '../auth/permission.dart' as _i3;
+import 'package:anant_server/src/generated/protocol.dart' as _i4;
 
 /// Resource-based access control for fine-grained permissions
 abstract class ResourcePermission
@@ -52,19 +53,20 @@ abstract class ResourcePermission
       roleId: jsonSerialization['roleId'] as int,
       role: jsonSerialization['role'] == null
           ? null
-          : _i2.Role.fromJson(
-              (jsonSerialization['role'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.Role>(jsonSerialization['role']),
       permissionId: jsonSerialization['permissionId'] as int,
       permission: jsonSerialization['permission'] == null
           ? null
-          : _i3.Permission.fromJson(
-              (jsonSerialization['permission'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i3.Permission>(
+              jsonSerialization['permission'],
+            ),
       resourceType: jsonSerialization['resourceType'] as String,
       resourceId: jsonSerialization['resourceId'] as String,
       organizationName: jsonSerialization['organizationName'] as String?,
       conditions: jsonSerialization['conditions'] as String?,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       createdById: jsonSerialization['createdById'] as int?,
     );
   }
@@ -118,6 +120,7 @@ abstract class ResourcePermission
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ResourcePermission',
       if (id != null) 'id': id,
       'roleId': roleId,
       if (role != null) 'role': role?.toJson(),
@@ -135,6 +138,7 @@ abstract class ResourcePermission
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ResourcePermission',
       if (id != null) 'id': id,
       'roleId': roleId,
       if (role != null) 'role': role?.toJsonForProtocol(),
@@ -201,18 +205,18 @@ class _ResourcePermissionImpl extends ResourcePermission {
     DateTime? createdAt,
     int? createdById,
   }) : super._(
-          id: id,
-          roleId: roleId,
-          role: role,
-          permissionId: permissionId,
-          permission: permission,
-          resourceType: resourceType,
-          resourceId: resourceId,
-          organizationName: organizationName,
-          conditions: conditions,
-          createdAt: createdAt,
-          createdById: createdById,
-        );
+         id: id,
+         roleId: roleId,
+         role: role,
+         permissionId: permissionId,
+         permission: permission,
+         resourceType: resourceType,
+         resourceId: resourceId,
+         organizationName: organizationName,
+         conditions: conditions,
+         createdAt: createdAt,
+         createdById: createdById,
+       );
 
   /// Returns a shallow copy of this [ResourcePermission]
   /// with some or all fields replaced by the given arguments.
@@ -251,9 +255,57 @@ class _ResourcePermissionImpl extends ResourcePermission {
   }
 }
 
+class ResourcePermissionUpdateTable
+    extends _i1.UpdateTable<ResourcePermissionTable> {
+  ResourcePermissionUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
+    table.roleId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> permissionId(int value) => _i1.ColumnValue(
+    table.permissionId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> resourceType(String value) => _i1.ColumnValue(
+    table.resourceType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> resourceId(String value) => _i1.ColumnValue(
+    table.resourceId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> organizationName(String? value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> conditions(String? value) => _i1.ColumnValue(
+    table.conditions,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> createdById(int? value) => _i1.ColumnValue(
+    table.createdById,
+    value,
+  );
+}
+
 class ResourcePermissionTable extends _i1.Table<int?> {
   ResourcePermissionTable({super.tableRelation})
-      : super(tableName: 'resource_permission') {
+    : super(tableName: 'resource_permission') {
+    updateTable = ResourcePermissionUpdateTable(this);
     roleId = _i1.ColumnInt(
       'roleId',
       this,
@@ -288,6 +340,8 @@ class ResourcePermissionTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final ResourcePermissionUpdateTable updateTable;
 
   late final _i1.ColumnInt roleId;
 
@@ -337,16 +391,16 @@ class ResourcePermissionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        roleId,
-        permissionId,
-        resourceType,
-        resourceId,
-        organizationName,
-        conditions,
-        createdAt,
-        createdById,
-      ];
+    id,
+    roleId,
+    permissionId,
+    resourceType,
+    resourceId,
+    organizationName,
+    conditions,
+    createdAt,
+    createdById,
+  ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -375,9 +429,9 @@ class ResourcePermissionInclude extends _i1.IncludeObject {
 
   @override
   Map<String, _i1.Include?> get includes => {
-        'role': _role,
-        'permission': _permission,
-      };
+    'role': _role,
+    'permission': _permission,
+  };
 
   @override
   _i1.Table<int?> get table => ResourcePermission.t;
@@ -570,6 +624,48 @@ class ResourcePermissionRepository {
     );
   }
 
+  /// Updates a single [ResourcePermission] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ResourcePermission?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<ResourcePermissionUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ResourcePermission>(
+      id,
+      columnValues: columnValues(ResourcePermission.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ResourcePermission]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<ResourcePermission>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<ResourcePermissionUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<ResourcePermissionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<ResourcePermissionTable>? orderBy,
+    _i1.OrderByListBuilder<ResourcePermissionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<ResourcePermission>(
+      columnValues: columnValues(ResourcePermission.t.updateTable),
+      where: where(ResourcePermission.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ResourcePermission.t),
+      orderByList: orderByList?.call(ResourcePermission.t),
+      orderDescending: orderDescending,
+      transaction: transaction,
+    );
+  }
+
   /// Deletes all [ResourcePermission]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
@@ -665,8 +761,9 @@ class ResourcePermissionAttachRowRepository {
       throw ArgumentError.notNull('permission.id');
     }
 
-    var $resourcePermission =
-        resourcePermission.copyWith(permissionId: permission.id);
+    var $resourcePermission = resourcePermission.copyWith(
+      permissionId: permission.id,
+    );
     await session.db.updateRow<ResourcePermission>(
       $resourcePermission,
       columns: [ResourcePermission.t.permissionId],

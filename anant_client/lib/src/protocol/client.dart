@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -41,24 +42,23 @@ class EndpointAnnouncement extends _i1.EndpointRef {
   _i2.Future<List<_i3.Announcement>> getAnnouncementsForUser(
     String userId,
     String userRole,
-  ) =>
-      caller.callServerEndpoint<List<_i3.Announcement>>(
-        'announcement',
-        'getAnnouncementsForUser',
-        {
-          'userId': userId,
-          'userRole': userRole,
-        },
-      );
+  ) => caller.callServerEndpoint<List<_i3.Announcement>>(
+    'announcement',
+    'getAnnouncementsForUser',
+    {
+      'userId': userId,
+      'userRole': userRole,
+    },
+  );
 
   /// Create a new announcement
   _i2.Future<_i3.Announcement?> createAnnouncement(
-          _i3.Announcement announcement) =>
-      caller.callServerEndpoint<_i3.Announcement?>(
-        'announcement',
-        'createAnnouncement',
-        {'announcement': announcement},
-      );
+    _i3.Announcement announcement,
+  ) => caller.callServerEndpoint<_i3.Announcement?>(
+    'announcement',
+    'createAnnouncement',
+    {'announcement': announcement},
+  );
 
   /// Delete an announcement
   _i2.Future<bool> deleteAnnouncement(int announcementId) =>
@@ -94,12 +94,12 @@ class EndpointAttendance extends _i1.EndpointRef {
 
   /// Submit full attendance list and mark all as submitted
   _i2.Future<void> submitCompleteAttendance(
-          List<_i4.Attendance> attendanceList) =>
-      caller.callServerEndpoint<void>(
-        'attendance',
-        'submitCompleteAttendance',
-        {'attendanceList': attendanceList},
-      );
+    List<_i4.Attendance> attendanceList,
+  ) => caller.callServerEndpoint<void>(
+    'attendance',
+    'submitCompleteAttendance',
+    {'attendanceList': attendanceList},
+  );
 
   /// Get attendance status for a list of userIds
   _i2.Future<Map<String, String>> getFilteredAttendanceStatus(
@@ -111,35 +111,35 @@ class EndpointAttendance extends _i1.EndpointRef {
     String className,
     String date,
     String organizationName,
-  ) =>
-      caller.callServerEndpoint<Map<String, String>>(
-        'attendance',
-        'getFilteredAttendanceStatus',
-        {
-          'studentAnantId': studentAnantId,
-          'subjectName': subjectName,
-          'startTime': startTime,
-          'endTime': endTime,
-          'sectionName': sectionName,
-          'className': className,
-          'date': date,
-          'organizationName': organizationName,
-        },
-      );
+  ) => caller.callServerEndpoint<Map<String, String>>(
+    'attendance',
+    'getFilteredAttendanceStatus',
+    {
+      'studentAnantId': studentAnantId,
+      'subjectName': subjectName,
+      'startTime': startTime,
+      'endTime': endTime,
+      'sectionName': sectionName,
+      'className': className,
+      'date': date,
+      'organizationName': organizationName,
+    },
+  );
 
   /// Get all attendance records for a specific user using their Anant ID.
   _i2.Future<List<_i4.Attendance>> getUserAttendanceRecords(
-          String studentAnantId) =>
-      caller.callServerEndpoint<List<_i4.Attendance>>(
-        'attendance',
-        'getUserAttendanceRecords',
-        {'studentAnantId': studentAnantId},
-      );
+    String studentAnantId,
+  ) => caller.callServerEndpoint<List<_i4.Attendance>>(
+    'attendance',
+    'getUserAttendanceRecords',
+    {'studentAnantId': studentAnantId},
+  );
 
   /// Stream attendance updates for a user
-  _i2.Stream<_i4.Attendance> receiveAttendanceStream(String studentAnantId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i4.Attendance>,
-          _i4.Attendance>(
+  _i2.Stream<_i4.Attendance> receiveAttendanceStream(
+    String studentAnantId,
+  ) => caller
+      .callStreamingServerEndpoint<_i2.Stream<_i4.Attendance>, _i4.Attendance>(
         'attendance',
         'receiveAttendanceStream',
         {'studentAnantId': studentAnantId},
@@ -179,36 +179,35 @@ class EndpointAuth extends _i1.EndpointRef {
     String? aadharNumber,
     List<String>? subjectTeaching,
     List<String>? classAndSectionTeaching,
-  }) =>
-      caller.callServerEndpoint<Map<String, dynamic>>(
-        'auth',
-        'signUp',
-        {
-          'role': role,
-          'organizationName': organizationName,
-          'sectionName': sectionName,
-          'admissionNumber': admissionNumber,
-          'className': className,
-          'rollNumber': rollNumber,
-          'email': email,
-          'password': password,
-          'fullName': fullName,
-          'anantId': anantId,
-          'profileImageUrl': profileImageUrl,
-          'mobileNumber': mobileNumber,
-          'parentMobileNumber': parentMobileNumber,
-          'address': address,
-          'city': city,
-          'state': state,
-          'country': country,
-          'pincode': pincode,
-          'dob': dob,
-          'bloodGroup': bloodGroup,
-          'aadharNumber': aadharNumber,
-          'subjectTeaching': subjectTeaching,
-          'classAndSectionTeaching': classAndSectionTeaching,
-        },
-      );
+  }) => caller.callServerEndpoint<Map<String, dynamic>>(
+    'auth',
+    'signUp',
+    {
+      'role': role,
+      'organizationName': organizationName,
+      'sectionName': sectionName,
+      'admissionNumber': admissionNumber,
+      'className': className,
+      'rollNumber': rollNumber,
+      'email': email,
+      'password': password,
+      'fullName': fullName,
+      'anantId': anantId,
+      'profileImageUrl': profileImageUrl,
+      'mobileNumber': mobileNumber,
+      'parentMobileNumber': parentMobileNumber,
+      'address': address,
+      'city': city,
+      'state': state,
+      'country': country,
+      'pincode': pincode,
+      'dob': dob,
+      'bloodGroup': bloodGroup,
+      'aadharNumber': aadharNumber,
+      'subjectTeaching': subjectTeaching,
+      'classAndSectionTeaching': classAndSectionTeaching,
+    },
+  );
 
   /// Bulk sign up new users.
   _i2.Future<List<Map<String, dynamic>>> bulkSignUp(List<_i6.User> userList) =>
@@ -222,15 +221,14 @@ class EndpointAuth extends _i1.EndpointRef {
   _i2.Future<_i7.AuthKey> signIn(
     String anantId,
     String password,
-  ) =>
-      caller.callServerEndpoint<_i7.AuthKey>(
-        'auth',
-        'signIn',
-        {
-          'anantId': anantId,
-          'password': password,
-        },
-      );
+  ) => caller.callServerEndpoint<_i7.AuthKey>(
+    'auth',
+    'signIn',
+    {
+      'anantId': anantId,
+      'password': password,
+    },
+  );
 
   /// Update a user's details.
   _i2.Future<_i7.AuthKey> updateUser(
@@ -259,45 +257,44 @@ class EndpointAuth extends _i1.EndpointRef {
     String? newAadharNumber,
     List<String>? newSubjectTeaching,
     List<String>? newClassAndSectionTeaching,
-  }) =>
-      caller.callServerEndpoint<_i7.AuthKey>(
-        'auth',
-        'updateUser',
-        {
-          'userId': userId,
-          'newAnantId': newAnantId,
-          'newPassword': newPassword,
-          'newEmail': newEmail,
-          'newFullName': newFullName,
-          'newRole': newRole,
-          'isActive': isActive,
-          'newClassName': newClassName,
-          'newRollNumber': newRollNumber,
-          'newAdmissionNumber': newAdmissionNumber,
-          'newSectionName': newSectionName,
-          'newOrganizationName': newOrganizationName,
-          'newProfileImageUrl': newProfileImageUrl,
-          'newMobileNumber': newMobileNumber,
-          'newParentMobileNumber': newParentMobileNumber,
-          'newAddress': newAddress,
-          'newCity': newCity,
-          'newState': newState,
-          'newCountry': newCountry,
-          'newPincode': newPincode,
-          'newDob': newDob,
-          'newBloodGroup': newBloodGroup,
-          'newAadharNumber': newAadharNumber,
-          'newSubjectTeaching': newSubjectTeaching,
-          'newClassAndSectionTeaching': newClassAndSectionTeaching,
-        },
-      );
+  }) => caller.callServerEndpoint<_i7.AuthKey>(
+    'auth',
+    'updateUser',
+    {
+      'userId': userId,
+      'newAnantId': newAnantId,
+      'newPassword': newPassword,
+      'newEmail': newEmail,
+      'newFullName': newFullName,
+      'newRole': newRole,
+      'isActive': isActive,
+      'newClassName': newClassName,
+      'newRollNumber': newRollNumber,
+      'newAdmissionNumber': newAdmissionNumber,
+      'newSectionName': newSectionName,
+      'newOrganizationName': newOrganizationName,
+      'newProfileImageUrl': newProfileImageUrl,
+      'newMobileNumber': newMobileNumber,
+      'newParentMobileNumber': newParentMobileNumber,
+      'newAddress': newAddress,
+      'newCity': newCity,
+      'newState': newState,
+      'newCountry': newCountry,
+      'newPincode': newPincode,
+      'newDob': newDob,
+      'newBloodGroup': newBloodGroup,
+      'newAadharNumber': newAadharNumber,
+      'newSubjectTeaching': newSubjectTeaching,
+      'newClassAndSectionTeaching': newClassAndSectionTeaching,
+    },
+  );
 
   /// Delete a user.
   _i2.Future<bool> deleteUser(int userId) => caller.callServerEndpoint<bool>(
-        'auth',
-        'deleteUser',
-        {'userId': userId},
-      );
+    'auth',
+    'deleteUser',
+    {'userId': userId},
+  );
 }
 
 /// {@category Endpoint}
@@ -333,10 +330,10 @@ class EndpointClasses extends _i1.EndpointRef {
 
   /// Delete a Classes by id
   _i2.Future<bool> deleteClasses(int id) => caller.callServerEndpoint<bool>(
-        'classes',
-        'deleteClasses',
-        {'id': id},
-      );
+    'classes',
+    'deleteClasses',
+    {'id': id},
+  );
 }
 
 /// {@category Endpoint}
@@ -372,10 +369,10 @@ class EndpointCourse extends _i1.EndpointRef {
 
   /// Delete a Course by id
   _i2.Future<bool> deleteCourse(int id) => caller.callServerEndpoint<bool>(
-        'course',
-        'deleteCourse',
-        {'id': id},
-      );
+    'course',
+    'deleteCourse',
+    {'id': id},
+  );
 }
 
 /// {@category Endpoint}
@@ -435,12 +432,12 @@ class EndpointNotification extends _i1.EndpointRef {
 
   /// Create a notification (for system use)
   _i2.Future<_i10.Notification?> createNotification(
-          _i10.Notification notification) =>
-      caller.callServerEndpoint<_i10.Notification?>(
-        'notification',
-        'createNotification',
-        {'notification': notification},
-      );
+    _i10.Notification notification,
+  ) => caller.callServerEndpoint<_i10.Notification?>(
+    'notification',
+    'createNotification',
+    {'notification': notification},
+  );
 
   /// Get unread count for a user
   _i2.Future<int> getUnreadCount(String userId) =>
@@ -452,8 +449,10 @@ class EndpointNotification extends _i1.EndpointRef {
 
   /// Stream notifications for a user
   _i2.Stream<_i10.Notification> receiveNotificationStream(String userId) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i10.Notification>,
-          _i10.Notification>(
+      caller.callStreamingServerEndpoint<
+        _i2.Stream<_i10.Notification>,
+        _i10.Notification
+      >(
         'notification',
         'receiveNotificationStream',
         {'userId': userId},
@@ -514,16 +513,15 @@ class EndpointPermission extends _i1.EndpointRef {
     String slug,
     String? description,
     String? module,
-  ) =>
-      caller.callServerEndpoint<_i12.Permission?>(
-        'permission',
-        'createPermission',
-        {
-          'slug': slug,
-          'description': description,
-          'module': module,
-        },
-      );
+  ) => caller.callServerEndpoint<_i12.Permission?>(
+    'permission',
+    'createPermission',
+    {
+      'slug': slug,
+      'description': description,
+      'module': module,
+    },
+  );
 
   /// Get all permissions.
   _i2.Future<List<_i12.Permission>> getAllPermissions() =>
@@ -546,16 +544,15 @@ class EndpointPermission extends _i1.EndpointRef {
     int permissionId,
     String? description,
     String? module,
-  ) =>
-      caller.callServerEndpoint<_i12.Permission?>(
-        'permission',
-        'updatePermission',
-        {
-          'permissionId': permissionId,
-          'description': description,
-          'module': module,
-        },
-      );
+  ) => caller.callServerEndpoint<_i12.Permission?>(
+    'permission',
+    'updatePermission',
+    {
+      'permissionId': permissionId,
+      'description': description,
+      'module': module,
+    },
+  );
 
   /// Delete a permission.
   _i2.Future<bool> deletePermission(int permissionId) =>
@@ -586,43 +583,40 @@ class EndpointPermission extends _i1.EndpointRef {
   _i2.Future<bool> grantUserPermission(
     int userId,
     String permissionSlug,
-  ) =>
-      caller.callServerEndpoint<bool>(
-        'permission',
-        'grantUserPermission',
-        {
-          'userId': userId,
-          'permissionSlug': permissionSlug,
-        },
-      );
+  ) => caller.callServerEndpoint<bool>(
+    'permission',
+    'grantUserPermission',
+    {
+      'userId': userId,
+      'permissionSlug': permissionSlug,
+    },
+  );
 
   /// Revoke a specific permission from a user (Override).
   _i2.Future<bool> revokeUserPermission(
     int userId,
     String permissionSlug,
-  ) =>
-      caller.callServerEndpoint<bool>(
-        'permission',
-        'revokeUserPermission',
-        {
-          'userId': userId,
-          'permissionSlug': permissionSlug,
-        },
-      );
+  ) => caller.callServerEndpoint<bool>(
+    'permission',
+    'revokeUserPermission',
+    {
+      'userId': userId,
+      'permissionSlug': permissionSlug,
+    },
+  );
 
   /// Reset a user's permission override (Back to Role default).
   _i2.Future<bool> resetUserPermission(
     int userId,
     String permissionSlug,
-  ) =>
-      caller.callServerEndpoint<bool>(
-        'permission',
-        'resetUserPermission',
-        {
-          'userId': userId,
-          'permissionSlug': permissionSlug,
-        },
-      );
+  ) => caller.callServerEndpoint<bool>(
+    'permission',
+    'resetUserPermission',
+    {
+      'userId': userId,
+      'permissionSlug': permissionSlug,
+    },
+  );
 }
 
 /// {@category Endpoint}
@@ -637,39 +631,37 @@ class EndpointReport extends _i1.EndpointRef {
     String organizationId,
     DateTime startDate,
     DateTime endDate,
-  ) =>
-      caller.callServerEndpoint<Map<String, dynamic>>(
-        'report',
-        'getRevenueReport',
-        {
-          'organizationId': organizationId,
-          'startDate': startDate,
-          'endDate': endDate,
-        },
-      );
+  ) => caller.callServerEndpoint<Map<String, dynamic>>(
+    'report',
+    'getRevenueReport',
+    {
+      'organizationId': organizationId,
+      'startDate': startDate,
+      'endDate': endDate,
+    },
+  );
 
   /// Get attendance report
   _i2.Future<Map<String, dynamic>> getAttendanceReport(
     String organizationId,
     String period,
-  ) =>
-      caller.callServerEndpoint<Map<String, dynamic>>(
-        'report',
-        'getAttendanceReport',
-        {
-          'organizationId': organizationId,
-          'period': period,
-        },
-      );
+  ) => caller.callServerEndpoint<Map<String, dynamic>>(
+    'report',
+    'getAttendanceReport',
+    {
+      'organizationId': organizationId,
+      'period': period,
+    },
+  );
 
   /// Get student statistics
   _i2.Future<Map<String, dynamic>> getStudentStatistics(
-          String organizationId) =>
-      caller.callServerEndpoint<Map<String, dynamic>>(
-        'report',
-        'getStudentStatistics',
-        {'organizationId': organizationId},
-      );
+    String organizationId,
+  ) => caller.callServerEndpoint<Map<String, dynamic>>(
+    'report',
+    'getStudentStatistics',
+    {'organizationId': organizationId},
+  );
 
   /// Get fee collection statistics
   _i2.Future<Map<String, dynamic>> getFeeStatistics(String organizationId) =>
@@ -681,26 +673,25 @@ class EndpointReport extends _i1.EndpointRef {
 
   /// Get class-wise statistics
   _i2.Future<List<Map<String, dynamic>>> getClassWiseStatistics(
-          String organizationId) =>
-      caller.callServerEndpoint<List<Map<String, dynamic>>>(
-        'report',
-        'getClassWiseStatistics',
-        {'organizationId': organizationId},
-      );
+    String organizationId,
+  ) => caller.callServerEndpoint<List<Map<String, dynamic>>>(
+    'report',
+    'getClassWiseStatistics',
+    {'organizationId': organizationId},
+  );
 
   /// Export report as CSV/PDF
   _i2.Future<String> exportReport(
     String reportType,
     Map<String, dynamic> filters,
-  ) =>
-      caller.callServerEndpoint<String>(
-        'report',
-        'exportReport',
-        {
-          'reportType': reportType,
-          'filters': filters,
-        },
-      );
+  ) => caller.callServerEndpoint<String>(
+    'report',
+    'exportReport',
+    {
+      'reportType': reportType,
+      'filters': filters,
+    },
+  );
 }
 
 /// Endpoint for managing roles and permissions (RBAC).
@@ -718,18 +709,17 @@ class EndpointRole extends _i1.EndpointRef {
     String? description,
     String? organizationName,
     bool isSystemRole,
-  ) =>
-      caller.callServerEndpoint<_i13.Role?>(
-        'role',
-        'createRole',
-        {
-          'name': name,
-          'slug': slug,
-          'description': description,
-          'organizationName': organizationName,
-          'isSystemRole': isSystemRole,
-        },
-      );
+  ) => caller.callServerEndpoint<_i13.Role?>(
+    'role',
+    'createRole',
+    {
+      'name': name,
+      'slug': slug,
+      'description': description,
+      'organizationName': organizationName,
+      'isSystemRole': isSystemRole,
+    },
+  );
 
   /// Get all roles for an organization.
   _i2.Future<List<_i13.Role>> getRoles({String? organizationName}) =>
@@ -744,51 +734,48 @@ class EndpointRole extends _i1.EndpointRef {
     int roleId,
     String? name,
     String? description,
-  ) =>
-      caller.callServerEndpoint<_i13.Role?>(
-        'role',
-        'updateRole',
-        {
-          'roleId': roleId,
-          'name': name,
-          'description': description,
-        },
-      );
+  ) => caller.callServerEndpoint<_i13.Role?>(
+    'role',
+    'updateRole',
+    {
+      'roleId': roleId,
+      'name': name,
+      'description': description,
+    },
+  );
 
   /// Delete a role.
   _i2.Future<bool> deleteRole(int roleId) => caller.callServerEndpoint<bool>(
-        'role',
-        'deleteRole',
-        {'roleId': roleId},
-      );
+    'role',
+    'deleteRole',
+    {'roleId': roleId},
+  );
 
   /// Assign a permission to a role.
   _i2.Future<_i14.RolePermission?> assignPermission(
     int roleId,
     int permissionId,
-  ) =>
-      caller.callServerEndpoint<_i14.RolePermission?>(
-        'role',
-        'assignPermission',
-        {
-          'roleId': roleId,
-          'permissionId': permissionId,
-        },
-      );
+  ) => caller.callServerEndpoint<_i14.RolePermission?>(
+    'role',
+    'assignPermission',
+    {
+      'roleId': roleId,
+      'permissionId': permissionId,
+    },
+  );
 
   /// Remove a permission from a role.
   _i2.Future<bool> removePermission(
     int roleId,
     int permissionId,
-  ) =>
-      caller.callServerEndpoint<bool>(
-        'role',
-        'removePermission',
-        {
-          'roleId': roleId,
-          'permissionId': permissionId,
-        },
-      );
+  ) => caller.callServerEndpoint<bool>(
+    'role',
+    'removePermission',
+    {
+      'roleId': roleId,
+      'permissionId': permissionId,
+    },
+  );
 
   /// Get all permissions for a role.
   _i2.Future<List<_i12.Permission>> getPermissionsForRole(int roleId) =>
@@ -832,10 +819,10 @@ class EndpointSection extends _i1.EndpointRef {
 
   /// Delete a Section by id
   _i2.Future<bool> deleteSection(int id) => caller.callServerEndpoint<bool>(
-        'section',
-        'deleteSection',
-        {'id': id},
-      );
+    'section',
+    'deleteSection',
+    {'id': id},
+  );
 }
 
 /// {@category Endpoint}
@@ -888,15 +875,14 @@ class EndpointTimetable extends _i1.EndpointRef {
   _i2.Future<List<Map<String, dynamic>>> getTimetable(
     String userId,
     String role,
-  ) =>
-      caller.callServerEndpoint<List<Map<String, dynamic>>>(
-        'timetable',
-        'getTimetable',
-        {
-          'userId': userId,
-          'role': role,
-        },
-      );
+  ) => caller.callServerEndpoint<List<Map<String, dynamic>>>(
+    'timetable',
+    'getTimetable',
+    {
+      'userId': userId,
+      'role': role,
+    },
+  );
 
   /// Create or update timetable entry
   _i2.Future<bool> upsertTimetableEntry(Map<String, dynamic> entry) =>
@@ -932,57 +918,55 @@ class EndpointTransaction extends _i1.EndpointRef {
 
   /// Create a new MonthlyFeeTransaction in the database (no checks).
   _i2.Future<_i17.MonthlyFeeTransaction> createMonthlyFeeTransaction(
-          _i17.MonthlyFeeTransaction txn) =>
-      caller.callServerEndpoint<_i17.MonthlyFeeTransaction>(
-        'transaction',
-        'createMonthlyFeeTransaction',
-        {'txn': txn},
-      );
+    _i17.MonthlyFeeTransaction txn,
+  ) => caller.callServerEndpoint<_i17.MonthlyFeeTransaction>(
+    'transaction',
+    'createMonthlyFeeTransaction',
+    {'txn': txn},
+  );
 
   /// Retrieve a single MonthlyFeeTransaction by its month
   _i2.Future<_i17.MonthlyFeeTransaction?> getMonthlyFeeTransaction(
     String month,
     String anantId,
-  ) =>
-      caller.callServerEndpoint<_i17.MonthlyFeeTransaction?>(
-        'transaction',
-        'getMonthlyFeeTransaction',
-        {
-          'month': month,
-          'anantId': anantId,
-        },
-      );
+  ) => caller.callServerEndpoint<_i17.MonthlyFeeTransaction?>(
+    'transaction',
+    'getMonthlyFeeTransaction',
+    {
+      'month': month,
+      'anantId': anantId,
+    },
+  );
 
   /// Retrieve all MonthlyFeeTransactions
   _i2.Future<List<_i17.MonthlyFeeTransaction>> getAllMonthlyFeeTransactionUser(
-          String anantId) =>
-      caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
-        'transaction',
-        'getAllMonthlyFeeTransactionUser',
-        {'anantId': anantId},
-      );
+    String anantId,
+  ) => caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
+    'transaction',
+    'getAllMonthlyFeeTransactionUser',
+    {'anantId': anantId},
+  );
 
   _i2.Future<List<_i17.MonthlyFeeTransaction>> getAllMonthlyFeeTransactionOrg(
-          String organizationName) =>
-      caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
-        'transaction',
-        'getAllMonthlyFeeTransactionOrg',
-        {'organizationName': organizationName},
-      );
+    String organizationName,
+  ) => caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
+    'transaction',
+    'getAllMonthlyFeeTransactionOrg',
+    {'organizationName': organizationName},
+  );
 
   /// Delete a MonthlyFeeTransaction by month
   _i2.Future<bool> deleteMonthlyFeeTransaction(
     String month,
     String anantId,
-  ) =>
-      caller.callServerEndpoint<bool>(
-        'transaction',
-        'deleteMonthlyFeeTransaction',
-        {
-          'month': month,
-          'anantId': anantId,
-        },
-      );
+  ) => caller.callServerEndpoint<bool>(
+    'transaction',
+    'deleteMonthlyFeeTransaction',
+    {
+      'month': month,
+      'anantId': anantId,
+    },
+  );
 }
 
 /// {@category Endpoint}
@@ -994,10 +978,10 @@ class EndpointUser extends _i1.EndpointRef {
 
   /// Retrieves all the data about a user given their user ID.
   _i2.Future<_i6.User?> me(int userId) => caller.callServerEndpoint<_i6.User?>(
-        'user',
-        'me',
-        {'userId': userId},
-      );
+    'user',
+    'me',
+    {'userId': userId},
+  );
 
   /// Retrieves user data by anantId (case-insensitive).
   _i2.Future<_i6.User?> getByAnantId(String anantId) =>
@@ -1021,24 +1005,23 @@ class EndpointUser extends _i1.EndpointRef {
     String className,
     String organizationName,
     String role,
-  ) =>
-      caller.callServerEndpoint<List<_i6.User>>(
-        'user',
-        'getFilteredUsers',
-        {
-          'sectionName': sectionName,
-          'className': className,
-          'organizationName': organizationName,
-          'role': role,
-        },
-      );
+  ) => caller.callServerEndpoint<List<_i6.User>>(
+    'user',
+    'getFilteredUsers',
+    {
+      'sectionName': sectionName,
+      'className': className,
+      'organizationName': organizationName,
+      'role': role,
+    },
+  );
 
   /// Delete a user by id.
   _i2.Future<bool> deleteUser(int id) => caller.callServerEndpoint<bool>(
-        'user',
-        'deleteUser',
-        {'id': id},
-      );
+    'user',
+    'deleteUser',
+    {'id': id},
+  );
 
   /// Marks the user's password as created by setting isPasswordCreated to true.
   /// This method retrieves the user record for the given [userId] and updates
@@ -1055,17 +1038,16 @@ class EndpointUser extends _i1.EndpointRef {
     String sectionName,
     String organizationName,
     String query,
-  ) =>
-      caller.callServerEndpoint<List<_i6.User>>(
-        'user',
-        'searchUsers',
-        {
-          'className': className,
-          'sectionName': sectionName,
-          'organizationName': organizationName,
-          'query': query,
-        },
-      );
+  ) => caller.callServerEndpoint<List<_i6.User>>(
+    'user',
+    'searchUsers',
+    {
+      'className': className,
+      'sectionName': sectionName,
+      'organizationName': organizationName,
+      'query': query,
+    },
+  );
 }
 
 class Modules {
@@ -1080,28 +1062,31 @@ class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
-    _i1.AuthenticationKeyManager? authenticationKeyManager,
+    @Deprecated(
+      'Use authKeyProvider instead. This will be removed in future releases.',
+    )
+    super.authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
     Function(
       _i1.MethodCallContext,
       Object,
       StackTrace,
-    )? onFailedCall,
+    )?
+    onFailedCall,
     Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
-          host,
-          _i18.Protocol(),
-          securityContext: securityContext,
-          authenticationKeyManager: authenticationKeyManager,
-          streamingConnectionTimeout: streamingConnectionTimeout,
-          connectionTimeout: connectionTimeout,
-          onFailedCall: onFailedCall,
-          onSucceededCall: onSucceededCall,
-          disconnectStreamsOnLostInternetConnection:
-              disconnectStreamsOnLostInternetConnection,
-        ) {
+         host,
+         _i18.Protocol(),
+         securityContext: securityContext,
+         streamingConnectionTimeout: streamingConnectionTimeout,
+         connectionTimeout: connectionTimeout,
+         onFailedCall: onFailedCall,
+         onSucceededCall: onSucceededCall,
+         disconnectStreamsOnLostInternetConnection:
+             disconnectStreamsOnLostInternetConnection,
+       ) {
     announcement = EndpointAnnouncement(this);
     attendance = EndpointAttendance(this);
     auth = EndpointAuth(this);
@@ -1160,26 +1145,27 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'announcement': announcement,
-        'attendance': attendance,
-        'auth': auth,
-        'classes': classes,
-        'course': course,
-        'exam': exam,
-        'notification': notification,
-        'organization': organization,
-        'permission': permission,
-        'report': report,
-        'role': role,
-        'section': section,
-        'seed': seed,
-        'settings': settings,
-        'timetable': timetable,
-        'transaction': transaction,
-        'user': user,
-      };
+    'announcement': announcement,
+    'attendance': attendance,
+    'auth': auth,
+    'classes': classes,
+    'course': course,
+    'exam': exam,
+    'notification': notification,
+    'organization': organization,
+    'permission': permission,
+    'report': report,
+    'role': role,
+    'section': section,
+    'seed': seed,
+    'settings': settings,
+    'timetable': timetable,
+    'transaction': transaction,
+    'user': user,
+  };
 
   @override
-  Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>
-      {'auth': modules.auth};
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
+    'auth': modules.auth,
+  };
 }

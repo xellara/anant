@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -86,6 +87,7 @@ abstract class UserCredentials
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'UserCredentials',
       if (id != null) 'id': id,
       'uid': uid,
       if (userId != null) 'userId': userId,
@@ -99,6 +101,7 @@ abstract class UserCredentials
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'UserCredentials',
       if (id != null) 'id': id,
       'uid': uid,
       if (userId != null) 'userId': userId,
@@ -151,14 +154,14 @@ class _UserCredentialsImpl extends UserCredentials {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          uid: uid,
-          userId: userId,
-          passwordHash: passwordHash,
-          anantId: anantId,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         uid: uid,
+         userId: userId,
+         passwordHash: passwordHash,
+         anantId: anantId,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [UserCredentials]
   /// with some or all fields replaced by the given arguments.
@@ -185,9 +188,46 @@ class _UserCredentialsImpl extends UserCredentials {
   }
 }
 
+class UserCredentialsUpdateTable extends _i1.UpdateTable<UserCredentialsTable> {
+  UserCredentialsUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> uid(String value) => _i1.ColumnValue(
+    table.uid,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int? value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> passwordHash(String value) => _i1.ColumnValue(
+    table.passwordHash,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> anantId(String? value) => _i1.ColumnValue(
+    table.anantId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+}
+
 class UserCredentialsTable extends _i1.Table<int?> {
   UserCredentialsTable({super.tableRelation})
-      : super(tableName: 'user_credentials') {
+    : super(tableName: 'user_credentials') {
+    updateTable = UserCredentialsUpdateTable(this);
     uid = _i1.ColumnString(
       'uid',
       this,
@@ -214,6 +254,8 @@ class UserCredentialsTable extends _i1.Table<int?> {
     );
   }
 
+  late final UserCredentialsUpdateTable updateTable;
+
   late final _i1.ColumnString uid;
 
   late final _i1.ColumnInt userId;
@@ -228,14 +270,14 @@ class UserCredentialsTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        uid,
-        userId,
-        passwordHash,
-        anantId,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    uid,
+    userId,
+    passwordHash,
+    anantId,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 class UserCredentialsInclude extends _i1.IncludeObject {
@@ -423,6 +465,48 @@ class UserCredentialsRepository {
     return session.db.updateRow<UserCredentials>(
       row,
       columns: columns?.call(UserCredentials.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [UserCredentials] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<UserCredentials?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<UserCredentialsUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<UserCredentials>(
+      id,
+      columnValues: columnValues(UserCredentials.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [UserCredentials]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<UserCredentials>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<UserCredentialsUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<UserCredentialsTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<UserCredentialsTable>? orderBy,
+    _i1.OrderByListBuilder<UserCredentialsTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<UserCredentials>(
+      columnValues: columnValues(UserCredentials.t.updateTable),
+      where: where(UserCredentials.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(UserCredentials.t),
+      orderByList: orderByList?.call(UserCredentials.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

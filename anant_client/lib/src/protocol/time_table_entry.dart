@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -42,8 +43,9 @@ abstract class TimetableEntry implements _i1.SerializableModel {
       subjectId: jsonSerialization['subjectId'] as int,
       teacherId: jsonSerialization['teacherId'] as int,
       dayOfWeek: jsonSerialization['dayOfWeek'] as int,
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       durationMinutes: jsonSerialization['durationMinutes'] as int,
     );
   }
@@ -83,6 +85,7 @@ abstract class TimetableEntry implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'TimetableEntry',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -113,15 +116,15 @@ class _TimetableEntryImpl extends TimetableEntry {
     required DateTime startTime,
     required int durationMinutes,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          classId: classId,
-          subjectId: subjectId,
-          teacherId: teacherId,
-          dayOfWeek: dayOfWeek,
-          startTime: startTime,
-          durationMinutes: durationMinutes,
-        );
+         id: id,
+         organizationId: organizationId,
+         classId: classId,
+         subjectId: subjectId,
+         teacherId: teacherId,
+         dayOfWeek: dayOfWeek,
+         startTime: startTime,
+         durationMinutes: durationMinutes,
+       );
 
   /// Returns a shallow copy of this [TimetableEntry]
   /// with some or all fields replaced by the given arguments.

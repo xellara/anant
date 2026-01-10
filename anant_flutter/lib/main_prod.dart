@@ -18,8 +18,8 @@ Future<void> main() async {
   // PRODUCTION ENVIRONMENT
   client = Client(
     'https://api.examplepod.com/', // TODO: Replace with your production URL
-    authenticationKeyManager: FlutterAuthenticationKeyManager(),
   );
+  client.authKeyProvider = FlutterAuthenticationKeyManager();
 
   runApp(MyApp(client: client));
 }

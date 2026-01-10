@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
+// ignore_for_file: invalid_use_of_internal_member
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../user/user.dart' as _i2;
 import '../auth/role.dart' as _i3;
+import 'package:anant_server/src/generated/protocol.dart' as _i4;
 
 /// User-Role assignment table for multi-role support
 abstract class UserRoleAssignment
@@ -29,8 +30,8 @@ abstract class UserRoleAssignment
     bool? isActive,
     this.validFrom,
     this.validUntil,
-  })  : assignedAt = assignedAt ?? DateTime.now(),
-        isActive = isActive ?? true;
+  }) : assignedAt = assignedAt ?? DateTime.now(),
+       isActive = isActive ?? true;
 
   factory UserRoleAssignment({
     int? id,
@@ -51,17 +52,16 @@ abstract class UserRoleAssignment
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       roleId: jsonSerialization['roleId'] as int,
       role: jsonSerialization['role'] == null
           ? null
-          : _i3.Role.fromJson(
-              (jsonSerialization['role'] as Map<String, dynamic>)),
-      assignedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
+          : _i4.Protocol().deserialize<_i3.Role>(jsonSerialization['role']),
+      assignedAt: jsonSerialization['assignedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
       assignedById: jsonSerialization['assignedById'] as int?,
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
       validFrom: jsonSerialization['validFrom'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['validFrom']),
@@ -117,6 +117,7 @@ abstract class UserRoleAssignment
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'UserRoleAssignment',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -133,6 +134,7 @@ abstract class UserRoleAssignment
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'UserRoleAssignment',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJsonForProtocol(),
@@ -197,17 +199,17 @@ class _UserRoleAssignmentImpl extends UserRoleAssignment {
     DateTime? validFrom,
     DateTime? validUntil,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          roleId: roleId,
-          role: role,
-          assignedAt: assignedAt,
-          assignedById: assignedById,
-          isActive: isActive,
-          validFrom: validFrom,
-          validUntil: validUntil,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         roleId: roleId,
+         role: role,
+         assignedAt: assignedAt,
+         assignedById: assignedById,
+         isActive: isActive,
+         validFrom: validFrom,
+         validUntil: validUntil,
+       );
 
   /// Returns a shallow copy of this [UserRoleAssignment]
   /// with some or all fields replaced by the given arguments.
@@ -240,9 +242,53 @@ class _UserRoleAssignmentImpl extends UserRoleAssignment {
   }
 }
 
+class UserRoleAssignmentUpdateTable
+    extends _i1.UpdateTable<UserRoleAssignmentTable> {
+  UserRoleAssignmentUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
+    table.roleId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> assignedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.assignedAt,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> assignedById(int? value) => _i1.ColumnValue(
+    table.assignedById,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> validFrom(DateTime? value) =>
+      _i1.ColumnValue(
+        table.validFrom,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> validUntil(DateTime? value) =>
+      _i1.ColumnValue(
+        table.validUntil,
+        value,
+      );
+}
+
 class UserRoleAssignmentTable extends _i1.Table<int?> {
   UserRoleAssignmentTable({super.tableRelation})
-      : super(tableName: 'user_role_assignment') {
+    : super(tableName: 'user_role_assignment') {
+    updateTable = UserRoleAssignmentUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -274,6 +320,8 @@ class UserRoleAssignmentTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final UserRoleAssignmentUpdateTable updateTable;
 
   late final _i1.ColumnInt userId;
 
@@ -321,15 +369,15 @@ class UserRoleAssignmentTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        roleId,
-        assignedAt,
-        assignedById,
-        isActive,
-        validFrom,
-        validUntil,
-      ];
+    id,
+    userId,
+    roleId,
+    assignedAt,
+    assignedById,
+    isActive,
+    validFrom,
+    validUntil,
+  ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -358,9 +406,9 @@ class UserRoleAssignmentInclude extends _i1.IncludeObject {
 
   @override
   Map<String, _i1.Include?> get includes => {
-        'user': _user,
-        'role': _role,
-      };
+    'user': _user,
+    'role': _role,
+  };
 
   @override
   _i1.Table<int?> get table => UserRoleAssignment.t;
@@ -549,6 +597,48 @@ class UserRoleAssignmentRepository {
     return session.db.updateRow<UserRoleAssignment>(
       row,
       columns: columns?.call(UserRoleAssignment.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [UserRoleAssignment] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<UserRoleAssignment?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<UserRoleAssignmentUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<UserRoleAssignment>(
+      id,
+      columnValues: columnValues(UserRoleAssignment.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [UserRoleAssignment]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<UserRoleAssignment>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<UserRoleAssignmentUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<UserRoleAssignmentTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<UserRoleAssignmentTable>? orderBy,
+    _i1.OrderByListBuilder<UserRoleAssignmentTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<UserRoleAssignment>(
+      columnValues: columnValues(UserRoleAssignment.t.updateTable),
+      where: where(UserRoleAssignment.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(UserRoleAssignment.t),
+      orderByList: orderByList?.call(UserRoleAssignment.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

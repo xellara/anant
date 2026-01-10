@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -25,8 +26,8 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.credits,
     bool? isElective,
     bool? isActive,
-  })  : isElective = isElective ?? false,
-        isActive = isActive ?? true;
+  }) : isElective = isElective ?? false,
+       isActive = isActive ?? true;
 
   factory Course({
     int? id,
@@ -53,8 +54,8 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       semester: jsonSerialization['semester'] as int?,
       academicYear: jsonSerialization['academicYear'] as String?,
       credits: jsonSerialization['credits'] as int?,
-      isElective: jsonSerialization['isElective'] as bool,
-      isActive: jsonSerialization['isActive'] as bool,
+      isElective: jsonSerialization['isElective'] as bool?,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -107,6 +108,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Course',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       if (department != null) 'department': department,
@@ -124,6 +126,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Course',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       if (department != null) 'department': department,
@@ -184,18 +187,18 @@ class _CourseImpl extends Course {
     bool? isElective,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          department: department,
-          name: name,
-          code: code,
-          description: description,
-          semester: semester,
-          academicYear: academicYear,
-          credits: credits,
-          isElective: isElective,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         department: department,
+         name: name,
+         code: code,
+         description: description,
+         semester: semester,
+         academicYear: academicYear,
+         credits: credits,
+         isElective: isElective,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Course]
   /// with some or all fields replaced by the given arguments.
@@ -216,8 +219,9 @@ class _CourseImpl extends Course {
   }) {
     return Course(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       department: department is String? ? department : this.department,
       name: name ?? this.name,
       code: code is String? ? code : this.code,
@@ -231,8 +235,64 @@ class _CourseImpl extends Course {
   }
 }
 
+class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
+  CourseUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int? value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> department(String? value) => _i1.ColumnValue(
+    table.department,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String? value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> semester(int? value) => _i1.ColumnValue(
+    table.semester,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> academicYear(String? value) =>
+      _i1.ColumnValue(
+        table.academicYear,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> credits(int? value) => _i1.ColumnValue(
+    table.credits,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isElective(bool value) => _i1.ColumnValue(
+    table.isElective,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+}
+
 class CourseTable extends _i1.Table<int?> {
   CourseTable({super.tableRelation}) : super(tableName: 'course') {
+    updateTable = CourseUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -277,6 +337,8 @@ class CourseTable extends _i1.Table<int?> {
     );
   }
 
+  late final CourseUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnString department;
@@ -299,18 +361,18 @@ class CourseTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        department,
-        name,
-        code,
-        description,
-        semester,
-        academicYear,
-        credits,
-        isElective,
-        isActive,
-      ];
+    id,
+    organizationId,
+    department,
+    name,
+    code,
+    description,
+    semester,
+    academicYear,
+    credits,
+    isElective,
+    isActive,
+  ];
 }
 
 class CourseInclude extends _i1.IncludeObject {
@@ -498,6 +560,46 @@ class CourseRepository {
     return session.db.updateRow<Course>(
       row,
       columns: columns?.call(Course.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Course] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Course?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<CourseUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Course>(
+      id,
+      columnValues: columnValues(Course.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Course]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Course>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<CourseUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<CourseTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<CourseTable>? orderBy,
+    _i1.OrderByListBuilder<CourseTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Course>(
+      columnValues: columnValues(Course.t.updateTable),
+      where: where(Course.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Course.t),
+      orderByList: orderByList?.call(Course.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

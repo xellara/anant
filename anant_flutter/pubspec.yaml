@@ -24,8 +24,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  serverpod_flutter: ^2.9.2
-  serverpod_auth_shared_flutter: ^2.9.2
+  serverpod_flutter: ^3.2.0
+  serverpod_auth_shared_flutter: ^3.2.0
   shared_preferences: ^2.5.2
   flutter_bloc: ^9.1.0
   equatable: ^2.0.7
@@ -51,12 +51,13 @@ dependencies:
   cupertino_icons: ^1.0.5
   animated_text_kit: ^4.3.0
   timeago: ^3.7.0
-  fl_chart: ^0.69.0
+  fl_chart: ^1.1.1
   file_picker: ^10.3.8
   excel: ^4.0.6
 
 dev_dependencies:
   bloc_test: ^10.0.0
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter

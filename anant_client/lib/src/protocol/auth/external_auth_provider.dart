@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -37,7 +38,8 @@ abstract class ExternalAuthProvider implements _i1.SerializableModel {
   }) = _ExternalAuthProviderImpl;
 
   factory ExternalAuthProvider.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ExternalAuthProvider(
       id: jsonSerialization['id'] as int?,
       uid: jsonSerialization['uid'] as String,
@@ -89,6 +91,7 @@ abstract class ExternalAuthProvider implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ExternalAuthProvider',
       if (id != null) 'id': id,
       'uid': uid,
       'provider': provider,
@@ -119,15 +122,15 @@ class _ExternalAuthProviderImpl extends ExternalAuthProvider {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          uid: uid,
-          provider: provider,
-          providerUid: providerUid,
-          providerEmail: providerEmail,
-          metadata: metadata,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         uid: uid,
+         provider: provider,
+         providerUid: providerUid,
+         providerEmail: providerEmail,
+         metadata: metadata,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [ExternalAuthProvider]
   /// with some or all fields replaced by the given arguments.
@@ -148,8 +151,9 @@ class _ExternalAuthProviderImpl extends ExternalAuthProvider {
       uid: uid ?? this.uid,
       provider: provider ?? this.provider,
       providerUid: providerUid ?? this.providerUid,
-      providerEmail:
-          providerEmail is String? ? providerEmail : this.providerEmail,
+      providerEmail: providerEmail is String?
+          ? providerEmail
+          : this.providerEmail,
       metadata: metadata is String? ? metadata : this.metadata,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -65,6 +66,7 @@ abstract class Enrollment
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Enrollment',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -75,6 +77,7 @@ abstract class Enrollment
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Enrollment',
       if (id != null) 'id': id,
       'organizationId': organizationId,
       'classId': classId,
@@ -121,11 +124,11 @@ class _EnrollmentImpl extends Enrollment {
     required int classId,
     required int studentId,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          classId: classId,
-          studentId: studentId,
-        );
+         id: id,
+         organizationId: organizationId,
+         classId: classId,
+         studentId: studentId,
+       );
 
   /// Returns a shallow copy of this [Enrollment]
   /// with some or all fields replaced by the given arguments.
@@ -146,8 +149,28 @@ class _EnrollmentImpl extends Enrollment {
   }
 }
 
+class EnrollmentUpdateTable extends _i1.UpdateTable<EnrollmentTable> {
+  EnrollmentUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> classId(int value) => _i1.ColumnValue(
+    table.classId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> studentId(int value) => _i1.ColumnValue(
+    table.studentId,
+    value,
+  );
+}
+
 class EnrollmentTable extends _i1.Table<int?> {
   EnrollmentTable({super.tableRelation}) : super(tableName: 'enrollment') {
+    updateTable = EnrollmentUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -162,6 +185,8 @@ class EnrollmentTable extends _i1.Table<int?> {
     );
   }
 
+  late final EnrollmentUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnInt classId;
@@ -170,11 +195,11 @@ class EnrollmentTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        classId,
-        studentId,
-      ];
+    id,
+    organizationId,
+    classId,
+    studentId,
+  ];
 }
 
 class EnrollmentInclude extends _i1.IncludeObject {
@@ -362,6 +387,46 @@ class EnrollmentRepository {
     return session.db.updateRow<Enrollment>(
       row,
       columns: columns?.call(Enrollment.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Enrollment] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Enrollment?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<EnrollmentUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Enrollment>(
+      id,
+      columnValues: columnValues(Enrollment.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Enrollment]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Enrollment>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<EnrollmentUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<EnrollmentTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<EnrollmentTable>? orderBy,
+    _i1.OrderByListBuilder<EnrollmentTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Enrollment>(
+      columnValues: columnValues(Enrollment.t.updateTable),
+      where: where(Enrollment.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Enrollment.t),
+      orderByList: orderByList?.call(Enrollment.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

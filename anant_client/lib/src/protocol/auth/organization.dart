@@ -7,9 +7,11 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:anant_client/src/protocol/protocol.dart' as _i2;
 
 /// Organization
 abstract class Organization implements _i1.SerializableModel {
@@ -35,8 +37,8 @@ abstract class Organization implements _i1.SerializableModel {
     this.admissionFee,
     this.gstNumber,
     this.panNumber,
-  })  : country = country ?? 'India',
-        isActive = isActive ?? true;
+  }) : country = country ?? 'India',
+       isActive = isActive ?? true;
 
   factory Organization({
     int? id,
@@ -72,25 +74,26 @@ abstract class Organization implements _i1.SerializableModel {
       address: jsonSerialization['address'] as String?,
       city: jsonSerialization['city'] as String?,
       state: jsonSerialization['state'] as String?,
-      country: jsonSerialization['country'] as String,
+      country: jsonSerialization['country'] as String?,
       pincode: jsonSerialization['pincode'] as String?,
       contactNumber: jsonSerialization['contactNumber'] as String?,
       email: jsonSerialization['email'] as String?,
       website: jsonSerialization['website'] as String?,
       logoUrl: jsonSerialization['logoUrl'] as String?,
-      isActive: jsonSerialization['isActive'] as bool,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      monthlyFees:
-          (jsonSerialization['monthlyFees'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                (v as num).toDouble(),
-              )),
-      feeStartAndEndMonth: (jsonSerialization['feeStartAndEndMonth'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as String,
-              )),
+      isActive: jsonSerialization['isActive'] as bool?,
+      createdAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
+      monthlyFees: jsonSerialization['monthlyFees'] == null
+          ? null
+          : _i2.Protocol().deserialize<Map<String, double>>(
+              jsonSerialization['monthlyFees'],
+            ),
+      feeStartAndEndMonth: jsonSerialization['feeStartAndEndMonth'] == null
+          ? null
+          : _i2.Protocol().deserialize<Map<String, String>>(
+              jsonSerialization['feeStartAndEndMonth'],
+            ),
       admissionFee: (jsonSerialization['admissionFee'] as num?)?.toDouble(),
       gstNumber: jsonSerialization['gstNumber'] as String?,
       panNumber: jsonSerialization['panNumber'] as String?,
@@ -171,6 +174,7 @@ abstract class Organization implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Organization',
       if (id != null) 'id': id,
       'name': name,
       'organizationName': organizationName,
@@ -228,28 +232,28 @@ class _OrganizationImpl extends Organization {
     String? gstNumber,
     String? panNumber,
   }) : super._(
-          id: id,
-          name: name,
-          organizationName: organizationName,
-          code: code,
-          type: type,
-          address: address,
-          city: city,
-          state: state,
-          country: country,
-          pincode: pincode,
-          contactNumber: contactNumber,
-          email: email,
-          website: website,
-          logoUrl: logoUrl,
-          isActive: isActive,
-          createdAt: createdAt,
-          monthlyFees: monthlyFees,
-          feeStartAndEndMonth: feeStartAndEndMonth,
-          admissionFee: admissionFee,
-          gstNumber: gstNumber,
-          panNumber: panNumber,
-        );
+         id: id,
+         name: name,
+         organizationName: organizationName,
+         code: code,
+         type: type,
+         address: address,
+         city: city,
+         state: state,
+         country: country,
+         pincode: pincode,
+         contactNumber: contactNumber,
+         email: email,
+         website: website,
+         logoUrl: logoUrl,
+         isActive: isActive,
+         createdAt: createdAt,
+         monthlyFees: monthlyFees,
+         feeStartAndEndMonth: feeStartAndEndMonth,
+         admissionFee: admissionFee,
+         gstNumber: gstNumber,
+         panNumber: panNumber,
+       );
 
   /// Returns a shallow copy of this [Organization]
   /// with some or all fields replaced by the given arguments.
@@ -289,8 +293,9 @@ class _OrganizationImpl extends Organization {
       state: state is String? ? state : this.state,
       country: country ?? this.country,
       pincode: pincode is String? ? pincode : this.pincode,
-      contactNumber:
-          contactNumber is String? ? contactNumber : this.contactNumber,
+      contactNumber: contactNumber is String?
+          ? contactNumber
+          : this.contactNumber,
       email: email is String? ? email : this.email,
       website: website is String? ? website : this.website,
       logoUrl: logoUrl is String? ? logoUrl : this.logoUrl,
@@ -298,24 +303,26 @@ class _OrganizationImpl extends Organization {
       createdAt: createdAt ?? this.createdAt,
       monthlyFees: monthlyFees is Map<String, double>?
           ? monthlyFees
-          : this.monthlyFees?.map((
+          : this.monthlyFees?.map(
+              (
                 key0,
                 value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+              ) => MapEntry(
+                key0,
+                value0,
+              ),
+            ),
       feeStartAndEndMonth: feeStartAndEndMonth is Map<String, String>?
           ? feeStartAndEndMonth
-          : this.feeStartAndEndMonth?.map((
+          : this.feeStartAndEndMonth?.map(
+              (
                 key0,
                 value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+              ) => MapEntry(
+                key0,
+                value0,
+              ),
+            ),
       admissionFee: admissionFee is double? ? admissionFee : this.admissionFee,
       gstNumber: gstNumber is String? ? gstNumber : this.gstNumber,
       panNumber: panNumber is String? ? panNumber : this.panNumber,

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -52,7 +53,7 @@ abstract class Classes
       endDate: jsonSerialization['endDate'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endDate']),
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -99,6 +100,7 @@ abstract class Classes
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Classes',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'name': name,
@@ -115,6 +117,7 @@ abstract class Classes
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Classes',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'name': name,
@@ -172,16 +175,16 @@ class _ClassesImpl extends Classes {
     DateTime? endDate,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          name: name,
-          academicYear: academicYear,
-          courseName: courseName,
-          classTeacherAnantId: classTeacherAnantId,
-          startDate: startDate,
-          endDate: endDate,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         name: name,
+         academicYear: academicYear,
+         courseName: courseName,
+         classTeacherAnantId: classTeacherAnantId,
+         startDate: startDate,
+         endDate: endDate,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Classes]
   /// with some or all fields replaced by the given arguments.
@@ -200,8 +203,9 @@ class _ClassesImpl extends Classes {
   }) {
     return Classes(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       name: name ?? this.name,
       academicYear: academicYear ?? this.academicYear,
       courseName: courseName is String? ? courseName : this.courseName,
@@ -215,8 +219,56 @@ class _ClassesImpl extends Classes {
   }
 }
 
+class ClassesUpdateTable extends _i1.UpdateTable<ClassesTable> {
+  ClassesUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> organizationId(int? value) => _i1.ColumnValue(
+    table.organizationId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> academicYear(String value) => _i1.ColumnValue(
+    table.academicYear,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> courseName(String? value) => _i1.ColumnValue(
+    table.courseName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> classTeacherAnantId(String? value) =>
+      _i1.ColumnValue(
+        table.classTeacherAnantId,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> startDate(DateTime? value) =>
+      _i1.ColumnValue(
+        table.startDate,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> endDate(DateTime? value) =>
+      _i1.ColumnValue(
+        table.endDate,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
+    table.isActive,
+    value,
+  );
+}
+
 class ClassesTable extends _i1.Table<int?> {
   ClassesTable({super.tableRelation}) : super(tableName: 'class') {
+    updateTable = ClassesUpdateTable(this);
     organizationId = _i1.ColumnInt(
       'organizationId',
       this,
@@ -252,6 +304,8 @@ class ClassesTable extends _i1.Table<int?> {
     );
   }
 
+  late final ClassesUpdateTable updateTable;
+
   late final _i1.ColumnInt organizationId;
 
   late final _i1.ColumnString name;
@@ -270,16 +324,16 @@ class ClassesTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationId,
-        name,
-        academicYear,
-        courseName,
-        classTeacherAnantId,
-        startDate,
-        endDate,
-        isActive,
-      ];
+    id,
+    organizationId,
+    name,
+    academicYear,
+    courseName,
+    classTeacherAnantId,
+    startDate,
+    endDate,
+    isActive,
+  ];
 }
 
 class ClassesInclude extends _i1.IncludeObject {
@@ -467,6 +521,46 @@ class ClassesRepository {
     return session.db.updateRow<Classes>(
       row,
       columns: columns?.call(Classes.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Classes] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Classes?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<ClassesUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Classes>(
+      id,
+      columnValues: columnValues(Classes.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Classes]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Classes>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<ClassesUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<ClassesTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<ClassesTable>? orderBy,
+    _i1.OrderByListBuilder<ClassesTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Classes>(
+      columnValues: columnValues(Classes.t.updateTable),
+      where: where(Classes.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Classes.t),
+      orderByList: orderByList?.call(Classes.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

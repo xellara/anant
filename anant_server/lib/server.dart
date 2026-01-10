@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 
 import 'package:anant_server/src/web/routes/root.dart';
@@ -25,7 +26,7 @@ void run(List<String> args) async {
   pod.webServer.addRoute(RouteRoot(), '/index.html');
   // Serve all files in the /static directory.
   pod.webServer.addRoute(
-    RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),
+    StaticRoute.directory(Directory('static')),
     '/*',
   );
 

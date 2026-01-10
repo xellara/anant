@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -25,8 +26,8 @@ abstract class Course implements _i1.SerializableModel {
     this.credits,
     bool? isElective,
     bool? isActive,
-  })  : isElective = isElective ?? false,
-        isActive = isActive ?? true;
+  }) : isElective = isElective ?? false,
+       isActive = isActive ?? true;
 
   factory Course({
     int? id,
@@ -53,8 +54,8 @@ abstract class Course implements _i1.SerializableModel {
       semester: jsonSerialization['semester'] as int?,
       academicYear: jsonSerialization['academicYear'] as String?,
       credits: jsonSerialization['credits'] as int?,
-      isElective: jsonSerialization['isElective'] as bool,
-      isActive: jsonSerialization['isActive'] as bool,
+      isElective: jsonSerialization['isElective'] as bool?,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -102,6 +103,7 @@ abstract class Course implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Course',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       if (department != null) 'department': department,
@@ -138,18 +140,18 @@ class _CourseImpl extends Course {
     bool? isElective,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          department: department,
-          name: name,
-          code: code,
-          description: description,
-          semester: semester,
-          academicYear: academicYear,
-          credits: credits,
-          isElective: isElective,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         department: department,
+         name: name,
+         code: code,
+         description: description,
+         semester: semester,
+         academicYear: academicYear,
+         credits: credits,
+         isElective: isElective,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Course]
   /// with some or all fields replaced by the given arguments.
@@ -170,8 +172,9 @@ class _CourseImpl extends Course {
   }) {
     return Course(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       department: department is String? ? department : this.department,
       name: name ?? this.name,
       code: code is String? ? code : this.code,

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -84,12 +85,33 @@ class Protocol extends _i1.SerializationManager {
 
   static final Protocol _instance = Protocol._();
 
+  static String? getClassNameFromObjectJson(dynamic data) {
+    if (data is! Map) return null;
+    final className = data['__className__'] as String?;
+    return className;
+  }
+
   @override
   T deserialize<T>(
     dynamic data, [
     Type? t,
   ]) {
     t ??= T;
+
+    final dataClassName = getClassNameFromObjectJson(data);
+    if (dataClassName != null && dataClassName != getClassNameForType(t)) {
+      try {
+        return deserializeByClassName({
+          'className': dataClassName,
+          'data': data,
+        });
+      } on FormatException catch (_) {
+        // If the className is not recognized (e.g., older client receiving
+        // data with a new subtype), fall back to deserializing without the
+        // className, using the expected type T.
+      }
+    }
+
     if (t == _i2.Announcement) {
       return _i2.Announcement.fromJson(data) as T;
     }
@@ -253,60 +275,81 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i27.UserRole?>()) {
       return (data != null ? _i27.UserRole.fromJson(data) : null) as T;
     }
+    if (t == Map<String, double>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<double>(v)),
+          )
+          as T;
+    }
     if (t == _i1.getType<Map<String, double>?>()) {
       return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<double>(v)))
-          : null) as T;
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<double>(v)),
+                )
+              : null)
+          as T;
+    }
+    if (t == Map<String, String>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
     }
     if (t == _i1.getType<Map<String, String>?>()) {
       return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<String>(v)),
+                )
+              : null)
+          as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<_i28.Announcement>) {
       return (data as List)
-          .map((e) => deserialize<_i28.Announcement>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i28.Announcement>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i29.Attendance>) {
       return (data as List).map((e) => deserialize<_i29.Attendance>(e)).toList()
           as T;
     }
     if (t == Map<String, String>) {
-      return (data as Map).map((k, v) =>
-          MapEntry(deserialize<String>(k), deserialize<String>(v))) as T;
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == Map<String, dynamic>) {
-      return (data as Map).map((k, v) =>
-          MapEntry(deserialize<String>(k), deserialize<dynamic>(v))) as T;
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<dynamic>(v)),
+          )
+          as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
     }
     if (t == List<Map<String, dynamic>>) {
       return (data as List)
-          .map((e) => deserialize<Map<String, dynamic>>(e))
-          .toList() as T;
+              .map((e) => deserialize<Map<String, dynamic>>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i30.User>) {
       return (data as List).map((e) => deserialize<_i30.User>(e)).toList() as T;
@@ -321,13 +364,15 @@ class Protocol extends _i1.SerializationManager {
     }
     if (t == List<_i33.Notification>) {
       return (data as List)
-          .map((e) => deserialize<_i33.Notification>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i33.Notification>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i34.Organization>) {
       return (data as List)
-          .map((e) => deserialize<_i34.Organization>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i34.Organization>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i35.Permission>) {
       return (data as List).map((e) => deserialize<_i35.Permission>(e)).toList()
@@ -342,8 +387,9 @@ class Protocol extends _i1.SerializationManager {
     }
     if (t == List<_i38.MonthlyFeeTransaction>) {
       return (data as List)
-          .map((e) => deserialize<_i38.MonthlyFeeTransaction>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i38.MonthlyFeeTransaction>(e))
+              .toList()
+          as T;
     }
     try {
       return _i39.Protocol().deserialize<T>(data, t);
@@ -351,87 +397,100 @@ class Protocol extends _i1.SerializationManager {
     return super.deserialize<T>(data, t);
   }
 
+  static String? getClassNameForType(Type type) {
+    return switch (type) {
+      _i2.Announcement => 'Announcement',
+      _i3.Attendance => 'Attendance',
+      _i4.Classes => 'Classes',
+      _i5.Course => 'Course',
+      _i6.Section => 'Section',
+      _i7.StudentCourseEnrollment => 'StudentCourseEnrollment',
+      _i8.ExternalAuthProvider => 'ExternalAuthProvider',
+      _i9.Organization => 'Organization',
+      _i10.OrganizationSettings => 'OrganizationSettings',
+      _i11.Permission => 'Permission',
+      _i12.PermissionAudit => 'PermissionAudit',
+      _i13.ResourcePermission => 'ResourcePermission',
+      _i14.Role => 'Role',
+      _i15.RolePermission => 'RolePermission',
+      _i16.UserCredentials => 'UserCredentials',
+      _i17.UserPermissionOverride => 'UserPermissionOverride',
+      _i18.UserRoleAssignment => 'UserRoleAssignment',
+      _i19.Enrollment => 'Enrollment',
+      _i20.Exam => 'Exam',
+      _i21.FeeRecord => 'FeeRecord',
+      _i22.Notification => 'Notification',
+      _i23.Subject => 'Subject',
+      _i24.TimetableEntry => 'TimetableEntry',
+      _i25.MonthlyFeeTransaction => 'MonthlyFeeTransaction',
+      _i26.User => 'User',
+      _i27.UserRole => 'UserRole',
+      _ => null,
+    };
+  }
+
   @override
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i2.Announcement) {
-      return 'Announcement';
+
+    if (data is Map<String, dynamic> && data['__className__'] is String) {
+      return (data['__className__'] as String).replaceFirst('anant.', '');
     }
-    if (data is _i3.Attendance) {
-      return 'Attendance';
-    }
-    if (data is _i4.Classes) {
-      return 'Classes';
-    }
-    if (data is _i5.Course) {
-      return 'Course';
-    }
-    if (data is _i6.Section) {
-      return 'Section';
-    }
-    if (data is _i7.StudentCourseEnrollment) {
-      return 'StudentCourseEnrollment';
-    }
-    if (data is _i8.ExternalAuthProvider) {
-      return 'ExternalAuthProvider';
-    }
-    if (data is _i9.Organization) {
-      return 'Organization';
-    }
-    if (data is _i10.OrganizationSettings) {
-      return 'OrganizationSettings';
-    }
-    if (data is _i11.Permission) {
-      return 'Permission';
-    }
-    if (data is _i12.PermissionAudit) {
-      return 'PermissionAudit';
-    }
-    if (data is _i13.ResourcePermission) {
-      return 'ResourcePermission';
-    }
-    if (data is _i14.Role) {
-      return 'Role';
-    }
-    if (data is _i15.RolePermission) {
-      return 'RolePermission';
-    }
-    if (data is _i16.UserCredentials) {
-      return 'UserCredentials';
-    }
-    if (data is _i17.UserPermissionOverride) {
-      return 'UserPermissionOverride';
-    }
-    if (data is _i18.UserRoleAssignment) {
-      return 'UserRoleAssignment';
-    }
-    if (data is _i19.Enrollment) {
-      return 'Enrollment';
-    }
-    if (data is _i20.Exam) {
-      return 'Exam';
-    }
-    if (data is _i21.FeeRecord) {
-      return 'FeeRecord';
-    }
-    if (data is _i22.Notification) {
-      return 'Notification';
-    }
-    if (data is _i23.Subject) {
-      return 'Subject';
-    }
-    if (data is _i24.TimetableEntry) {
-      return 'TimetableEntry';
-    }
-    if (data is _i25.MonthlyFeeTransaction) {
-      return 'MonthlyFeeTransaction';
-    }
-    if (data is _i26.User) {
-      return 'User';
-    }
-    if (data is _i27.UserRole) {
-      return 'UserRole';
+
+    switch (data) {
+      case _i2.Announcement():
+        return 'Announcement';
+      case _i3.Attendance():
+        return 'Attendance';
+      case _i4.Classes():
+        return 'Classes';
+      case _i5.Course():
+        return 'Course';
+      case _i6.Section():
+        return 'Section';
+      case _i7.StudentCourseEnrollment():
+        return 'StudentCourseEnrollment';
+      case _i8.ExternalAuthProvider():
+        return 'ExternalAuthProvider';
+      case _i9.Organization():
+        return 'Organization';
+      case _i10.OrganizationSettings():
+        return 'OrganizationSettings';
+      case _i11.Permission():
+        return 'Permission';
+      case _i12.PermissionAudit():
+        return 'PermissionAudit';
+      case _i13.ResourcePermission():
+        return 'ResourcePermission';
+      case _i14.Role():
+        return 'Role';
+      case _i15.RolePermission():
+        return 'RolePermission';
+      case _i16.UserCredentials():
+        return 'UserCredentials';
+      case _i17.UserPermissionOverride():
+        return 'UserPermissionOverride';
+      case _i18.UserRoleAssignment():
+        return 'UserRoleAssignment';
+      case _i19.Enrollment():
+        return 'Enrollment';
+      case _i20.Exam():
+        return 'Exam';
+      case _i21.FeeRecord():
+        return 'FeeRecord';
+      case _i22.Notification():
+        return 'Notification';
+      case _i23.Subject():
+        return 'Subject';
+      case _i24.TimetableEntry():
+        return 'TimetableEntry';
+      case _i25.MonthlyFeeTransaction():
+        return 'MonthlyFeeTransaction';
+      case _i26.User():
+        return 'User';
+      case _i27.UserRole():
+        return 'UserRole';
     }
     className = _i39.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -529,5 +588,20 @@ class Protocol extends _i1.SerializationManager {
       return _i39.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
+  }
+
+  /// Maps any `Record`s known to this [Protocol] to their JSON representation
+  ///
+  /// Throws in case the record type is not known.
+  ///
+  /// This method will return `null` (only) for `null` inputs.
+  Map<String, dynamic>? mapRecordToJson(Record? record) {
+    if (record == null) {
+      return null;
+    }
+    try {
+      return _i39.Protocol().mapRecordToJson(record);
+    } catch (_) {}
+    throw Exception('Unsupported record type ${record.runtimeType}');
   }
 }

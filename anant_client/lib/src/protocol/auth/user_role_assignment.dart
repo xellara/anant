@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../user/user.dart' as _i2;
 import '../auth/role.dart' as _i3;
+import 'package:anant_client/src/protocol/protocol.dart' as _i4;
 
 /// User-Role assignment table for multi-role support
 abstract class UserRoleAssignment implements _i1.SerializableModel {
@@ -26,8 +28,8 @@ abstract class UserRoleAssignment implements _i1.SerializableModel {
     bool? isActive,
     this.validFrom,
     this.validUntil,
-  })  : assignedAt = assignedAt ?? DateTime.now(),
-        isActive = isActive ?? true;
+  }) : assignedAt = assignedAt ?? DateTime.now(),
+       isActive = isActive ?? true;
 
   factory UserRoleAssignment({
     int? id,
@@ -48,17 +50,16 @@ abstract class UserRoleAssignment implements _i1.SerializableModel {
       userId: jsonSerialization['userId'] as int,
       user: jsonSerialization['user'] == null
           ? null
-          : _i2.User.fromJson(
-              (jsonSerialization['user'] as Map<String, dynamic>)),
+          : _i4.Protocol().deserialize<_i2.User>(jsonSerialization['user']),
       roleId: jsonSerialization['roleId'] as int,
       role: jsonSerialization['role'] == null
           ? null
-          : _i3.Role.fromJson(
-              (jsonSerialization['role'] as Map<String, dynamic>)),
-      assignedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
+          : _i4.Protocol().deserialize<_i3.Role>(jsonSerialization['role']),
+      assignedAt: jsonSerialization['assignedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
       assignedById: jsonSerialization['assignedById'] as int?,
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
       validFrom: jsonSerialization['validFrom'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['validFrom']),
@@ -109,6 +110,7 @@ abstract class UserRoleAssignment implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'UserRoleAssignment',
       if (id != null) 'id': id,
       'userId': userId,
       if (user != null) 'user': user?.toJson(),
@@ -143,17 +145,17 @@ class _UserRoleAssignmentImpl extends UserRoleAssignment {
     DateTime? validFrom,
     DateTime? validUntil,
   }) : super._(
-          id: id,
-          userId: userId,
-          user: user,
-          roleId: roleId,
-          role: role,
-          assignedAt: assignedAt,
-          assignedById: assignedById,
-          isActive: isActive,
-          validFrom: validFrom,
-          validUntil: validUntil,
-        );
+         id: id,
+         userId: userId,
+         user: user,
+         roleId: roleId,
+         role: role,
+         assignedAt: assignedAt,
+         assignedById: assignedById,
+         isActive: isActive,
+         validFrom: validFrom,
+         validUntil: validUntil,
+       );
 
   /// Returns a shallow copy of this [UserRoleAssignment]
   /// with some or all fields replaced by the given arguments.

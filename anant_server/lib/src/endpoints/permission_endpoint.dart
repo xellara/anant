@@ -11,12 +11,9 @@ class PermissionEndpoint extends Endpoint {
     String? description,
     String? module,
   ) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
-      throw Exception('Not authenticated');
-    }
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) throw Exception('Not authenticated');
     
-    final userId = authInfo.userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -46,8 +43,8 @@ class PermissionEndpoint extends Endpoint {
   
   /// Get all permissions.
   Future<List<Permission>> getAllPermissions(Session session) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) {
       throw Exception('Not authenticated');
     }
     
@@ -62,7 +59,7 @@ class PermissionEndpoint extends Endpoint {
     Session session,
     String module,
   ) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
@@ -81,12 +78,10 @@ class PermissionEndpoint extends Endpoint {
     String? description,
     String? module,
   ) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) {
       throw Exception('Not authenticated');
     }
-    
-    final userId = authInfo.userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -108,12 +103,10 @@ class PermissionEndpoint extends Endpoint {
   
   /// Delete a permission.
   Future<bool> deletePermission(Session session, int permissionId) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) {
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) {
       throw Exception('Not authenticated');
     }
-    
-    final userId = authInfo.userId;
     final user = await User.db.findById(session, userId);
     if (user == null) throw Exception('User not found');
     
@@ -158,9 +151,9 @@ class PermissionEndpoint extends Endpoint {
     // To safe tokens, I will assume the previous list is good and focused on the new logic.
     // I shall copy the list from the previous reading.
     
-    final authInfo = await session.authenticated;
-    if (authInfo == null) throw Exception('Not authenticated');
-    final user = await User.db.findById(session, authInfo.userId);
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) throw Exception('Not authenticated');
+    final user = await User.db.findById(session, userId);
     if (user?.role != UserRole.admin) throw Exception('Admin only');
 
     final defaultPermissions = <Map<String, String>>[
@@ -206,12 +199,12 @@ class PermissionEndpoint extends Endpoint {
   /// Get effective list of permission slugs for a given user.
   /// Considers: Org Settings -> Role Permissions -> User Overrides.
   Future<List<String>> getEffectivePermissions(Session session, int targetUserId) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) throw Exception('Not authenticated');
+    final userId = (session.authenticated as dynamic)?.userId;
+    if (userId == null) throw Exception('Not authenticated');
 
     // Security: Only Admin or the User themselves can check permissions
-    if (authInfo.userId != targetUserId) {
-       final caller = await User.db.findById(session, authInfo.userId);
+    if (userId != targetUserId) {
+       final caller = await User.db.findById(session, userId);
        if (caller?.role != UserRole.admin) throw Exception('Not authorized');
     }
 
@@ -341,9 +334,9 @@ class PermissionEndpoint extends Endpoint {
 
   /// Reset a user's permission override (Back to Role default).
   Future<bool> resetUserPermission(Session session, int userId, String permissionSlug) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) return false;
-    final caller = await User.db.findById(session, authInfo.userId);
+    final currentUserId = (session.authenticated as dynamic)?.userId;
+    if (currentUserId == null) return false;
+    final caller = await User.db.findById(session, currentUserId);
     if (caller?.role != UserRole.admin) throw Exception('Admin only');
 
     final permission = await Permission.db.findFirstRow(session, where: (t) => t.slug.equals(permissionSlug));
@@ -357,9 +350,9 @@ class PermissionEndpoint extends Endpoint {
   }
 
   Future<bool> _setUserPermissionOverride(Session session, int userId, String slug, bool isGranted) async {
-    final authInfo = await session.authenticated;
-    if (authInfo == null) return false;
-    final caller = await User.db.findById(session, authInfo.userId);
+    final currentUserId = (session.authenticated as dynamic)?.userId;
+    if (currentUserId == null) return false;
+    final caller = await User.db.findById(session, currentUserId);
     if (caller?.role != UserRole.admin) throw Exception('Admin only');
 
     final permission = await Permission.db.findFirstRow(session, where: (t) => t.slug.equals(slug));

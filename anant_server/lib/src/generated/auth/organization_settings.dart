@@ -7,9 +7,11 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:anant_server/src/generated/protocol.dart' as _i2;
 
 abstract class OrganizationSettings
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -26,13 +28,14 @@ abstract class OrganizationSettings
   }) = _OrganizationSettingsImpl;
 
   factory OrganizationSettings.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return OrganizationSettings(
       id: jsonSerialization['id'] as int?,
       organizationName: jsonSerialization['organizationName'] as String,
-      enabledModules: (jsonSerialization['enabledModules'] as List)
-          .map((e) => e as String)
-          .toList(),
+      enabledModules: _i2.Protocol().deserialize<List<String>>(
+        jsonSerialization['enabledModules'],
+      ),
     );
   }
 
@@ -61,6 +64,7 @@ abstract class OrganizationSettings
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'OrganizationSettings',
       if (id != null) 'id': id,
       'organizationName': organizationName,
       'enabledModules': enabledModules.toJson(),
@@ -70,6 +74,7 @@ abstract class OrganizationSettings
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'OrganizationSettings',
       if (id != null) 'id': id,
       'organizationName': organizationName,
       'enabledModules': enabledModules.toJson(),
@@ -114,10 +119,10 @@ class _OrganizationSettingsImpl extends OrganizationSettings {
     required String organizationName,
     required List<String> enabledModules,
   }) : super._(
-          id: id,
-          organizationName: organizationName,
-          enabledModules: enabledModules,
-        );
+         id: id,
+         organizationName: organizationName,
+         enabledModules: enabledModules,
+       );
 
   /// Returns a shallow copy of this [OrganizationSettings]
   /// with some or all fields replaced by the given arguments.
@@ -137,29 +142,50 @@ class _OrganizationSettingsImpl extends OrganizationSettings {
   }
 }
 
+class OrganizationSettingsUpdateTable
+    extends _i1.UpdateTable<OrganizationSettingsTable> {
+  OrganizationSettingsUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> organizationName(String value) =>
+      _i1.ColumnValue(
+        table.organizationName,
+        value,
+      );
+
+  _i1.ColumnValue<List<String>, List<String>> enabledModules(
+    List<String> value,
+  ) => _i1.ColumnValue(
+    table.enabledModules,
+    value,
+  );
+}
+
 class OrganizationSettingsTable extends _i1.Table<int?> {
   OrganizationSettingsTable({super.tableRelation})
-      : super(tableName: 'organization_settings') {
+    : super(tableName: 'organization_settings') {
+    updateTable = OrganizationSettingsUpdateTable(this);
     organizationName = _i1.ColumnString(
       'organizationName',
       this,
     );
-    enabledModules = _i1.ColumnSerializable(
+    enabledModules = _i1.ColumnSerializable<List<String>>(
       'enabledModules',
       this,
     );
   }
 
+  late final OrganizationSettingsUpdateTable updateTable;
+
   late final _i1.ColumnString organizationName;
 
-  late final _i1.ColumnSerializable enabledModules;
+  late final _i1.ColumnSerializable<List<String>> enabledModules;
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        organizationName,
-        enabledModules,
-      ];
+    id,
+    organizationName,
+    enabledModules,
+  ];
 }
 
 class OrganizationSettingsInclude extends _i1.IncludeObject {
@@ -347,6 +373,48 @@ class OrganizationSettingsRepository {
     return session.db.updateRow<OrganizationSettings>(
       row,
       columns: columns?.call(OrganizationSettings.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [OrganizationSettings] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<OrganizationSettings?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<OrganizationSettingsUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<OrganizationSettings>(
+      id,
+      columnValues: columnValues(OrganizationSettings.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [OrganizationSettings]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<OrganizationSettings>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<OrganizationSettingsUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<OrganizationSettingsTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<OrganizationSettingsTable>? orderBy,
+    _i1.OrderByListBuilder<OrganizationSettingsTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<OrganizationSettings>(
+      columnValues: columnValues(OrganizationSettings.t.updateTable),
+      where: where(OrganizationSettings.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(OrganizationSettings.t),
+      orderByList: orderByList?.call(OrganizationSettings.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

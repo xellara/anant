@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -51,7 +52,7 @@ abstract class Classes implements _i1.SerializableModel {
       endDate: jsonSerialization['endDate'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endDate']),
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -93,6 +94,7 @@ abstract class Classes implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Classes',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'name': name,
@@ -126,16 +128,16 @@ class _ClassesImpl extends Classes {
     DateTime? endDate,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          name: name,
-          academicYear: academicYear,
-          courseName: courseName,
-          classTeacherAnantId: classTeacherAnantId,
-          startDate: startDate,
-          endDate: endDate,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         name: name,
+         academicYear: academicYear,
+         courseName: courseName,
+         classTeacherAnantId: classTeacherAnantId,
+         startDate: startDate,
+         endDate: endDate,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Classes]
   /// with some or all fields replaced by the given arguments.
@@ -154,8 +156,9 @@ class _ClassesImpl extends Classes {
   }) {
     return Classes(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       name: name ?? this.name,
       academicYear: academicYear ?? this.academicYear,
       courseName: courseName is String? ? courseName : this.courseName,

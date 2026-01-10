@@ -1,0 +1,39 @@
+# Dart build artifacts
+.dart_tool/
+build/
+.packages
+
+# Git and version control
+.git/
+.gitignore
+.github/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation and non-essential files
+*.md
+!README.md
+CHANGELOG.md
+
+# Test files
+test/
+dart_test.yaml
+
+# Deployment files
+deploy/
+docker-compose.yaml
+
+# macOS files
+.DS_Store
+._.DS_Store
+
+# Development config
+config/development.yaml
+config/test.yaml
+
+# Logs
+*.log

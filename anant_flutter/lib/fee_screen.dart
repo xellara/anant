@@ -197,7 +197,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
                          borderRadius: BorderRadius.circular(16),
                          boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             )
@@ -213,7 +213,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
                              borderRadius: BorderRadius.circular(24),
                               boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.03),
+                                    color: Colors.black.withValues(alpha: 0.03),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                   )
@@ -248,7 +248,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
         borderRadius: BorderRadius.circular(24),
          boxShadow: [
             BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
             )
@@ -262,7 +262,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.currency_rupee_rounded, color: Colors.white, size: 24),
@@ -329,7 +329,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
                child: const Center(
@@ -514,7 +514,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
             spreadRadius: 1,
@@ -531,7 +531,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
             color: const Color(0xFF2E7D32),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF2E7D32).withOpacity(0.2),
+                color: const Color(0xFF2E7D32).withValues(alpha: 0.2),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -666,7 +666,7 @@ class _FeeScreenViewState extends State<_FeeScreenView> with SingleTickerProvide
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
+            color: Colors.grey.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),

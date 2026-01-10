@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -39,7 +40,7 @@ abstract class Section implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       sectionTeacherAnantId:
           jsonSerialization['sectionTeacherAnantId'] as String?,
-      isActive: jsonSerialization['isActive'] as bool,
+      isActive: jsonSerialization['isActive'] as bool?,
     );
   }
 
@@ -72,6 +73,7 @@ abstract class Section implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Section',
       if (id != null) 'id': id,
       if (organizationId != null) 'organizationId': organizationId,
       'className': className,
@@ -99,13 +101,13 @@ class _SectionImpl extends Section {
     String? sectionTeacherAnantId,
     bool? isActive,
   }) : super._(
-          id: id,
-          organizationId: organizationId,
-          className: className,
-          name: name,
-          sectionTeacherAnantId: sectionTeacherAnantId,
-          isActive: isActive,
-        );
+         id: id,
+         organizationId: organizationId,
+         className: className,
+         name: name,
+         sectionTeacherAnantId: sectionTeacherAnantId,
+         isActive: isActive,
+       );
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
@@ -121,8 +123,9 @@ class _SectionImpl extends Section {
   }) {
     return Section(
       id: id is int? ? id : this.id,
-      organizationId:
-          organizationId is int? ? organizationId : this.organizationId,
+      organizationId: organizationId is int?
+          ? organizationId
+          : this.organizationId,
       className: className ?? this.className,
       name: name ?? this.name,
       sectionTeacherAnantId: sectionTeacherAnantId is String?
