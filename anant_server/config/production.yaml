@@ -22,15 +22,14 @@ webServer:
   publicPort: 443
   publicScheme: https
 
-# Cloud SQL database configuration
-# The host uses Unix socket connection for Cloud SQL
+# Neon PostgreSQL database configuration
 database:
   host: ${DB_HOST}
-  port: 5432
-  name: anant
-  user: postgres
+  port: ${DB_PORT}
+  name: ${DB_NAME}
+  user: ${DB_USER}
   password: ${DB_PASSWORD}
-  requireSsl: false  # Unix socket doesn't need SSL
+  requireSsl: true  # Neon requires SSL
 
 # Redis configuration (optional - keep disabled for cost savings)
 redis:
