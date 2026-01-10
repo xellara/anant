@@ -1,148 +1,82 @@
 #!/bin/bash
 
-# Anant Server - Automated Cloud Run Deployment Script
-# Run this in Google Cloud Shell
+# Anant Server - Cloud Run Deployment (Adapted from Serverpod official script)
+# Uses Neon Database instead of Cloud SQL for FREE deployment
 
-set -e  # Exit on error
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-echo -e "${GREEN}🚀 Anant Server - Automated Cloud Run Deployment${NC}"
-echo -e "${BLUE}100% FREE with Neon Database + Cloud Run${NC}"
-echo ""
+set -e
 
 # Configuration
-PROJECT_ID="${1:-anant-prod}"
-REGION="${2:-us-central1}"
-SERVICE_NAME="anant-server"
+REGION="us-central1"
+RUNMODE="production"
 
-# Neon Database Credentials
-DB_HOST="ep-nameless-flower-ahysl36o-pooler.c-3.us-east-1.aws.neon.tech"
-DB_PORT="5432"
-DB_NAME="neondb"
-DB_USER="neondb_owner"
+# Neon Database (no need for Cloud SQL!)
+echo "Using Neon PostgreSQL Database (FREE tier)"
 
-echo "Configuration:"
-echo "  Project ID: $PROJECT_ID"
-echo "  Region: $REGION"
-echo "  Service Name: $SERVICE_NAME"
-echo "  Database: Neon (FREE)"
+# Check that we are running the script from the correct directory
+if [ ! -f config/production.yaml ]; then
+    echo "Run this script from the root of your server directory."
+    echo "Current directory: $(pwd)"
+    echo "Expected file: config/production.yaml"
+    exit 1
+fi
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "� Deploying Anant Server to Cloud Run"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-
-# Step 1: Prepare files
-echo -e "${YELLOW}📝 Step 1: Preparing files...${NC}"
 
 # Comment out serverpod_test for deployment
 if grep -q "^  serverpod_test:" pubspec.yaml; then
+    echo "📝 Preparing pubspec.yaml..."
     sed -i 's/^  serverpod_test:/  # serverpod_test:/' pubspec.yaml
-    echo "  ✓ Commented out serverpod_test"
-fi
-
-# Move Dockerfile to use buildpacks
-if [ -f "Dockerfile" ]; then
-    mv Dockerfile Dockerfile.backup
-    echo "  ✓ Using buildpacks instead of Dockerfile"
+    echo "   ✓ Commented out dev dependencies"
 fi
 
 echo ""
 
-# Step 2: Set project
-echo -e "${YELLOW}📦 Step 2: Setting active project...${NC}"
-gcloud config set project "$PROJECT_ID"
+# Deploy the API server (monolith mode)
+echo "🌐 Deploying API server..."
 echo ""
 
-# Step 3: Check if secret exists
-echo -e "${YELLOW}🔐 Step 3: Checking database password secret...${NC}"
-if ! gcloud secrets describe db-password --project="$PROJECT_ID" &> /dev/null; then
-    echo -e "${RED}  ✗ Secret 'db-password' not found${NC}"
-    echo ""
-    echo "Please create the secret first with:"
-    echo "  echo -n 'npg_FHpno9hUOg6d' | gcloud secrets create db-password --data-file=- --replication-policy='automatic'"
-    exit 1
-fi
-echo "  ✓ Secret exists"
-echo ""
-
-# Step 4: Deploy to Cloud Run
-echo -e "${YELLOW}🚀 Step 4: Deploying to Cloud Run...${NC}"
-echo "  This may take 5-10 minutes..."
-echo ""
-
-gcloud run deploy "$SERVICE_NAME" \
-  --source . \
-  --region "$REGION" \
-  --platform managed \
+gcloud run deploy anant-server \
+  --source=. \
+  --region=$REGION \
+  --platform=managed \
+  --port=8080 \
+  --execution-environment=gen2 \
   --allow-unauthenticated \
-  --min-instances 0 \
-  --max-instances 10 \
-  --memory 1Gi \
-  --cpu 1 \
-  --timeout 600 \
-  --concurrency 80 \
-  --cpu-throttling \
-  --set-env-vars "DB_HOST=$DB_HOST,DB_PORT=$DB_PORT,DB_NAME=$DB_NAME,DB_USER=$DB_USER" \
-  --set-secrets "DB_PASSWORD=db-password:latest"
+  --min-instances=0 \
+  --max-instances=10 \
+  --memory=1Gi \
+  --cpu=1 \
+  --timeout=600 \
+  --set-env-vars="runmode=$RUNMODE,role=monolith,DB_HOST=ep-nameless-flower-ahysl36o-pooler.c-3.us-east-1.aws.neon.tech,DB_PORT=5432,DB_NAME=neondb,DB_USER=neondb_owner" \
+  --set-secrets="DB_PASSWORD=db-password:latest"
 
 if [ $? -ne 0 ]; then
     echo ""
-    echo -e "${RED}❌ Deployment failed!${NC}"
-    echo "Check the logs above for errors"
-    
-    # Restore Dockerfile
-    if [ -f "Dockerfile.backup" ]; then
-        mv Dockerfile.backup Dockerfile
-    fi
+    echo "❌ Deployment failed!"
     exit 1
 fi
 
-# Step 5: Get service URL
-echo ""
-echo -e "${YELLOW}🌐 Step 5: Getting service URL...${NC}"
-SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \
-    --region="$REGION" \
+# Get service URL
+SERVICE_URL=$(gcloud run services describe anant-server \
+    --region=$REGION \
     --format="value(status.url)")
 
-# Step 6: Update environment variables with actual URL
-echo -e "${YELLOW}⚙️  Step 6: Updating service environment...${NC}"
-gcloud run services update "$SERVICE_NAME" \
-    --region "$REGION" \
-    --set-env-vars "API_HOST=${SERVICE_URL#https://},INSIGHTS_HOST=${SERVICE_URL#https://},WEB_HOST=${SERVICE_URL#https://},DB_HOST=$DB_HOST,DB_PORT=$DB_PORT,DB_NAME=$DB_NAME,DB_USER=$DB_USER"
-
-echo ""
-echo -e "${GREEN}✅ Deployment Complete!${NC}"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "${GREEN}Service URL:${NC} ${BLUE}$SERVICE_URL${NC}"
+echo "✅ Deployment Complete!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo -e "${BLUE}💰 Cost Summary:${NC}"
-echo "  • Cloud Run: FREE (within 2M requests/month)"
-echo "  • Neon Database: FREE (0.5GB storage)"
-echo "  • Total: $0/month 🎉"
+echo "🌐 Service URL: $SERVICE_URL"  
 echo ""
-echo -e "${YELLOW}📋 Next Steps:${NC}"
+echo "💰 Monthly Cost: \$0 (FREE tier)"
+echo "   • Cloud Run: FREE"
+echo "   • Neon Database: FREE"
 echo ""
-echo "1. Run Database Migrations (on your local machine):"
-echo "   cd /Users/amit/Me/Projects/anant/anant_server"
-echo "   # Update config/development.yaml with Neon credentials, then:"
-echo "   dart bin/main.dart --apply-migrations"
+echo "📋 Next Steps:"
+echo "   1. Run migrations on your local machine"
+echo "   2. Update Flutter app with: $SERVICE_URL"
+echo "   3. Test API: curl $SERVICE_URL"
 echo ""
-echo "2. Test API:"
-echo "   curl $SERVICE_URL"
-echo ""
-echo "3. Update Flutter App:"
-echo "   # In your client configuration:"
-echo "   final client = Client("
-echo "     '$SERVICE_URL',"
-echo "     authenticationKeyManager: FlutterAuthenticationKeyManager(),"
-echo "   );"
-echo ""
-echo "4. Check Logs:"
-echo "   gcloud run services logs read $SERVICE_NAME --region=$REGION --limit=50"
-echo ""
-echo -e "${GREEN}Happy coding! 🚀${NC}"
