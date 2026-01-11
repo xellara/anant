@@ -30,8 +30,7 @@ database:
   user: ${DB_USER}
   requireSsl: true  # Neon requires SSL
 
-# Redis configuration (optional - keep disabled for cost savings)
 redis:
   enabled: false
-  host: ${REDIS_HOST}
+  host: localhost
   port: 6379
