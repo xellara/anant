@@ -41,6 +41,19 @@ fi
 
 echo ""
 
+# --- MIGRATIONS SECTION ---
+echo ""
+echo "🛠️  Database Migrations (PRODUCTION)"
+read -p "Do you want to APPLY migrations to the PRODUCTION database? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "⚠️  Applying migrations to PRODUCTION..."
+    # Runs the maintenance command locally securely connecting to the remote DB
+    dart run bin/main.dart --apply-migrations --mode $RUNMODE --role maintenance
+fi
+echo ""
+# --------------------------
+
 # Deploy the API server (monolith mode)
 echo "🌐 Deploying API server..."
 echo ""

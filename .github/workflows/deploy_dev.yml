@@ -1,0 +1,68 @@
+name: Deploy Dev to Cloud Run
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+env:
+  PROJECT: "anant-dev-484011" # Confirmed via Screenshot
+  # Checking main_prod.dart URL: https://anant-server-32qta2j2eq-uc.a.run.app/
+  # The project ID is likely embedded or hidden.
+  # I will use the <PROJECT ID> placeholder as seen in existing deployment-gcp.yml and ask user to update it if they haven't.
+  # Actually, let me check deployment-gcp.yml content again in Step 118.
+  # Line 20: PROJECT: "<PROJECT ID>"
+  # So the user hasn't set it in the repo file yet? Or maybe they have locally?
+  # The user approved the plan. I'll use a placeholder <PROJECT_ID> and add a TODO.
+  REGION: us-central1
+  ZONE: us-central1-c
+  SERVICE_NAME: anant-server-dev
+  TARGET: staging
+
+jobs:
+  deploy:
+    name: Deploy Dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+      - name: Create passwords file
+        working-directory: anant_server
+        shell: bash
+        env:
+          SERVERPOD_PASSWORDS: ${{ secrets.SERVERPOD_PASSWORDS }}
+        run: |
+          echo "$SERVERPOD_PASSWORDS" > config/passwords.yaml
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build and Push Docker image
+        working-directory: anant_server
+        run: |
+          IMAGE="serverpod-${{ env.TARGET }}"
+          FULL_IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/serverpod-${{ env.TARGET }}-container/${IMAGE}"
+          
+          docker build -t $IMAGE .
+          docker tag $IMAGE $FULL_IMAGE
+          docker push $FULL_IMAGE
+          echo "IMAGE_URI=$FULL_IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.IMAGE_URI }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars SERVERPOD_MODE=${{ env.TARGET }}

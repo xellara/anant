@@ -1,0 +1,61 @@
+name: Deploy Prod to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PROJECT: "anant-prod" # Confirmed via Screenshot
+  REGION: us-central1
+  ZONE: us-central1-c
+  SERVICE_NAME: anant-server # The production service name
+  TARGET: production
+
+jobs:
+  deploy:
+    name: Deploy Prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+
+      - name: Create passwords file
+        working-directory: anant_server
+        shell: bash
+        env:
+          SERVERPOD_PASSWORDS: ${{ secrets.SERVERPOD_PASSWORDS }}
+        run: |
+          echo "$SERVERPOD_PASSWORDS" > config/passwords.yaml
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build and Push Docker image
+        working-directory: anant_server
+        run: |
+          IMAGE="serverpod-${{ env.TARGET }}"
+          FULL_IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/serverpod-${{ env.TARGET }}-container/${IMAGE}"
+          
+          docker build -t $IMAGE .
+          docker tag $IMAGE $FULL_IMAGE
+          docker push $FULL_IMAGE
+          echo "IMAGE_URI=$FULL_IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.IMAGE_URI }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars SERVERPOD_MODE=${{ env.TARGET }}
