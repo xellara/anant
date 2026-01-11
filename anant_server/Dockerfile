@@ -17,6 +17,7 @@ COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server server
 COPY --from=build /app/config/ config/
 COPY --from=build /app/web/ web/
+COPY --from=build /app/static/ static/
 COPY --from=build /app/migrations/ migrations/
 
 # Cloud Run uses the PORT environment variable
