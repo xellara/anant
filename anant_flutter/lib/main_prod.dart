@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
+import 'package:flutter/services.dart';
+
 // Export client for compatibility
 export 'package:anant_flutter/client.dart';
 
@@ -15,6 +17,17 @@ Future<void> main() async {
   if (Platform.isAndroid) {
     await ph.Permission.storage.request();
   }
+
+  // Set system UI overlay style for transparent nav bar
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    systemNavigationBarContrastEnforced: false,
+  ));
+
+  // Enable edge-to-edge
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // PRODUCTION ENVIRONMENT
   client = Client('https://anant-server-32qta2j2eq-uc.a.run.app/');

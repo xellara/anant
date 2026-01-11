@@ -1,4 +1,5 @@
 import 'package:anant_flutter/config/role_theme.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -37,7 +38,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           // School Information
           _buildSection(
             'School Information',
-            Icons.school,
+            PhosphorIcons.graduationCap(),
             Colors.blue,
             [
               _buildTextField('School Name', _schoolName, (value) => _schoolName = value),
@@ -63,7 +64,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           // System Configuration
           _buildSection(
             'System Configuration',
-            Icons.settings,
+            PhosphorIcons.gear(),
             Colors.orange,
             [
               _buildSwitchTile(
@@ -93,7 +94,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           // Notifications
           _buildSection(
             'Notifications',
-            Icons.notifications,
+            PhosphorIcons.bell(),
             Colors.purple,
             [
               _buildSwitchTile(
@@ -116,13 +117,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           // Security
           _buildSection(
             'Security',
-            Icons.security,
+            PhosphorIcons.shieldCheck(),
             Colors.green,
             [
               ListTile(
                 title: const Text('Password Policy'),
                 subtitle: const Text('Minimum 8 characters, 1 uppercase, 1 number'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: Icon(PhosphorIcons.caretRight(), size: 16),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Password policy settings')),
@@ -132,7 +133,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               ListTile(
                 title: const Text('Session Timeout'),
                 subtitle: const Text('30 minutes'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: Icon(PhosphorIcons.caretRight(), size: 16),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Session timeout settings')),
@@ -142,7 +143,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               ListTile(
                 title: const Text('Two-Factor Authentication'),
                 subtitle: const Text('Configure 2FA settings'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: Icon(PhosphorIcons.caretRight(), size: 16),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('2FA settings')),
@@ -157,11 +158,11 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           // Database & Backup
           _buildSection(
             'Database & Backup',
-            Icons.storage,
+            PhosphorIcons.database(),
             Colors.teal,
             [
               ListTile(
-                leading: const Icon(Icons.backup, color: Colors.blue),
+                leading: Icon(PhosphorIcons.cloudArrowUp(), color: Colors.blue),
                 title: const Text('Backup Now'),
                 subtitle: const Text('Last backup: 2 hours ago'),
                 trailing: ElevatedButton(
@@ -174,7 +175,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.restore, color: Colors.orange),
+                leading: Icon(PhosphorIcons.clockCounterClockwise(), color: Colors.orange),
                 title: const Text('Restore Data'),
                 subtitle: const Text('Restore from previous backup'),
                 trailing: ElevatedButton(

@@ -1,5 +1,6 @@
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anant_flutter/config/role_theme.dart';
@@ -35,7 +36,8 @@ class StudentAttendanceView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Attendance'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -426,7 +428,7 @@ class StudentAttendanceView extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Row(
                                   children: [
-                                    Icon(Icons.person_outline_rounded, size: 14, color: Colors.grey[500]),
+                                    Icon(PhosphorIcons.user(), size: 14, color: Colors.grey[500]),
                                     const SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
@@ -548,6 +550,8 @@ class SubjectDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: Text(subject.subjectName, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent, 
@@ -714,7 +718,7 @@ class SubjectDetailPage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isPresent ? Icons.check : Icons.close,
+              isPresent ? PhosphorIcons.check(PhosphorIconsStyle.bold) : PhosphorIcons.x(PhosphorIconsStyle.bold),
               color: isPresent ? Colors.green : Colors.red,
               size: 20,
             ),

@@ -263,7 +263,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   late ProfileBloc _profileBloc;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -449,11 +449,8 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                   end: Alignment.bottomCenter,
                   colors: [
                     cardAccent,
-                    cardAccent.withOpacity(0.7),
-                    cardAccent.withOpacity(0.4),
-                    cardAccent.withOpacity(0.2),
+                    cardAccent.withOpacity(0.3),
                   ],
-                  stops: const [0.0, 0.3, 0.7, 1.0],
                 ),
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(4),
@@ -473,11 +470,8 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
                           colors: [
-                            cardAccent.withOpacity(0.2),
-                            cardAccent.withOpacity(0.08),
+                            cardAccent.withOpacity(0.15),
                             cardAccent.withOpacity(0.05),
                           ],
                         ),
@@ -503,15 +497,11 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 height: 1,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
                     colors: [
-                      cardAccent.withOpacity(0.15),
+                      cardAccent.withOpacity(0.1),
                       const Color(0xFFF3F4F6),
-                      const Color(0xFFF3F4F6),
-                      cardAccent.withOpacity(0.15),
+                      cardAccent.withOpacity(0.1),
                     ],
-                    stops: const [0.0, 0.25, 0.75, 1.0],
                   ),
                 ),
               ),
@@ -929,47 +919,12 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                         end: Alignment.bottomRight,
                                         colors: [
                                           roleColor,
-                                          roleColor.withOpacity(0.9),
-                                          roleColor.withOpacity(0.75),
+                                          roleColor.withOpacity(0.8),
                                         ],
-                                        stops: const [0.0, 0.5, 1.0],
                                       ),
                                     ),
                                     child: Stack(
                                       children: [
-                                        // Mesh Gradient Overlay - Static elegant design
-                                        Positioned.fill(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              gradient: RadialGradient(
-                                                center: Alignment.topRight,
-                                                radius: 1.5,
-                                                colors: [
-                                                  Colors.white.withOpacity(0.15),
-                                                  Colors.white.withOpacity(0.05),
-                                                  Colors.white.withOpacity(0.0),
-                                                ],
-                                                stops: const [0.0, 0.5, 1.0],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned.fill(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              gradient: RadialGradient(
-                                                center: Alignment.bottomLeft,
-                                                radius: 1.2,
-                                                colors: [
-                                                  Colors.white.withOpacity(0.12),
-                                                  Colors.white.withOpacity(0.03),
-                                                  Colors.white.withOpacity(0.0),
-                                                ],
-                                                stops: const [0.0, 0.6, 1.0],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                         // Modern Abstract Background Elements
                                         Positioned(
                                           right: -100,
@@ -985,11 +940,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                                   begin: Alignment.topLeft,
                                                   end: Alignment.bottomRight,
                                                   colors: [
-                                                    Colors.white.withOpacity(0.18),
-                                                    Colors.white.withOpacity(0.10),
-                                                    Colors.white.withOpacity(0.04),
+                                                    Colors.white.withOpacity(0.15),
+                                                    Colors.white.withOpacity(0.05),
                                                   ],
-                                                  stops: const [0.0, 0.5, 1.0],
                                                 ),
                                               ),
                                             ),
@@ -1009,11 +962,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                                   begin: Alignment.bottomRight,
                                                   end: Alignment.topLeft,
                                                   colors: [
-                                                    Colors.white.withOpacity(0.15),
-                                                    Colors.white.withOpacity(0.08),
-                                                    Colors.white.withOpacity(0.02),
+                                                    Colors.white.withOpacity(0.12),
+                                                    Colors.white.withOpacity(0.03),
                                                   ],
-                                                  stops: const [0.0, 0.6, 1.0],
                                                 ),
                                               ),
                                             ),
@@ -1047,12 +998,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                                       begin: Alignment.topLeft,
                                                       end: Alignment.bottomRight,
                                                       colors: [
-                                                        roleColor.withOpacity(0.4),
-                                                        roleColor.withOpacity(0.2),
+                                                        roleColor.withOpacity(0.3),
                                                         Colors.white.withOpacity(0.1),
-                                                        roleColor.withOpacity(0.15),
                                                       ],
-                                                      stops: const [0.0, 0.35, 0.65, 1.0],
                                                     ),
                                                   ),
                                                   padding: const EdgeInsets.all(2),
@@ -1184,7 +1132,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                                       ),
                                                     ],
                                                   ),
-                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -1232,7 +1179,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                         _modernInfoCard(
                                           title: "Contact Information",
                                           icon: Icons.contact_mail_rounded,
-                                          accentColor: const Color(0xFF3B82F6),
                                           children: [
                                             if (userData.email != null && userData.email!.isNotEmpty)
                                               _modernInfoTile(Icons.email_rounded, "Email", userData.email ?? "", accentColor: const Color(0xFFEF4444)),
@@ -1246,7 +1192,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                         _modernInfoCard(
                                           title: userRole == 'student' ? "Academic Details" : "Professional Details",
                                           icon: userRole == 'student' ? Icons.school_rounded : Icons.work_rounded,
-                                          accentColor: roleColor,
                                           children: _buildRoleSpecificDetails(userData),
                                         ),
                                       
@@ -1256,7 +1201,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                                       _modernInfoCard(
                                         title: "Legal & Privacy",
                                         icon: Icons.policy_rounded,
-                                        accentColor: const Color(0xFF6366F1),
                                         children: [
                                           _buildLegalLink(
                                             context,
@@ -1403,7 +1347,6 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                         _modernInfoCard(
                           title: "Contact Information",
                           icon: Icons.contact_mail_rounded,
-                          accentColor: const Color(0xFF3B82F6),
                           children: [
                             if (userData.email != null && userData.email!.isNotEmpty)
                               _modernInfoTile(Icons.email_rounded, "Email", userData.email ?? "", accentColor: const Color(0xFFEF4444)),
@@ -1415,13 +1358,11 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                         _modernInfoCard(
                           title: userRole == 'student' ? "Academic Details" : "Professional Details",
                           icon: userRole == 'student' ? Icons.school_rounded : Icons.work_rounded,
-                          accentColor: roleColor,
                           children: _buildRoleSpecificDetails(userData),
                         ),
                        _modernInfoCard(
                           title: "Legal & Privacy",
                           icon: Icons.policy_rounded,
-                          accentColor: const Color(0xFF6366F1),
                           children: [
                             _buildLegalLink(context, Icons.description_rounded, 'Terms of Use', '/terms-of-use'),
                             _buildLegalLink(context, Icons.privacy_tip_rounded, 'Privacy Policy', '/privacy-policy'),

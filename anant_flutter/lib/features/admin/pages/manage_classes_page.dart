@@ -2,6 +2,7 @@ import 'package:anant_client/anant_client.dart';
 import 'package:anant_flutter/common/loading_indicator.dart';
 import 'package:anant_flutter/config/role_theme.dart';
 import 'package:anant_flutter/main.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -201,7 +202,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
       floatingActionButton: _isLoading ? null : FloatingActionButton.extended(
         onPressed: _showAddClassDialog,
         backgroundColor: Theme.of(context).primaryColor,
-        icon: const Icon(Icons.add),
+        icon: Icon(PhosphorIcons.plus()),
         label: const Text('Add Class'),
       ),
       body: _isLoading
@@ -211,7 +212,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                      Icon(PhosphorIcons.warningCircle(), size: 80, color: Colors.red[300]),
                       const SizedBox(height: 16),
                       Text(_error!, style: TextStyle(fontSize: 16, color: Colors.grey[600]), textAlign: TextAlign.center),
                       const SizedBox(height: 16),
@@ -230,15 +231,15 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildStatCard('Total Classes', '${_classes.length}', Icons.school, Colors.blue),
+                  child: _buildStatCard('Total Classes', '${_classes.length}', PhosphorIcons.chalkboard(), Colors.blue),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildStatCard('Students', '$totalStudents', Icons.people, Colors.green),
+                  child: _buildStatCard('Students', '$totalStudents', PhosphorIcons.users(), Colors.green),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildStatCard('Teachers', '$totalTeachers', Icons.person, Colors.orange),
+                  child: _buildStatCard('Teachers', '$totalTeachers', PhosphorIcons.chalkboardTeacher(), Colors.orange),
                 ),
               ],
             ),
@@ -251,7 +252,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.school_outlined, size: 80, color: Colors.grey[300]),
+                        Icon(PhosphorIcons.chalkboard(), size: 80, color: Colors.grey[300]),
                         const SizedBox(height: 16),
                         Text('No classes found', style: TextStyle(fontSize: 18, color: Colors.grey[600], fontWeight: FontWeight.w500)),
                       ],
@@ -281,7 +282,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                               ),
                               child: Center(
                                 child: Icon(
-                                  Icons.school,
+                                  PhosphorIcons.chalkboardTeacher(),
                                   color: Theme.of(context).primaryColor,
                                   size: 28,
                                 ),
@@ -300,7 +301,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(Icons.people_outline, size: 16, color: Colors.grey[600]),
+                                        Icon(PhosphorIcons.users(), size: 16, color: Colors.grey[600]),
                                         const SizedBox(width: 8),
                                         Text('$students students enrolled', style: TextStyle(color: Colors.grey[700])),
                                       ],
@@ -308,7 +309,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
+                                        Icon(PhosphorIcons.chalkboardTeacher(), size: 16, color: Colors.grey[600]),
                                         const SizedBox(width: 8),
                                         Text('$teachers teachers assigned', style: TextStyle(color: Colors.grey[700])),
                                       ],
@@ -317,7 +318,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                                       const SizedBox(height: 8),
                                       Row(
                                         children: [
-                                          Icon(Icons.book_outlined, size: 16, color: Colors.grey[600]),
+                                          Icon(PhosphorIcons.book(), size: 16, color: Colors.grey[600]),
                                           const SizedBox(width: 8),
                                           Text('Course: ${classData.courseName}', style: TextStyle(color: Colors.grey[700])),
                                         ],
@@ -357,13 +358,13 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
                                               SnackBar(content: Text('Edit ${classData.name}')),
                                             );
                                           },
-                                          icon: const Icon(Icons.edit, size: 16),
+                                          icon: Icon(PhosphorIcons.pencilSimple(), size: 16),
                                           label: const Text('Edit'),
                                         ),
                                         const SizedBox(width: 8),
                                         OutlinedButton.icon(
                                           onPressed: () => _deleteClass(classData),
-                                          icon: const Icon(Icons.delete, size: 16, color: Colors.red),
+                                          icon: Icon(PhosphorIcons.trash(), size: 16, color: Colors.red),
                                           label: const Text('Delete', style: TextStyle(color: Colors.red)),
                                           style: OutlinedButton.styleFrom(
                                             side: const BorderSide(color: Colors.red),

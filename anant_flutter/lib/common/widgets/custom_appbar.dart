@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   // Title text for the app bar.
@@ -25,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       // The foregroundColor here can affect the default text and icon color.
       foregroundColor: backgroundColor,
-      iconTheme: const IconThemeData(color: Colors.white),
+      leading: const CircularBackButton(),
       titleSpacing: 0,
       toolbarHeight: toolbarHeight,
       systemOverlayStyle: SystemUiOverlayStyle(

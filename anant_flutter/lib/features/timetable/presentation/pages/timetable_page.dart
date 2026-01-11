@@ -1,3 +1,5 @@
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
@@ -57,7 +59,8 @@ class _TimetableViewState extends State<TimetableView> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Timetable'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -69,7 +72,7 @@ class _TimetableViewState extends State<TimetableView> {
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
-                icon: Icon(showTableView ? Icons.grid_view_rounded : Icons.table_chart_rounded),
+                icon: Icon(showTableView ? PhosphorIcons.squaresFour(PhosphorIconsStyle.fill) : PhosphorIcons.table(PhosphorIconsStyle.fill)),
                 tooltip: showTableView ? 'Show Today\'s Classes' : 'Show Full Timetable',
                 onPressed: () {
                   setState(() {
@@ -119,7 +122,7 @@ class _TimetableViewState extends State<TimetableView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.event_busy, size: 80, color: Colors.grey[300]),
+            Icon(PhosphorIcons.calendarX(), size: 80, color: Colors.grey[300]),
             const SizedBox(height: 24),
             Text(
               'No classes for $today',
@@ -181,7 +184,7 @@ class _TimetableViewState extends State<TimetableView> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
-                      Icons.class_rounded,
+                      PhosphorIcons.chalkboardTeacher(PhosphorIconsStyle.fill),
                       color: Theme.of(context).primaryColor,
                       size: 28,
                     ),
@@ -203,7 +206,7 @@ class _TimetableViewState extends State<TimetableView> {
                         if (slot.showTeacher)
                           Row(
                             children: [
-                              Icon(Icons.person_rounded, size: 16, color: Colors.grey[500]),
+                              Icon(PhosphorIcons.user(), size: 16, color: Colors.grey[500]),
                               const SizedBox(width: 6),
                               Text(
                                 session.faculty,
@@ -217,7 +220,7 @@ class _TimetableViewState extends State<TimetableView> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(Icons.access_time_rounded, size: 16, color: Colors.grey[500]),
+                            Icon(PhosphorIcons.clock(), size: 16, color: Colors.grey[500]),
                             const SizedBox(width: 6),
                             Text(
                               '${slot.startTime} - ${slot.endTime}',

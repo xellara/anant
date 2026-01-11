@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:anant_flutter/common/bottom_nav_bloc.dart';
 import 'package:anant_flutter/common/settings_bloc.dart';
@@ -143,37 +144,52 @@ class _HomeScreenAState extends State<HomeScreenA> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      extendBody: true, // Allows body to extend behind the bottom nav
+      extendBody: true,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: null,
-      body: BlocBuilder<BottomNavBloc, BottomNavState>(
-        builder: (context, navState) {
-          // Wrap content in a container with bottom padding to avoid obstruction by the floating nav bar
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 0), // The nav bar floats, but we might need padding if content scrolls
-            child: IndexedStack(
-              index: navState.selectedIndex,
-              children: [
-                _buildHomeScreenContent(
-                    screenSize, statusBarHeight, contentTopPadding, statsCardHeight, featureCardHeight),
-                const TimetablePage(),
-                const StudentAttendancePage(),
-                const FeeScreen(),
-                const ProfileScreen(),
-              ],
+      body: Stack(
+        children: [
+          // 1. Main Content Layer
+          Positioned.fill(
+            child: BlocBuilder<BottomNavBloc, BottomNavState>(
+              builder: (context, navState) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 0),
+                  child: IndexedStack(
+                    index: navState.selectedIndex,
+                    children: [
+                      // Ensure content has bottom padding to clear the floating navbar
+                      _buildHomeScreenContent(
+                          screenSize, statusBarHeight, contentTopPadding, statsCardHeight, featureCardHeight),
+                      const TimetablePage(),
+                      const StudentAttendancePage(),
+                      const FeeScreen(),
+                      const ProfileScreen(),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: BlocBuilder<BottomNavBloc, BottomNavState>(
-        builder: (context, navState) {
-          return CustomFloatingNavBar(
-            selectedIndex: navState.selectedIndex,
-            onItemSelected: (index) {
-              BlocProvider.of<BottomNavBloc>(context).add(NavItemSelectedEvent(selectedIndex: index));
-            },
-          );
-        },
+          ),
+          
+          // 2. Floating Navbar Layer
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: BlocBuilder<BottomNavBloc, BottomNavState>(
+              builder: (context, navState) {
+                return CustomFloatingNavBar(
+                  selectedIndex: navState.selectedIndex,
+                  onItemSelected: (index) {
+                    BlocProvider.of<BottomNavBloc>(context).add(NavItemSelectedEvent(selectedIndex: index));
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -270,7 +286,7 @@ class _HomeScreenAState extends State<HomeScreenA> {
           child: SingleChildScrollView(
             controller: _scrollController,
             physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.only(top: contentTopPadding, bottom: 100), // Add bottom padding for nav bar
+            padding: EdgeInsets.only(top: contentTopPadding, bottom: 140), // Sufficient padding for floating navbar
             child: Container(
               width: screenSize.width,
               decoration: const BoxDecoration(
@@ -504,64 +520,64 @@ class CustomFloatingNavBar extends StatelessWidget {
         // For now, we assume the parent handles the page switching logic which also needs to be dynamic.
         // But the visual bar needs to match the available items.
         
+        // Clean, Simple Floating Navbar
         return Container(
-          margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-          padding: const EdgeInsets.all(8),
+          margin: EdgeInsets.fromLTRB(
+            16, 
+            0, 
+            16, 
+            20 + MediaQuery.of(context).viewPadding.bottom
+          ),
+          height: 60,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 20,
-                offset: const Offset(0, 10),
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(enabledItems.length, (index) {
-              // We need to map the visual index back to the logical index or just use the visual index if the pages are also dynamic.
-              // For simplicity in this step, we will just display the enabled items.
-              // The parent 'selectedIndex' might need to be interpreted relative to the enabled items list.
+              final item = enabledItems[index];
+              final isSelected = selectedIndex == index;
               
-              final isSelected = selectedIndex == index; // This logic might need refinement if pages are dynamic
-              
-              return GestureDetector(
-                onTap: () => onItemSelected(index),
-                behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isSelected ? 20 : 12,
-                    vertical: 12,
-                  ),
-                  decoration: isSelected
-                      ? BoxDecoration(
-                          color: const Color(0xFF335762),
-                          borderRadius: BorderRadius.circular(30),
-                        )
-                      : null,
-                  child: Row(
-                    children: [
-                      Icon(
-                        enabledItems[index]['icon'] as IconData,
-                        color: isSelected ? Colors.white : Colors.grey,
-                        size: 24,
-                      ),
-                      if (isSelected) ...[
-                        const SizedBox(width: 8),
-                        Text(
-                          enabledItems[index]['label'] as String,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
+              return Expanded(
+                child: InkWell(
+                  onTap: () => onItemSelected(index),
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          item['icon'] as IconData,
+                          color: isSelected 
+                              ? Theme.of(context).primaryColor 
+                              : Colors.grey[400],
+                          size: 24,
                         ),
+                        if (isSelected) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            item['label'] as String,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               );

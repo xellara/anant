@@ -234,10 +234,10 @@ class RoleTheme {
         actionsIconTheme: const IconThemeData(color: Colors.white, size: 28),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: surface,
+        backgroundColor: Colors.transparent, // Ensure transparency for floating navbar
         selectedItemColor: primary,
         unselectedItemColor: Colors.grey.shade400,
-        elevation: 10,
+        elevation: 0,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: true,
       ),

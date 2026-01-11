@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:anant_server/src/repositories/auth_service.dart';
 import 'package:serverpod/serverpod.dart';
@@ -20,11 +21,26 @@ void main(List<String> args) async {
   try {
     print('🌱 Starting Comprehensive Seeding...');
 
-    // --- 1. CLEAR DATABASE ---
+    // --- 1. ASK FOR CONFIRMATION TO CLEAR DATABASE ---
+    print('\n⚠️  WARNING: This will DELETE all existing data in the database!');
+    print('Do you want to clear the database before seeding? (yes/no): ');
+    
+    final response = stdin.readLineSync()?.trim().toLowerCase();
+    
+    if (response != 'yes' && response != 'y') {
+      print('❌ Seeding cancelled. Database was NOT cleared.');
+      return;
+    }
+
+    // --- 2. CLEAR DATABASE ---
     print('🗑️ Clearing existing data...');
     // Delete children first to avoid foreign key constraints
     await Notification.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Announcement.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await UserRoleAssignment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await RolePermission.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await StudentCourseEnrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await Enrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await FeeRecord.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Attendance.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Exam.db.deleteWhere(session, where: (t) => Constant.bool(true));
@@ -34,10 +50,12 @@ void main(List<String> args) async {
     await UserCredentials.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await User.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await auth.UserInfo.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await Permission.db.deleteWhere(session, where: (t) => Constant.bool(true));
+    await Role.db.deleteWhere(session, where: (t) => Constant.bool(true));
     await Organization.db.deleteWhere(session, where: (t) => Constant.bool(true));
     print('✅ Database cleared.');
 
-    // --- 2. CREATE ORGANIZATION ---
+    // --- 3. CREATE ORGANIZATION ---
     print('🏢 Creating Organization...');
     final org = Organization(
       name: 'Anant School',
@@ -55,7 +73,7 @@ void main(List<String> args) async {
     final orgId = createdOrg.id!;
     print('✅ Organization created: ${createdOrg.name} (ID: $orgId)');
 
-    // --- 3. CREATE CLASS ---
+    // --- 4. CREATE CLASS ---
     print('🏫 Creating Class...');
     final schoolClass = Classes(
       organizationId: orgId,
@@ -67,7 +85,7 @@ void main(List<String> args) async {
     final classId = createdClass.id!;
     print('✅ Class created: ${createdClass.name} (ID: $classId)');
 
-    // --- 4. CREATE SUBJECTS ---
+    // --- 5. CREATE SUBJECTS ---
     print('📚 Creating Subjects...');
     final subjectNames = ['Mathematics', 'Science', 'English', 'History', 'Physics'];
     final subjects = <Subject>[];
@@ -81,7 +99,7 @@ void main(List<String> args) async {
     }
     print('✅ ${subjects.length} Subjects created.');
 
-    // --- 5. CREATE USERS (ALL ROLES) ---
+    // --- 6. CREATE USERS (ALL ROLES) ---
     print('👥 Creating Users for all roles...');
     
     final Map<String, List<User>> createdUsers = {};
@@ -258,7 +276,163 @@ void main(List<String> args) async {
     }
     print('✅ Fee records created.');
 
-    // --- 11. CREATE ANNOUNCEMENTS ---
+    // --- 11. CREATE ENROLLMENTS ---
+    print('📝 Creating Enrollments...');
+    int enrollmentCount = 0;
+    for (var student in students) {
+      final enrollment = Enrollment(
+        organizationId: orgId,
+        classId: classId,
+        studentId: student.id!,
+      );
+      await Enrollment.db.insertRow(session, enrollment);
+      enrollmentCount++;
+    }
+    print('✅ Enrollments created ($enrollmentCount).');
+
+    // --- 12. CREATE STUDENT COURSE ENROLLMENTS ---
+    print('📚 Creating Student Course Enrollments...');
+    int courseEnrollmentCount = 0;
+    for (var student in students) {
+      if (student.anantId == null) continue;
+      // Enroll each student in 3-5 random subjects
+      final numCourses = 3 + random.nextInt(3);
+      final enrolledSubjects = <int>{};
+      
+      while (enrolledSubjects.length < numCourses && enrolledSubjects.length < subjects.length) {
+        final subject = subjects[random.nextInt(subjects.length)];
+        if (!enrolledSubjects.contains(subject.id)) {
+          enrolledSubjects.add(subject.id!);
+          final courseEnrollment = StudentCourseEnrollment(
+            studentAnantId: student.anantId!,
+            courseName: subject.name,
+            organizationId: orgId,
+            enrolledOn: DateTime.now().subtract(Duration(days: random.nextInt(180))),
+          );
+          await StudentCourseEnrollment.db.insertRow(session, courseEnrollment);
+          courseEnrollmentCount++;
+        }
+      }
+    }
+    print('✅ Student Course Enrollments created ($courseEnrollmentCount).');
+
+    // --- 13. CREATE ROLE PERMISSIONS ---
+    print('🔐 Creating Role Permissions...');
+    // First, create permissions
+    final permissionSlugs = [
+      {'slug': 'attendance.view', 'description': 'View Attendance', 'module': 'Attendance'},
+      {'slug': 'attendance.mark', 'description': 'Mark Attendance', 'module': 'Attendance'},
+      {'slug': 'fees.view', 'description': 'View Fees', 'module': 'Fees'},
+      {'slug': 'fees.collect', 'description': 'Collect Fees', 'module': 'Fees'},
+      {'slug': 'users.manage', 'description': 'Manage Users', 'module': 'Admin'},
+      {'slug': 'exams.create', 'description': 'Create Exams', 'module': 'Academics'},
+      {'slug': 'exams.view', 'description': 'View Exams', 'module': 'Academics'},
+      {'slug': 'announcements.create', 'description': 'Create Announcements', 'module': 'Communication'},
+      {'slug': 'announcements.view', 'description': 'View Announcements', 'module': 'Communication'},
+    ];
+    
+    final createdPermissions = <Permission>[];
+    for (var permData in permissionSlugs) {
+      final permission = Permission(
+        slug: permData['slug'] as String,
+        description: permData['description'] as String,
+        module: permData['module'] as String,
+      );
+      createdPermissions.add(await Permission.db.insertRow(session, permission));
+    }
+
+    // Create roles for each UserRole
+    final createdRoles = <Role>[];
+    for (var roleEnum in UserRole.values) {
+      final role = Role(
+        name: roleEnum.name[0].toUpperCase() + roleEnum.name.substring(1),
+        slug: roleEnum.name,
+        description: 'System role for ${roleEnum.name}',
+        organizationName: 'AnantSchool',
+        isSystemRole: true,
+      );
+      createdRoles.add(await Role.db.insertRow(session, role));
+    }
+
+    // Map permissions to roles
+    int rolePermissionCount = 0;
+    for (var role in createdRoles) {
+      // Admin and Anant get all permissions
+      if (role.slug == 'admin' || role.slug == 'anant') {
+        for (var permission in createdPermissions) {
+          final rolePermission = RolePermission(
+            roleId: role.id!,
+            permissionId: permission.id!,
+          );
+          await RolePermission.db.insertRow(session, rolePermission);
+          rolePermissionCount++;
+        }
+      }
+      // Teacher gets exam and attendance permissions
+      else if (role.slug == 'teacher') {
+        for (var permission in createdPermissions) {
+          if (permission.slug.startsWith('attendance.') || 
+              permission.slug.startsWith('exams.') || 
+              permission.slug.startsWith('announcements.view')) {
+            final rolePermission = RolePermission(
+              roleId: role.id!,
+              permissionId: permission.id!,
+            );
+            await RolePermission.db.insertRow(session, rolePermission);
+            rolePermissionCount++;
+          }
+        }
+      }
+      // Accountant gets fee permissions
+      else if (role.slug == 'accountant') {
+        for (var permission in createdPermissions) {
+          if (permission.slug.startsWith('fees.')) {
+            final rolePermission = RolePermission(
+              roleId: role.id!,
+              permissionId: permission.id!,
+            );
+            await RolePermission.db.insertRow(session, rolePermission);
+            rolePermissionCount++;
+          }
+        }
+      }
+      // Students get view-only permissions
+      else if (role.slug == 'student') {
+        for (var permission in createdPermissions) {
+          if (permission.slug.contains('.view')) {
+            final rolePermission = RolePermission(
+              roleId: role.id!,
+              permissionId: permission.id!,
+            );
+            await RolePermission.db.insertRow(session, rolePermission);
+            rolePermissionCount++;
+          }
+        }
+      }
+    }
+    print('✅ Role Permissions created ($rolePermissionCount).');
+
+    // --- 14. CREATE USER ROLE ASSIGNMENTS ---
+    print('👤 Creating User Role Assignments...');
+    int roleAssignmentCount = 0;
+    for (var roleKey in createdUsers.keys) {
+      final usersInRole = createdUsers[roleKey]!;
+      final matchingRole = createdRoles.firstWhere((r) => r.slug == roleKey);
+      
+      for (var user in usersInRole) {
+        final assignment = UserRoleAssignment(
+          userId: user.id!,
+          roleId: matchingRole.id!,
+          assignedAt: DateTime.now().subtract(Duration(days: random.nextInt(30))),
+          isActive: true,
+        );
+        await UserRoleAssignment.db.insertRow(session, assignment);
+        roleAssignmentCount++;
+      }
+    }
+    print('✅ User Role Assignments created ($roleAssignmentCount).');
+
+    // --- 15. CREATE ANNOUNCEMENTS ---
     print('📢 Creating Announcements...');
     final announcements = [
       {
@@ -353,7 +527,13 @@ void main(List<String> args) async {
     createdUsers.forEach((role, users) {
       print(' - ${users.length} ${role}s');
     });
-    print(' - Timetable, Exams, Attendance, Fees populated.');
+    print(' - $enrollmentCount Enrollments');
+    print(' - $courseEnrollmentCount Student Course Enrollments');
+    print(' - ${createdPermissions.length} Permissions');
+    print(' - ${createdRoles.length} Roles');
+    print(' - $rolePermissionCount Role-Permission Mappings');
+    print(' - $roleAssignmentCount User-Role Assignments');
+    print(' - Timetable, Exams, Attendance, Fees, Announcements, Notifications populated.');
 
   } catch (e, stack) {
     print('❌ Error seeding data: $e');

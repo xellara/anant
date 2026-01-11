@@ -4,6 +4,7 @@ import 'package:anant_flutter/common/loading_indicator.dart';
 import 'package:anant_flutter/config/role_theme.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:anant_flutter/main.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -156,7 +157,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.upload_file, color: Colors.white),
+            icon: Icon(PhosphorIcons.uploadSimple(), color: Colors.white),
             tooltip: 'Bulk Import Users',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const BulkImportUsersPage()));
@@ -168,7 +169,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
       floatingActionButton: _isLoading ? null : FloatingActionButton.extended(
         onPressed: _showAddUserDialog,
         backgroundColor: Theme.of(context).primaryColor,
-        icon: const Icon(Icons.add),
+        icon: Icon(PhosphorIcons.plus()),
         label: const Text('Add User'),
       ),
       body: _isLoading
@@ -178,7 +179,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                      Icon(PhosphorIcons.warningCircle(), size: 80, color: Colors.red[300]),
                       const SizedBox(height: 16),
                       Text(_error!, style: TextStyle(fontSize: 16, color: Colors.grey[600]), textAlign: TextAlign.center),
                       const SizedBox(height: 16),
@@ -300,15 +301,15 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
           child: Row(
             children: [
               Expanded(
-                child: _buildStatCard('Total Users', '${_allUsers.length}', Icons.people, Colors.blue),
+                child: _buildStatCard('Total Users', '${_allUsers.length}', PhosphorIcons.users(), Colors.blue),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildStatCard('Filtered', '${_filteredUsers.length}', Icons.filter_list, Colors.green),
+                child: _buildStatCard('Filtered', '${_filteredUsers.length}', PhosphorIcons.funnel(), Colors.green),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildStatCard('Roles', '${_roles.length - 1}', Icons.badge, Colors.orange),
+                child: _buildStatCard('Roles', '${_roles.length - 1}', PhosphorIcons.identificationBadge(), Colors.orange),
               ),
             ],
           ),
@@ -322,7 +323,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.people_outline, size: 80, color: Colors.grey[300]),
+            Icon(PhosphorIcons.users(), size: 80, color: Colors.grey[300]),
             const SizedBox(height: 16),
             Text(
               'No users found',

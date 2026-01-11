@@ -1,6 +1,7 @@
 import 'package:anant_flutter/config/role_theme.dart';
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -9,7 +10,8 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Privacy Policy'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -276,7 +278,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.privacy_tip_outlined, color: Colors.green[700], size: 24),
+              Icon(PhosphorIcons.lockKey(), color: Colors.green[700], size: 24),
               const SizedBox(width: 12),
               const Text(
                 'Your Privacy Matters',
@@ -302,6 +304,58 @@ class PrivacyPolicyPage extends StatelessWidget {
   }
 
   Widget _buildSection(String title, String content) {
+    // Parse the content for **bold** text
+    List<TextSpan> textSpans = [];
+    final pattern = RegExp(r'\*\*(.*?)\*\*');
+    final matches = pattern.allMatches(content);
+    
+    int currentIndex = 0;
+    
+    for (final match in matches) {
+      // Add text before the bold part
+      if (match.start > currentIndex) {
+        textSpans.add(
+          TextSpan(
+            text: content.substring(currentIndex, match.start),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+              height: 1.6,
+            ),
+          ),
+        );
+      }
+      
+      // Add the bold part
+      textSpans.add(
+        TextSpan(
+          text: match.group(1), // The text inside the **
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3142), // Darker color for emphasis
+            height: 1.6,
+          ),
+        ),
+      );
+      
+      currentIndex = match.end;
+    }
+    
+    // Add any remaining text
+    if (currentIndex < content.length) {
+      textSpans.add(
+        TextSpan(
+          text: content.substring(currentIndex),
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+            height: 1.6,
+          ),
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -314,12 +368,9 @@ class PrivacyPolicyPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-          content,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-            height: 1.6,
+        RichText(
+          text: TextSpan(
+            children: textSpans,
           ),
         ),
         const SizedBox(height: 20),
@@ -342,7 +393,7 @@ class PrivacyPolicyPage extends StatelessWidget {
       child: Column(
         children: [
           Icon(
-            Icons.shield_outlined,
+            PhosphorIcons.shieldCheck(),
             size: 40,
             color: Colors.green[700],
           ),

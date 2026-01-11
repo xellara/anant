@@ -1,3 +1,5 @@
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +33,8 @@ class ExamScheduleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Exam Schedule'),
         centerTitle: true,
         elevation: 0,
@@ -45,7 +48,7 @@ class ExamScheduleView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                  Icon(PhosphorIcons.warningCircle(), size: 64, color: Colors.red[300]),
                   const SizedBox(height: 16),
                   Text('Error: ${state.message}'),
                 ],
@@ -57,7 +60,7 @@ class ExamScheduleView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.event_busy, size: 64, color: Colors.grey[400]),
+                    Icon(PhosphorIcons.calendarX(), size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
                     Text(
                       'No exams scheduled',
@@ -167,19 +170,19 @@ class ExamScheduleView extends StatelessWidget {
     if (isPast) {
       accentColor = Colors.grey;
       statusLabel = 'Completed';
-      statusIcon = Icons.check_circle_rounded;
+      statusIcon = PhosphorIcons.checkCircle(PhosphorIconsStyle.fill);
     } else if (isToday) {
       accentColor = const Color(0xFFFF5252);
       statusLabel = 'Today';
-      statusIcon = Icons.access_time_filled_rounded;
+      statusIcon = PhosphorIcons.clock(PhosphorIconsStyle.fill);
     } else if (isUpcoming) {
       accentColor = const Color(0xFFFFAB40);
       statusLabel = 'In $difference days';
-      statusIcon = Icons.hourglass_top_rounded;
+      statusIcon = PhosphorIcons.hourglass(PhosphorIconsStyle.fill);
     } else {
       accentColor = const Color(0xFF448AFF);
       statusLabel = '$difference days left';
-      statusIcon = Icons.event_rounded;
+      statusIcon = PhosphorIcons.calendar(PhosphorIconsStyle.fill);
     }
 
     return Container(
@@ -303,7 +306,7 @@ class ExamScheduleView extends StatelessWidget {
                         const SizedBox(height: 6),
                          Row(
                           children: [
-                            Icon(Icons.schedule_rounded, size: 14, color: Colors.grey[400]),
+                            Icon(PhosphorIcons.clock(), size: 14, color: Colors.grey[400]),
                             const SizedBox(width: 6),
                             Text(
                               exam.time,

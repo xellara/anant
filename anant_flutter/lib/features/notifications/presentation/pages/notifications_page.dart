@@ -6,6 +6,8 @@ import 'package:anant_flutter/common/loading_indicator.dart';
 import 'package:anant_flutter/features/notifications/models/notification_item.dart';
 import 'package:anant_flutter/common/widgets/responsive_layout.dart';
 import 'package:anant_flutter/main.dart';
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -136,13 +138,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
   IconData _getIconForType(String type) {
     switch (type) {
       case 'fee':
-        return Icons.currency_rupee_rounded;
+        return PhosphorIcons.currencyInr();
       case 'announcement':
-        return Icons.campaign_rounded;
+        return PhosphorIcons.megaphone();
       case 'attendance':
-        return Icons.event_available_rounded;
+        return PhosphorIcons.calendarCheck();
       default:
-        return Icons.notifications_rounded;
+        return PhosphorIcons.bell();
     }
   }
 
@@ -165,7 +167,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Notifications'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -191,7 +194,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.error_outline,
+                        PhosphorIcons.warningCircle(),
                         size: 80,
                         color: Colors.red[300],
                       ),
@@ -218,7 +221,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.notifications_off_outlined,
+                            PhosphorIcons.bellSlash(),
                             size: 80,
                             color: Colors.grey[300],
                           ),
@@ -259,7 +262,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.circle,
+                      PhosphorIcons.circle(PhosphorIconsStyle.fill),
                       size: 8,
                       color: Theme.of(context).primaryColor,
                     ),
@@ -292,7 +295,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.delete, color: Colors.white),
+                      child: Icon(PhosphorIcons.trash(PhosphorIconsStyle.fill), color: Colors.white),
                     ),
                     onDismissed: (direction) {
                       _deleteNotification(notification.id);
@@ -333,7 +336,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.circle,
+                        PhosphorIcons.circle(PhosphorIconsStyle.fill),
                         size: 8,
                         color: Theme.of(context).primaryColor,
                       ),
@@ -368,7 +371,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         top: 8,
                         right: 8,
                         child: IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.grey),
+                          icon: Icon(PhosphorIcons.trash(), color: Colors.grey),
                           onPressed: () => _deleteNotification(notification.id),
                           tooltip: 'Delete',
                         ),
@@ -465,7 +468,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.access_time_rounded, size: 14, color: Colors.grey[500]),
+                        Icon(PhosphorIcons.clock(), size: 14, color: Colors.grey[500]),
                         const SizedBox(width: 4),
                         Text(
                           timeago.format(notification.timestamp),

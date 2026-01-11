@@ -4,6 +4,7 @@ import 'package:anant_flutter/config/role_theme.dart';
 import 'package:anant_flutter/main.dart';
 import 'package:excel/excel.dart' hide Border;
 import 'package:file_picker/file_picker.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
@@ -266,14 +267,14 @@ class _BulkImportUsersPageState extends State<BulkImportUsersPage> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.blue.withOpacity(0.2))),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
+                    child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.info_outline, color: Colors.blue),
-                          SizedBox(width: 12),
-                          Text('Instructions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+                          Icon(PhosphorIcons.info(), color: Colors.blue),
+                          const SizedBox(width: 12),
+                          const Text('Instructions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -307,7 +308,7 @@ class _BulkImportUsersPageState extends State<BulkImportUsersPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.cloud_upload_outlined, 
+                                PhosphorIcons.cloudArrowUp(), 
                                 size: 64, 
                                 color: _isLoading ? Colors.grey : Theme.of(context).primaryColor
                               ),
@@ -330,7 +331,7 @@ class _BulkImportUsersPageState extends State<BulkImportUsersPage> {
               else
                 Column(
                   children: [
-                    const Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
+                    Icon(PhosphorIcons.checkCircle(), size: 80, color: Colors.green),
                     const SizedBox(height: 16),
                     Text(
                       'Success! ${_createdUsers!.length} users created.',
@@ -342,7 +343,7 @@ class _BulkImportUsersPageState extends State<BulkImportUsersPage> {
                       height: 56,
                       child: ElevatedButton.icon(
                         onPressed: _generateAndDownloadPdf,
-                        icon: const Icon(Icons.download),
+                        icon: Icon(PhosphorIcons.downloadSimple()),
                         label: const Text('Download Credentials PDF'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor,

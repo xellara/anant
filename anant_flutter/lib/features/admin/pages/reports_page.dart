@@ -1,4 +1,5 @@
 import 'package:anant_flutter/config/role_theme.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -27,7 +28,7 @@ class _ReportsPageState extends State<ReportsPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: Icon(PhosphorIcons.downloadSimple()),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Downloading report...')),
@@ -83,11 +84,11 @@ class _ReportsPageState extends State<ReportsPage> {
           Row(
             children: [
               Expanded(
-                child: _buildKpiCard('Total Revenue', '₹2,45,000', '+12%', Colors.green, Icons.currency_rupee),
+                child: _buildKpiCard('Total Revenue', '₹2,45,000', '+12%', Colors.green, PhosphorIcons.currencyInr()),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildKpiCard('Attendance', '92.5%', '+3.2%', Colors.blue, Icons.check_circle),
+                child: _buildKpiCard('Attendance', '92.5%', '+3.2%', Colors.blue, PhosphorIcons.checkCircle(PhosphorIconsStyle.fill)),
               ),
             ],
           ),
@@ -97,11 +98,11 @@ class _ReportsPageState extends State<ReportsPage> {
           Row(
             children: [
               Expanded(
-                child: _buildKpiCard('Active Students', '758', '+5', Colors.orange, Icons.people),
+                child: _buildKpiCard('Active Students', '758', '+5', Colors.orange, PhosphorIcons.users()),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildKpiCard('Pending Fees', '₹45,000', '-8%', Colors.red, Icons.warning),
+                child: _buildKpiCard('Pending Fees', '₹45,000', '-8%', Colors.red, PhosphorIcons.warning()),
               ),
             ],
           ),
@@ -369,10 +370,10 @@ class _ReportsPageState extends State<ReportsPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          _buildReportItem('Student Performance Report', Icons.assessment, Colors.purple),
-          _buildReportItem('Fee Collection Report', Icons.account_balance, Colors.green),
-          _buildReportItem('Attendance Report', Icons.calendar_today, Colors.blue),
-          _buildReportItem('Staff Performance Report', Icons.people, Colors.orange),
+          _buildReportItem('Student Performance Report', PhosphorIcons.chartBar(), Colors.purple),
+          _buildReportItem('Fee Collection Report', PhosphorIcons.bank(), Colors.green),
+          _buildReportItem('Attendance Report', PhosphorIcons.calendarBlank(), Colors.blue),
+          _buildReportItem('Staff Performance Report', PhosphorIcons.users(), Colors.orange),
         ],
       ),
     );
@@ -389,7 +390,7 @@ class _ReportsPageState extends State<ReportsPage> {
         child: Icon(icon, color: color, size: 20),
       ),
       title: Text(title),
-      trailing: const Icon(Icons.download, size: 20),
+      trailing: Icon(PhosphorIcons.downloadSimple(), size: 20),
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Downloading $title...')),

@@ -1,6 +1,7 @@
+import 'package:anant_flutter/common/widgets/circular_back_button.dart';
 import 'package:anant_flutter/config/role_theme.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class TermsOfUsePage extends StatelessWidget {
   const TermsOfUsePage({super.key});
@@ -9,7 +10,8 @@ class TermsOfUsePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !kIsWeb,
+        automaticallyImplyLeading: false,
+        leading: const CircularBackButton(),
         title: const Text('Terms of Use'),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -196,7 +198,7 @@ class TermsOfUsePage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.blue[700], size: 24),
+              Icon(PhosphorIcons.info(), color: Colors.blue[700], size: 24),
               const SizedBox(width: 12),
               const Text(
                 'Welcome',
@@ -262,7 +264,7 @@ class TermsOfUsePage extends StatelessWidget {
       child: Column(
         children: [
           Icon(
-            Icons.verified_user,
+            PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
             size: 40,
             color: Theme.of(context).primaryColor,
           ),
