@@ -28,7 +28,6 @@ database:
   port: 5432
   name: ${DB_NAME}
   user: ${DB_USER}
-  password: ${DB_PASSWORD}
   requireSsl: true  # Neon requires SSL
 
 # Redis configuration (optional - keep disabled for cost savings)

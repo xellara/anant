@@ -59,7 +59,7 @@ gcloud run deploy anant-server \
   --cpu=1 \
   --timeout=300 \
   --set-env-vars="runmode=$RUNMODE,role=monolith,DB_HOST=ep-nameless-flower-ahysl36o-pooler.c-3.us-east-1.aws.neon.tech,DB_NAME=neondb,DB_USER=neondb_owner" \
-  --set-secrets="DB_PASSWORD=db-password:latest"
+  --set-secrets="SERVERPOD_PASSWORD_database=db-password:latest"
 
 if [ $? -ne 0 ]; then
     echo ""
