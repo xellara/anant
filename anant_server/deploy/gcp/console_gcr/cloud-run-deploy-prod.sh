@@ -62,6 +62,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
                 export SERVERPOD_PASSWORD_database
                 echo "   ✓ Password loaded automatically"
             fi
+        else
+            echo "⚠️  config/passwords.yaml not found (likely gitignored). Automatic password loading skipped."
         fi
     fi
 

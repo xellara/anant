@@ -57,6 +57,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
             SERVERPOD_PASSWORD_database="$AUTO_PASSWORD"
             echo "   ✓ Password loaded automatically"
         fi
+    else
+        echo "⚠️  config/passwords.yaml not found (likely gitignored). Automatic password loading skipped."
     fi
     
     if [ -z "$SERVERPOD_PASSWORD_database" ]; then
