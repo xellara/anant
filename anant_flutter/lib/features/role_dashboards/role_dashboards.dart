@@ -252,23 +252,30 @@ class _DashboardViewState extends State<_DashboardView> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userId = prefs.getInt('userId');
-      if (userId == null) return;
+      if (userId == null) {
+        debugPrint('Dashboard: userId is null in prefs');
+        return;
+      }
+      debugPrint('Dashboard: Fetching unread count for userId: $userId');
       
-      final user = await client.user.me(userId);
-      final anantId = user?.anantId;
-      
-      if (anantId != null) {
+      final anantId = prefs.getString('userName');
+
+      if (anantId != null && anantId.isNotEmpty) {
         if (_notificationSubscription == null) _setupRealtime(anantId);
         
+        debugPrint('Dashboard: Calling getUnreadCount for $anantId');
         final count = await client.notification.getUnreadCount(anantId);
+        debugPrint('Dashboard: Unread count fetched: $count');
         if (mounted) {
            setState(() {
              _unreadCount = count;
            });
         }
+      } else {
+        debugPrint('Dashboard: userName (anantId) is null/empty in prefs');
       }
-    } catch (e) {
-      debugPrint('Error fetching unread count: $e');
+    } catch (e, stack) {
+      debugPrint('Error fetching unread count: $e\nStack: $stack');
     }
   }
 

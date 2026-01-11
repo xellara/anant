@@ -73,12 +73,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final int? userId = prefs.getInt('userId');
         final String? sessionKey = prefs.getString('sessionKey');
         
+        final int? serverpodUserId = prefs.getInt('serverpodUserId');
+        final String? userName = prefs.getString('userName');
+        
         // If valid userId and sessionKey exist, attempt to restore the session.
-        if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty) {
+        if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty && serverpodUserId != null && userName != null && userName.isNotEmpty) {
           // Restore session key into the client's authentication key manager.
-          await client.authenticationKeyManager?.put(sessionKey);
+          await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.put('$serverpodUserId:$sessionKey');
           try {
-            final userData = await client.user.me(userId);
+            final userData = await client.user.getByAnantId(userName!);
             if (userData == null) {
               emit(AuthInitial());
               return;
@@ -113,9 +116,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(AuthInitial());
           }
         } else {
+          await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.remove();
           emit(AuthInitial());
         }
       } catch (e) {
+        await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.remove();
         emit(AuthInitial());
       }
     });
@@ -123,6 +128,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Sign-in event remains unchanged.
     on<AuthSignIn>((event, emit) async {
+      await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.remove();
       emit(AuthLoading());
       await Future.delayed(const Duration(seconds: 2));
       try {
@@ -142,6 +148,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Use userData.id (actual User ID from custom table)
         final newAccount = {
           'userId': userData.id,  // Use User ID from custom table
+          'serverpodUserId': result.id, // Store Serverpod User ID for auth header
           'uid': userData.uid,
           'sessionKey': result.key,
           'userName': userData.anantId ?? '',
@@ -167,7 +174,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // IMPORTANT: Update the client's authentication key manager FIRST
         // This ensures subsequent API calls use the correct session
-        await client.authenticationKeyManager?.put(result.key ?? '');
+        await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.put('${result.id}:${result.key ?? ''}');
         print('AuthBloc: Updated client authentication key manager with new session');
 
         // Save updated list and active session details.
@@ -176,6 +183,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           existingAccounts.map((e) => jsonEncode(e)).toList(),
         );
         await prefs.setInt('userId', userData.id!);  // Use User ID
+        await prefs.setInt('serverpodUserId', result.id!); // Save Serverpod User ID
         await prefs.setString('uid', userData.uid ?? '');
         await prefs.setString('sessionKey', result.key ?? '');
         await prefs.setString('userName', newAccount['userName'] as String? ?? '');
@@ -241,8 +249,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   // Remove active session keys.
   await prefs.remove('userId');
+  await prefs.remove('serverpodUserId');
   await prefs.remove('sessionKey');
-  await client.authenticationKeyManager?.remove();
+  await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.remove();
 
   // Load the stored accounts.
   final accountsJson = prefs.getStringList('accounts') ?? [];
@@ -315,7 +324,7 @@ class _AuthScreenState extends State<AuthScreen> {
       if (isAdding) {
         print('AuthScreen: Clearing session and sending AuthReset');
         // Clear client session for new login
-        await FlutterAuthenticationKeyManager().remove();
+        await (client.authKeyProvider as FlutterAuthenticationKeyManager?)?.remove();
         // Reset Bloc to Initial state so listener doesn't trigger immediately
         if (mounted) context.read<AuthBloc>().add(AuthReset());
       } else {

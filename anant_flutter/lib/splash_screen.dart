@@ -27,14 +27,16 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final int? userId = prefs.getInt('userId');
     final String? sessionKey = prefs.getString('sessionKey');
+    final int? serverpodUserId = prefs.getInt('serverpodUserId');
     print('Found userId: $userId');
     print('Found sessionKey: $sessionKey');
+    print('Found serverpodUserId: $serverpodUserId');
     
-    // Check for existence of userId and sessionKey
-    if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty) {
-      // Restore session key into the client's authentication manager.
+    // Check for existence of userId, sessionKey, and serverpodUserId
+    if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty && serverpodUserId != null) {
+      // Restore session key into the client's authentication manager using the correct format.
       var keyManager = client.authKeyProvider as FlutterAuthenticationKeyManager?;
-      await keyManager?.put(sessionKey);
+      await keyManager?.put('$serverpodUserId:$sessionKey');
       
       // Fetch the user data using the restored session key.
       final userData = await client.user.me(userId);
@@ -98,6 +100,17 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   } catch (error) {
     print("Error during session restoration: $error");
+    // Clear stored session data on error to force fresh login
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
+    await prefs.remove('sessionKey');
+    await prefs.remove('serverpodUserId');
+    await prefs.remove('userName');
+    // Also clear the auth key manager
+    var keyManager = client.authKeyProvider as FlutterAuthenticationKeyManager?;
+    await keyManager?.remove();
+    
+    if (!mounted) return;
     Navigator.pushReplacementNamed(context, '/auth');
   }
 }
