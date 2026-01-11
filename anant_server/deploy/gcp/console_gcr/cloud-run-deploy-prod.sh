@@ -48,6 +48,15 @@ read -p "Do you want to APPLY migrations to the PRODUCTION database? (y/N) " -n 
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "⚠️  Applying migrations to PRODUCTION..."
+    
+    # Check for password
+    if [ -z "$SERVERPOD_PASSWORD_database" ]; then
+        echo "🔒 Database password required for migration."
+        read -s -p "Enter Production Database Password: " SERVERPOD_PASSWORD_database
+        echo ""
+        export SERVERPOD_PASSWORD_database
+    fi
+
     # Runs the maintenance command locally securely connecting to the remote DB
     dart run bin/main.dart --apply-migrations --mode $RUNMODE --role maintenance
 fi

@@ -44,6 +44,10 @@ read -p "Do you want to APPLY migrations to the REMOTE database? (y/N) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Applying migrations to REMOTE (Staging)..."
+    
+    # Export Dev Password (matches the one in the gcloud deploy command below)
+    export SERVERPOD_PASSWORD_database="npg_uCLeB71wwPtr"
+    
     # Runs the maintenance command locally securely connecting to the remote DB
     dart run bin/main.dart --apply-migrations --mode $RUNMODE --role maintenance
 fi
