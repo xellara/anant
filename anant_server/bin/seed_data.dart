@@ -22,82 +22,123 @@ void main(List<String> args) async {
     print('🌱 Starting Comprehensive Seeding...');
 
     // --- 1. ASK FOR CONFIRMATION TO CLEAR DATABASE ---
-    print('\n⚠️  WARNING: This will DELETE all existing data in the database!');
-    print('Do you want to clear the database before seeding? (yes/no): ');
+    print('\n⚠️  WARNING: Do you want to DELETE all existing data before seeding?');
+    print('If you select "no", the script will only add missing data without clearing existing data.');
+    print('Clear database before seeding? (yes/no): ');
     
     final response = stdin.readLineSync()?.trim().toLowerCase();
     
-    if (response != 'yes' && response != 'y') {
-      print('❌ Seeding cancelled. Database was NOT cleared.');
-      return;
+    bool shouldClear = (response == 'yes' || response == 'y');
+
+    if (shouldClear) {
+      // --- 2. CLEAR DATABASE ---
+      print('🗑️ Clearing existing data...');
+      // Delete children first to avoid foreign key constraints
+      await Notification.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Announcement.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await UserRoleAssignment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await RolePermission.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await StudentCourseEnrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Enrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await FeeRecord.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Attendance.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Exam.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await TimetableEntry.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Subject.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Classes.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await UserCredentials.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await User.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await auth.UserInfo.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Permission.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Role.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Organization.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      print('✅ Database cleared.');
+    } else {
+      print('ℹ️  Skipping database clear. Will only create missing data...');
     }
 
-    // --- 2. CLEAR DATABASE ---
-    print('🗑️ Clearing existing data...');
-    // Delete children first to avoid foreign key constraints
-    await Notification.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Announcement.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await UserRoleAssignment.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await RolePermission.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await StudentCourseEnrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Enrollment.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await FeeRecord.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Attendance.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Exam.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await TimetableEntry.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Subject.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Classes.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await UserCredentials.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await User.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await auth.UserInfo.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Permission.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Role.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    await Organization.db.deleteWhere(session, where: (t) => Constant.bool(true));
-    print('✅ Database cleared.');
-
-    // --- 3. CREATE ORGANIZATION ---
-    print('🏢 Creating Organization...');
-    final org = Organization(
-      name: 'Anant School',
-      organizationName: 'AnantSchool',
-      code: 'ANANT',
-      type: 'School',
-      address: '123 Education Lane',
-      city: 'Tech City',
-      state: 'Innovation State',
-      country: 'India',
-      createdAt: DateTime.now(),
-      isActive: true,
+    // --- 3. CHECK/CREATE ORGANIZATION ---
+    print('🏢 Checking for Organization...');
+    final existingOrgs = await Organization.db.find(
+      session,
+      where: (t) => t.organizationName.equals('AnantSchool'),
+      limit: 1,
     );
-    final createdOrg = await Organization.db.insertRow(session, org);
+    
+    Organization createdOrg;
+    if (existingOrgs.isNotEmpty) {
+      createdOrg = existingOrgs.first;
+      print('✅ Organization already exists: ${createdOrg.name} (ID: ${createdOrg.id})');
+    } else {
+      print('   Creating Organization...');
+      final org = Organization(
+        name: 'Anant School',
+        organizationName: 'AnantSchool',
+        code: 'ANANT',
+        type: 'School',
+        address: '123 Education Lane',
+        city: 'Tech City',
+        state: 'Innovation State',
+        country: 'India',
+        createdAt: DateTime.now(),
+        isActive: true,
+      );
+      createdOrg = await Organization.db.insertRow(session, org);
+      print('✅ Organization created: ${createdOrg.name} (ID: ${createdOrg.id})');
+    }
     final orgId = createdOrg.id!;
     print('✅ Organization created: ${createdOrg.name} (ID: $orgId)');
 
-    // --- 4. CREATE CLASS ---
-    print('🏫 Creating Class...');
-    final schoolClass = Classes(
-      organizationId: orgId,
-      name: '10',
-      academicYear: '2025-2026',
-      isActive: true,
+    // --- 4. CHECK/CREATE CLASS ---
+    print('🏫 Checking for Class...');
+    final existingClasses = await Classes.db.find(
+      session,
+      where: (t) => t.organizationId.equals(orgId) & t.name.equals('10'),
+      limit: 1,
     );
-    final createdClass = await Classes.db.insertRow(session, schoolClass);
+    
+    Classes createdClass;
+    if (existingClasses.isNotEmpty) {
+      createdClass = existingClasses.first;
+      print('✅ Class already exists: ${createdClass.name} (ID: ${createdClass.id})');
+    } else {
+      print('   Creating Class...');
+      final schoolClass = Classes(
+        organizationId: orgId,
+        name: '10',
+        academicYear: '2025-2026',
+        isActive: true,
+      );
+      createdClass = await Classes.db.insertRow(session, schoolClass);
+      print('✅ Class created: ${createdClass.name} (ID: ${createdClass.id})');
+    }
     final classId = createdClass.id!;
-    print('✅ Class created: ${createdClass.name} (ID: $classId)');
 
-    // --- 5. CREATE SUBJECTS ---
-    print('📚 Creating Subjects...');
+    // --- 5. CHECK/CREATE SUBJECTS ---
+    print('📚 Checking for Subjects...');
     final subjectNames = ['Mathematics', 'Science', 'English', 'History', 'Physics'];
     final subjects = <Subject>[];
+    
     for (var name in subjectNames) {
-      final subject = Subject(
-        organizationId: orgId,
-        name: name,
-        description: 'Subject: $name',
+      // Check if subject already exists
+      final existingSubjects = await Subject.db.find(
+        session,
+        where: (t) => t.organizationId.equals(orgId) & t.name.equals(name),
+        limit: 1,
       );
-      subjects.add(await Subject.db.insertRow(session, subject));
+      
+      if (existingSubjects.isNotEmpty) {
+        subjects.add(existingSubjects.first);
+      } else {
+        final subject = Subject(
+          organizationId: orgId,
+          name: name,
+          description: 'Subject: $name',
+        );
+        subjects.add(await Subject.db.insertRow(session, subject));
+      }
     }
-    print('✅ ${subjects.length} Subjects created.');
+    print('✅ ${subjects.length} Subjects ready (existing or newly created).');
 
     // --- 6. CREATE USERS (ALL ROLES) ---
     print('👥 Creating Users for all roles...');
