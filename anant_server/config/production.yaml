@@ -4,7 +4,7 @@
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: localhost
+  publicHost: anant-server-32qta2j2eq-uc.a.run.app
   publicPort: 443
   publicScheme: https
 
@@ -18,7 +18,7 @@ insightsServer:
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: localhost
+  publicHost: anant-server-32qta2j2eq-uc.a.run.app
   publicPort: 443
   publicScheme: https
 
