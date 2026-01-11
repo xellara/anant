@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
+import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 // Export client for other files that import main.dart
 export 'package:anant_flutter/client.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
   client = Client(
     baseUrl,
   );
+  client.connectivityMonitor = FlutterConnectivityMonitor();
   client.authKeyProvider = FlutterAuthenticationKeyManager();
 
   // Other Common Development IPs:

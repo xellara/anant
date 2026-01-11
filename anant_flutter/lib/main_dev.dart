@@ -5,6 +5,7 @@ import 'package:anant_flutter/client.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
+import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 // Export client for compatibility
 export 'package:anant_flutter/client.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   // DEVELOPMENT ENVIRONMENT
   // TODO: Replace with your actual Development Cloud Run URL
   client = Client('https://anant-server-dev-PLACEHOLDER.a.run.app/');
+  client.connectivityMonitor = FlutterConnectivityMonitor();
   client.authKeyProvider = FlutterAuthenticationKeyManager();
 
   runApp(MyApp(client: client));
