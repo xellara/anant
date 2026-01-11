@@ -1,36 +1,38 @@
 # This is the configuration file for your Cloud Run production environment.
-# Environment variables will be injected by Cloud Run at runtime.
+# Serverpod configuration with Hardcoded Neon Database settings.
 
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: ${API_HOST}
+  publicHost: localhost
   publicPort: 443
   publicScheme: https
 
 # Configuration for the Insights server.
 insightsServer:
   port: 8081
-  publicHost: ${INSIGHTS_HOST}
+  publicHost: localhost
   publicPort: 443
   publicScheme: https
 
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: ${WEB_HOST}
+  publicHost: localhost
   publicPort: 443
   publicScheme: https
 
 # Neon PostgreSQL database configuration
 database:
-  host: ${DB_HOST}
+  host: ep-nameless-flower-ahysl36o-pooler.c-3.us-east-1.aws.neon.tech
   port: 5432
-  name: ${DB_NAME}
-  user: ${DB_USER}
-  requireSsl: true  # Neon requires SSL
+  name: neondb
+  user: neondb_owner
+  # password is loaded from SERVERPOD_PASSWORD_database environment variable
+  requireSsl: true
 
+# Redis configuration (disabled)
 redis:
   enabled: false
   host: localhost
-  port: 6379
+  port: 6379 
