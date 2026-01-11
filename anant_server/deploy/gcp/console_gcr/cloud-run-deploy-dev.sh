@@ -51,8 +51,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Auto-read from config/passwords.yaml
     if [ -f config/passwords.yaml ]; then
         echo "🔑 Reading password from config/passwords.yaml..."
-        # Extract staging password
-        AUTO_PASSWORD=$(grep "staging:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+        # Extract nested password: Look for 'staging:', then find the next 'database:' line
+        AUTO_PASSWORD=$(awk '/staging:/{flag=1; next} /database:/{if(flag){print $2; exit}}' config/passwords.yaml | tr -d '"')
+        
+        # Fallback for old flat format if nested extraction failed
+        if [ -z "$AUTO_PASSWORD" ]; then
+             AUTO_PASSWORD=$(grep "staging:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+        fi
+
         if [ ! -z "$AUTO_PASSWORD" ]; then
             SERVERPOD_PASSWORD_database="$AUTO_PASSWORD"
             echo "   ✓ Password loaded automatically"

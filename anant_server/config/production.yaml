@@ -29,7 +29,12 @@ database:
   name: neondb
   user: neondb_owner
   # password is loaded from SERVERPOD_PASSWORD_database environment variable
+  # password: "npg_FHpno9hUOg6d" # Hardcoded for debugging
+  # password is loaded from SERVERPOD_PASSWORD_database environment variable
+  # password: "npg_FHpno9hUOg6d" # Hardcoded for debugging
   requireSsl: true
+  timeout: 300000 # 5 minutes timeout
+  maxConnections: 2 # Throttle connections to avoid hitting Neon Free Tier limits during integrity check
 
 # Redis configuration (disabled)
 redis:

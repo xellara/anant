@@ -35,7 +35,12 @@ echo ""
 # Comment out serverpod_test for deployment
 if grep -q "^  serverpod_test:" pubspec.yaml; then
     echo "📝 Preparing pubspec.yaml..."
-    sed -i 's/^  serverpod_test:/  # serverpod_test:/' pubspec.yaml
+    # macOS requires an empty string for extension with -i
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' 's/^  serverpod_test:/  # serverpod_test:/' pubspec.yaml
+    else
+        sed -i 's/^  serverpod_test:/  # serverpod_test:/' pubspec.yaml
+    fi
     echo "   ✓ Commented out dev dependencies"
 fi
 
@@ -55,8 +60,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Try to auto-read from config/passwords.yaml
         if [ -f config/passwords.yaml ]; then
             echo "🔑 Reading password from config/passwords.yaml..."
-            # Extract production password
-            AUTO_PASSWORD=$(grep "production:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+            # Extract nested password: Look for 'production:', then find the next 'database:' line
+            AUTO_PASSWORD=$(awk '/production:/{flag=1; next} /database:/{if(flag){print $2; exit}}' config/passwords.yaml | tr -d '"')
+            
+            # Fallback for old flat format if nested extraction failed
+            if [ -z "$AUTO_PASSWORD" ]; then
+                 AUTO_PASSWORD=$(grep "production:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+            fi
+
             if [ ! -z "$AUTO_PASSWORD" ]; then
                 SERVERPOD_PASSWORD_database="$AUTO_PASSWORD"
                 export SERVERPOD_PASSWORD_database

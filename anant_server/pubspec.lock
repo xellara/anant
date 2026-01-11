@@ -217,14 +217,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  flutter_lints:
-    dependency: transitive
-    description:
-      name: flutter_lints
-      sha256: "3105dc8492f6183fb076ccf1f351ac3d60564bff92e20bfc4af9cc1651f4e7e1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -497,14 +489,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  serverpod_lints:
-    dependency: transitive
-    description:
-      name: serverpod_lints
-      sha256: "11512827207a241aeedef8198bfbb4c77492bd1c67210eb6eabbba8317944635"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   serverpod_serialization:
     dependency: transitive
     description:
@@ -518,14 +502,6 @@ packages:
     description:
       name: serverpod_shared
       sha256: daaa9d84ff40a746ef3a60de9aa43773fb883b45458669e81a43517e41496aab
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
-  serverpod_test:
-    dependency: "direct dev"
-    description:
-      name: serverpod_test
-      sha256: bd58bc73efda8fc757b5cfc5f04c159585fb34a483a1df5e6f47ac57b37be729
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
