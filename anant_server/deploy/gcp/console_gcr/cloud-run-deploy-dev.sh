@@ -46,7 +46,25 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Applying migrations to REMOTE (Staging)..."
     
     # Export Dev Password (matches the one in the gcloud deploy command below)
-    export SERVERPOD_PASSWORD_database="npg_uCLeB71wwPtr"
+    # SERVERPOD_PASSWORD_database="npg_uCLeB71wwPtr" # HARDCODED REMOVED
+    
+    # Auto-read from config/passwords.yaml
+    if [ -f config/passwords.yaml ]; then
+        echo "🔑 Reading password from config/passwords.yaml..."
+        # Extract staging password
+        AUTO_PASSWORD=$(grep "staging:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+        if [ ! -z "$AUTO_PASSWORD" ]; then
+            SERVERPOD_PASSWORD_database="$AUTO_PASSWORD"
+            echo "   ✓ Password loaded automatically"
+        fi
+    fi
+    
+    if [ -z "$SERVERPOD_PASSWORD_database" ]; then
+        echo "❌ Error: Could not load staging password from config/passwords.yaml"
+        exit 1
+    fi
+
+    export SERVERPOD_PASSWORD_database
     
     # Runs the maintenance command locally securely connecting to the remote DB
     dart run bin/main.dart --apply-migrations --mode $RUNMODE --role maintenance
@@ -65,7 +83,7 @@ gcloud run deploy $SERVICE_NAME \
   --platform=managed \
   --port=8080 \
   --allow-unauthenticated \
-  --set-env-vars="runmode=$RUNMODE,role=monolith,SERVERPOD_DATABASE_HOST=ep-ancient-bird-ahe553x9-pooler.c-3.us-east-1.aws.neon.tech,SERVERPOD_DATABASE_PORT=5432,SERVERPOD_DATABASE_NAME=neondb,SERVERPOD_DATABASE_USER=neondb_owner,SERVERPOD_PASSWORD_database=npg_uCLeB71wwPtr"
+  --set-env-vars="runmode=$RUNMODE,role=monolith,SERVERPOD_DATABASE_HOST=ep-ancient-bird-ahe553x9-pooler.c-3.us-east-1.aws.neon.tech,SERVERPOD_DATABASE_PORT=5432,SERVERPOD_DATABASE_NAME=neondb,SERVERPOD_DATABASE_USER=neondb_owner,SERVERPOD_PASSWORD_database=$SERVERPOD_PASSWORD_database"
 # Note: Password is set via env var for "One Click" convenience. For higher security, use GCP Secrets.
 
 if [ $? -ne 0 ]; then

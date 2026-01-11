@@ -50,6 +50,21 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "⚠️  Applying migrations to PRODUCTION..."
     
     # Check for password
+    # Check for password
+    if [ -z "$SERVERPOD_PASSWORD_database" ]; then
+        # Try to auto-read from config/passwords.yaml
+        if [ -f config/passwords.yaml ]; then
+            echo "🔑 Reading password from config/passwords.yaml..."
+            # Extract production password
+            AUTO_PASSWORD=$(grep "production:" config/passwords.yaml | awk '{print $2}' | tr -d '"')
+            if [ ! -z "$AUTO_PASSWORD" ]; then
+                SERVERPOD_PASSWORD_database="$AUTO_PASSWORD"
+                export SERVERPOD_PASSWORD_database
+                echo "   ✓ Password loaded automatically"
+            fi
+        fi
+    fi
+
     if [ -z "$SERVERPOD_PASSWORD_database" ]; then
         echo "🔒 Database password required for migration."
         read -s -p "Enter Production Database Password: " SERVERPOD_PASSWORD_database
