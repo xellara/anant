@@ -19,7 +19,7 @@ Future<void> main() async {
   // DEVELOPMENT ENVIRONMENT
   // Change this to your local server IP
   // Use localhost for Web, otherwise use the network IP
-  String baseUrl = kIsWeb ? 'http://localhost:8080/' : 'http://192.168.31.151:8080/';
+  String baseUrl = kIsWeb ? 'https://anant-server-32qta2j2eq-uc.a.run.app/' : 'https://anant-server-32qta2j2eq-uc.a.run.app/';
   
   client = Client(
     baseUrl,

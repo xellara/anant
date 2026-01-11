@@ -29,10 +29,11 @@ webServer:
 
 # This is the database setup for your server.
 database:
-  host: localhost
-  port: 8090
-  name: anant
-  user: postgres
+  host: ep-nameless-flower-ahysl36o-pooler.c-3.us-east-1.aws.neon.tech
+  port: 5432
+  name: neondb
+  user: neondb_owner
+  requireSsl: true
 
 # This is the setup for Redis.
 redis:
