@@ -12,15 +12,15 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:anant_client/src/protocol/announcement.dart' as _i3;
-import 'package:anant_client/src/protocol/attendance/attendance.dart' as _i4;
-import 'package:anant_client/src/protocol/user/user_role.dart' as _i5;
-import 'package:anant_client/src/protocol/user/user.dart' as _i6;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
-import 'package:anant_client/src/protocol/attendance/class.dart' as _i8;
-import 'package:anant_client/src/protocol/attendance/course.dart' as _i9;
-import 'package:anant_client/src/protocol/notification.dart' as _i10;
-import 'package:anant_client/src/protocol/auth/organization.dart' as _i11;
+import 'package:anant_client/src/protocol/auth/organization.dart' as _i3;
+import 'package:anant_client/src/protocol/user/user.dart' as _i4;
+import 'package:anant_client/src/protocol/announcement.dart' as _i5;
+import 'package:anant_client/src/protocol/attendance/attendance.dart' as _i6;
+import 'package:anant_client/src/protocol/user/user_role.dart' as _i7;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
+import 'package:anant_client/src/protocol/attendance/class.dart' as _i9;
+import 'package:anant_client/src/protocol/attendance/course.dart' as _i10;
+import 'package:anant_client/src/protocol/notification.dart' as _i11;
 import 'package:anant_client/src/protocol/auth/permission.dart' as _i12;
 import 'package:anant_client/src/protocol/auth/role.dart' as _i13;
 import 'package:anant_client/src/protocol/auth/role_permission.dart' as _i14;
@@ -32,6 +32,87 @@ import 'package:anant_client/src/protocol/transaction/montly_fee_transaction.dar
 import 'protocol.dart' as _i18;
 
 /// {@category Endpoint}
+class EndpointAdmin extends _i1.EndpointRef {
+  EndpointAdmin(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'admin';
+
+  /// Create a new Organization (Super Admin Only)
+  _i2.Future<_i3.Organization> createOrganization(_i3.Organization org) =>
+      caller.callServerEndpoint<_i3.Organization>(
+        'admin',
+        'createOrganization',
+        {'org': org},
+      );
+
+  /// Update Organization details (e.g. Pause service)
+  _i2.Future<_i3.Organization?> updateOrganization(_i3.Organization org) =>
+      caller.callServerEndpoint<_i3.Organization?>(
+        'admin',
+        'updateOrganization',
+        {'org': org},
+      );
+
+  /// Get All Organizations (Super Admin View)
+  _i2.Future<List<_i3.Organization>> getAllOrganizations() =>
+      caller.callServerEndpoint<List<_i3.Organization>>(
+        'admin',
+        'getAllOrganizations',
+        {},
+      );
+
+  /// Bulk Import Users from CSV (Pass data as list of Users for now)
+  _i2.Future<int> bulkImportUsers(List<_i4.User> users) =>
+      caller.callServerEndpoint<int>(
+        'admin',
+        'bulkImportUsers',
+        {'users': users},
+      );
+
+  /// Reset Password for any user (Super Admin "God Mode")
+  _i2.Future<bool> resetUserPassword(
+    int userId,
+    String newPassword,
+  ) => caller.callServerEndpoint<bool>(
+    'admin',
+    'resetUserPassword',
+    {
+      'userId': userId,
+      'newPassword': newPassword,
+    },
+  );
+
+  /// Toggle Organization Status (Pause/Resume)
+  _i2.Future<_i3.Organization?> toggleOrganizationStatus(
+    int orgId,
+    bool isActive,
+  ) => caller.callServerEndpoint<_i3.Organization?>(
+    'admin',
+    'toggleOrganizationStatus',
+    {
+      'orgId': orgId,
+      'isActive': isActive,
+    },
+  );
+
+  /// Update details of ANY user (Super Admin)
+  _i2.Future<_i4.User?> updateAnyUser(_i4.User user) =>
+      caller.callServerEndpoint<_i4.User?>(
+        'admin',
+        'updateAnyUser',
+        {'user': user},
+      );
+
+  /// Delete ANY user (Super Admin)
+  _i2.Future<bool> deleteAnyUser(int userId) => caller.callServerEndpoint<bool>(
+    'admin',
+    'deleteAnyUser',
+    {'userId': userId},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointAnnouncement extends _i1.EndpointRef {
   EndpointAnnouncement(_i1.EndpointCaller caller) : super(caller);
 
@@ -39,10 +120,10 @@ class EndpointAnnouncement extends _i1.EndpointRef {
   String get name => 'announcement';
 
   /// Get all announcements for a user based on their role
-  _i2.Future<List<_i3.Announcement>> getAnnouncementsForUser(
+  _i2.Future<List<_i5.Announcement>> getAnnouncementsForUser(
     String userId,
     String userRole,
-  ) => caller.callServerEndpoint<List<_i3.Announcement>>(
+  ) => caller.callServerEndpoint<List<_i5.Announcement>>(
     'announcement',
     'getAnnouncementsForUser',
     {
@@ -52,9 +133,9 @@ class EndpointAnnouncement extends _i1.EndpointRef {
   );
 
   /// Create a new announcement
-  _i2.Future<_i3.Announcement?> createAnnouncement(
-    _i3.Announcement announcement,
-  ) => caller.callServerEndpoint<_i3.Announcement?>(
+  _i2.Future<_i5.Announcement?> createAnnouncement(
+    _i5.Announcement announcement,
+  ) => caller.callServerEndpoint<_i5.Announcement?>(
     'announcement',
     'createAnnouncement',
     {'announcement': announcement},
@@ -69,7 +150,7 @@ class EndpointAnnouncement extends _i1.EndpointRef {
       );
 
   /// Update an announcement
-  _i2.Future<bool> updateAnnouncement(_i3.Announcement announcement) =>
+  _i2.Future<bool> updateAnnouncement(_i5.Announcement announcement) =>
       caller.callServerEndpoint<bool>(
         'announcement',
         'updateAnnouncement',
@@ -85,7 +166,7 @@ class EndpointAttendance extends _i1.EndpointRef {
   String get name => 'attendance';
 
   /// Update or create a single attendance record
-  _i2.Future<void> updateSingleAttendance(_i4.Attendance attendance) =>
+  _i2.Future<void> updateSingleAttendance(_i6.Attendance attendance) =>
       caller.callServerEndpoint<void>(
         'attendance',
         'updateSingleAttendance',
@@ -94,7 +175,7 @@ class EndpointAttendance extends _i1.EndpointRef {
 
   /// Submit full attendance list and mark all as submitted
   _i2.Future<void> submitCompleteAttendance(
-    List<_i4.Attendance> attendanceList,
+    List<_i6.Attendance> attendanceList,
   ) => caller.callServerEndpoint<void>(
     'attendance',
     'submitCompleteAttendance',
@@ -127,19 +208,19 @@ class EndpointAttendance extends _i1.EndpointRef {
   );
 
   /// Get all attendance records for a specific user using their Anant ID.
-  _i2.Future<List<_i4.Attendance>> getUserAttendanceRecords(
+  _i2.Future<List<_i6.Attendance>> getUserAttendanceRecords(
     String studentAnantId,
-  ) => caller.callServerEndpoint<List<_i4.Attendance>>(
+  ) => caller.callServerEndpoint<List<_i6.Attendance>>(
     'attendance',
     'getUserAttendanceRecords',
     {'studentAnantId': studentAnantId},
   );
 
   /// Stream attendance updates for a user
-  _i2.Stream<_i4.Attendance> receiveAttendanceStream(
+  _i2.Stream<_i6.Attendance> receiveAttendanceStream(
     String studentAnantId,
   ) => caller
-      .callStreamingServerEndpoint<_i2.Stream<_i4.Attendance>, _i4.Attendance>(
+      .callStreamingServerEndpoint<_i2.Stream<_i6.Attendance>, _i6.Attendance>(
         'attendance',
         'receiveAttendanceStream',
         {'studentAnantId': studentAnantId},
@@ -156,7 +237,7 @@ class EndpointAuth extends _i1.EndpointRef {
 
   /// Sign up a new user.
   _i2.Future<Map<String, dynamic>> signUp(
-    _i5.UserRole role,
+    _i7.UserRole role,
     String organizationName, {
     String? sectionName,
     String? admissionNumber,
@@ -210,7 +291,7 @@ class EndpointAuth extends _i1.EndpointRef {
   );
 
   /// Bulk sign up new users.
-  _i2.Future<List<Map<String, dynamic>>> bulkSignUp(List<_i6.User> userList) =>
+  _i2.Future<List<Map<String, dynamic>>> bulkSignUp(List<_i4.User> userList) =>
       caller.callServerEndpoint<List<Map<String, dynamic>>>(
         'auth',
         'bulkSignUp',
@@ -218,10 +299,10 @@ class EndpointAuth extends _i1.EndpointRef {
       );
 
   /// Sign in a user by verifying their credentials.
-  _i2.Future<_i7.AuthKey> signIn(
+  _i2.Future<_i8.AuthKey> signIn(
     String anantId,
     String password,
-  ) => caller.callServerEndpoint<_i7.AuthKey>(
+  ) => caller.callServerEndpoint<_i8.AuthKey>(
     'auth',
     'signIn',
     {
@@ -231,13 +312,13 @@ class EndpointAuth extends _i1.EndpointRef {
   );
 
   /// Update a user's details.
-  _i2.Future<_i7.AuthKey> updateUser(
+  _i2.Future<_i8.AuthKey> updateUser(
     int userId, {
     String? newAnantId,
     String? newPassword,
     String? newEmail,
     String? newFullName,
-    _i5.UserRole? newRole,
+    _i7.UserRole? newRole,
     bool? isActive,
     String? newClassName,
     String? newRollNumber,
@@ -257,7 +338,7 @@ class EndpointAuth extends _i1.EndpointRef {
     String? newAadharNumber,
     List<String>? newSubjectTeaching,
     List<String>? newClassAndSectionTeaching,
-  }) => caller.callServerEndpoint<_i7.AuthKey>(
+  }) => caller.callServerEndpoint<_i8.AuthKey>(
     'auth',
     'updateUser',
     {
@@ -305,24 +386,24 @@ class EndpointClasses extends _i1.EndpointRef {
   String get name => 'classes';
 
   /// Create a new Class linked to an Organization
-  _i2.Future<_i8.Classes> createClasses(_i8.Classes cls) =>
-      caller.callServerEndpoint<_i8.Classes>(
+  _i2.Future<_i9.Classes> createClasses(_i9.Classes cls) =>
+      caller.callServerEndpoint<_i9.Classes>(
         'classes',
         'createClasses',
         {'cls': cls},
       );
 
   /// Get a Classes by its id
-  _i2.Future<_i8.Classes?> getClasses(int id) =>
-      caller.callServerEndpoint<_i8.Classes?>(
+  _i2.Future<_i9.Classes?> getClasses(int id) =>
+      caller.callServerEndpoint<_i9.Classes?>(
         'classes',
         'getClasses',
         {'id': id},
       );
 
   /// Get all Classeses (optionally, could filter by organizationId if needed)
-  _i2.Future<List<_i8.Classes>> getAllClasseses() =>
-      caller.callServerEndpoint<List<_i8.Classes>>(
+  _i2.Future<List<_i9.Classes>> getAllClasseses() =>
+      caller.callServerEndpoint<List<_i9.Classes>>(
         'classes',
         'getAllClasseses',
         {},
@@ -344,24 +425,24 @@ class EndpointCourse extends _i1.EndpointRef {
   String get name => 'course';
 
   /// Create a new Course associated with an Organization
-  _i2.Future<_i9.Course> createCourse(_i9.Course course) =>
-      caller.callServerEndpoint<_i9.Course>(
+  _i2.Future<_i10.Course> createCourse(_i10.Course course) =>
+      caller.callServerEndpoint<_i10.Course>(
         'course',
         'createCourse',
         {'course': course},
       );
 
   /// Get a Course by its id
-  _i2.Future<_i9.Course?> getCourse(int id) =>
-      caller.callServerEndpoint<_i9.Course?>(
+  _i2.Future<_i10.Course?> getCourse(int id) =>
+      caller.callServerEndpoint<_i10.Course?>(
         'course',
         'getCourse',
         {'id': id},
       );
 
   /// Get all Courses
-  _i2.Future<List<_i9.Course>> getAllCourses() =>
-      caller.callServerEndpoint<List<_i9.Course>>(
+  _i2.Future<List<_i10.Course>> getAllCourses() =>
+      caller.callServerEndpoint<List<_i10.Course>>(
         'course',
         'getAllCourses',
         {},
@@ -399,8 +480,8 @@ class EndpointNotification extends _i1.EndpointRef {
   String get name => 'notification';
 
   /// Get all notifications for a user
-  _i2.Future<List<_i10.Notification>> getUserNotifications(String userId) =>
-      caller.callServerEndpoint<List<_i10.Notification>>(
+  _i2.Future<List<_i11.Notification>> getUserNotifications(String userId) =>
+      caller.callServerEndpoint<List<_i11.Notification>>(
         'notification',
         'getUserNotifications',
         {'userId': userId},
@@ -431,9 +512,9 @@ class EndpointNotification extends _i1.EndpointRef {
       );
 
   /// Create a notification (for system use)
-  _i2.Future<_i10.Notification?> createNotification(
-    _i10.Notification notification,
-  ) => caller.callServerEndpoint<_i10.Notification?>(
+  _i2.Future<_i11.Notification?> createNotification(
+    _i11.Notification notification,
+  ) => caller.callServerEndpoint<_i11.Notification?>(
     'notification',
     'createNotification',
     {'notification': notification},
@@ -448,10 +529,10 @@ class EndpointNotification extends _i1.EndpointRef {
       );
 
   /// Stream notifications for a user
-  _i2.Stream<_i10.Notification> receiveNotificationStream(String userId) =>
+  _i2.Stream<_i11.Notification> receiveNotificationStream(String userId) =>
       caller.callStreamingServerEndpoint<
-        _i2.Stream<_i10.Notification>,
-        _i10.Notification
+        _i2.Stream<_i11.Notification>,
+        _i11.Notification
       >(
         'notification',
         'receiveNotificationStream',
@@ -468,24 +549,24 @@ class EndpointOrganization extends _i1.EndpointRef {
   String get name => 'organization';
 
   /// Create a new Organization in the database
-  _i2.Future<_i11.Organization> createOrganization(_i11.Organization org) =>
-      caller.callServerEndpoint<_i11.Organization>(
+  _i2.Future<_i3.Organization> createOrganization(_i3.Organization org) =>
+      caller.callServerEndpoint<_i3.Organization>(
         'organization',
         'createOrganization',
         {'org': org},
       );
 
   /// Retrieve a single Organization by its name
-  _i2.Future<_i11.Organization?> getOrganization(String organizationName) =>
-      caller.callServerEndpoint<_i11.Organization?>(
+  _i2.Future<_i3.Organization?> getOrganization(String organizationName) =>
+      caller.callServerEndpoint<_i3.Organization?>(
         'organization',
         'getOrganization',
         {'organizationName': organizationName},
       );
 
   /// Retrieve all Organizations
-  _i2.Future<List<_i11.Organization>> getAllOrganizations() =>
-      caller.callServerEndpoint<List<_i11.Organization>>(
+  _i2.Future<List<_i3.Organization>> getAllOrganizations() =>
+      caller.callServerEndpoint<List<_i3.Organization>>(
         'organization',
         'getAllOrganizations',
         {},
@@ -916,7 +997,7 @@ class EndpointTransaction extends _i1.EndpointRef {
   @override
   String get name => 'transaction';
 
-  /// Create a new MonthlyFeeTransaction in the database (no checks).
+  /// Create a new MonthlyFeeTransaction in the database.
   _i2.Future<_i17.MonthlyFeeTransaction> createMonthlyFeeTransaction(
     _i17.MonthlyFeeTransaction txn,
   ) => caller.callServerEndpoint<_i17.MonthlyFeeTransaction>(
@@ -938,7 +1019,7 @@ class EndpointTransaction extends _i1.EndpointRef {
     },
   );
 
-  /// Retrieve all MonthlyFeeTransactions
+  /// Retrieve all MonthlyFeeTransactions for a user
   _i2.Future<List<_i17.MonthlyFeeTransaction>> getAllMonthlyFeeTransactionUser(
     String anantId,
   ) => caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
@@ -947,12 +1028,22 @@ class EndpointTransaction extends _i1.EndpointRef {
     {'anantId': anantId},
   );
 
+  /// Retrieve all MonthlyFeeTransactions for an organization
   _i2.Future<List<_i17.MonthlyFeeTransaction>> getAllMonthlyFeeTransactionOrg(
     String organizationName,
   ) => caller.callServerEndpoint<List<_i17.MonthlyFeeTransaction>>(
     'transaction',
     'getAllMonthlyFeeTransactionOrg',
     {'organizationName': organizationName},
+  );
+
+  /// Updates an existing MonthlyFeeTransaction.
+  _i2.Future<_i17.MonthlyFeeTransaction?> updateMonthlyFeeTransaction(
+    _i17.MonthlyFeeTransaction txn,
+  ) => caller.callServerEndpoint<_i17.MonthlyFeeTransaction?>(
+    'transaction',
+    'updateMonthlyFeeTransaction',
+    {'txn': txn},
   );
 
   /// Delete a MonthlyFeeTransaction by month
@@ -977,35 +1068,43 @@ class EndpointUser extends _i1.EndpointRef {
   String get name => 'user';
 
   /// Retrieves all the data about a user given their user ID.
-  _i2.Future<_i6.User?> me(int userId) => caller.callServerEndpoint<_i6.User?>(
+  /// Uses session caching to minimize database hits.
+  _i2.Future<_i4.User?> me(int userId) => caller.callServerEndpoint<_i4.User?>(
     'user',
     'me',
     {'userId': userId},
   );
 
   /// Retrieves user data by anantId (case-insensitive).
-  _i2.Future<_i6.User?> getByAnantId(String anantId) =>
-      caller.callServerEndpoint<_i6.User?>(
+  _i2.Future<_i4.User?> getByAnantId(String anantId) =>
+      caller.callServerEndpoint<_i4.User?>(
         'user',
         'getByAnantId',
         {'anantId': anantId},
       );
 
   /// Get all Users without filtering.
-  _i2.Future<List<_i6.User>> getAllUsers() =>
-      caller.callServerEndpoint<List<_i6.User>>(
-        'user',
-        'getAllUsers',
-        {},
-      );
+  _i2.Future<List<_i4.User>> getAllUsers({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<List<_i4.User>>(
+    'user',
+    'getAllUsers',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Get all Users filtered by sectionName, className, and organizationName.
-  _i2.Future<List<_i6.User>> getFilteredUsers(
+  _i2.Future<List<_i4.User>> getFilteredUsers(
     String sectionName,
     String className,
     String organizationName,
-    String role,
-  ) => caller.callServerEndpoint<List<_i6.User>>(
+    String role, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<List<_i4.User>>(
     'user',
     'getFilteredUsers',
     {
@@ -1013,6 +1112,8 @@ class EndpointUser extends _i1.EndpointRef {
       'className': className,
       'organizationName': organizationName,
       'role': role,
+      'limit': limit,
+      'offset': offset,
     },
   );
 
@@ -1023,22 +1124,28 @@ class EndpointUser extends _i1.EndpointRef {
     {'id': id},
   );
 
+  /// Update a User (Restricted by Role Hierarchy)
+  _i2.Future<_i4.User?> updateUser(_i4.User user) =>
+      caller.callServerEndpoint<_i4.User?>(
+        'user',
+        'updateUser',
+        {'user': user},
+      );
+
   /// Marks the user's password as created by setting isPasswordCreated to true.
-  /// This method retrieves the user record for the given [userId] and updates
-  /// the isPasswordCreated flag without altering the existing password.
-  _i2.Future<_i6.User?> updateInitialPassword(int userId) =>
-      caller.callServerEndpoint<_i6.User?>(
+  _i2.Future<_i4.User?> updateInitialPassword(int userId) =>
+      caller.callServerEndpoint<_i4.User?>(
         'user',
         'updateInitialPassword',
         {'userId': userId},
       );
 
-  _i2.Future<List<_i6.User>> searchUsers(
+  _i2.Future<List<_i4.User>> searchUsers(
     String className,
     String sectionName,
     String organizationName,
     String query,
-  ) => caller.callServerEndpoint<List<_i6.User>>(
+  ) => caller.callServerEndpoint<List<_i4.User>>(
     'user',
     'searchUsers',
     {
@@ -1052,10 +1159,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i7.Caller(client);
+    auth = _i8.Caller(client);
   }
 
-  late final _i7.Caller auth;
+  late final _i8.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -1087,6 +1194,7 @@ class Client extends _i1.ServerpodClientShared {
          disconnectStreamsOnLostInternetConnection:
              disconnectStreamsOnLostInternetConnection,
        ) {
+    admin = EndpointAdmin(this);
     announcement = EndpointAnnouncement(this);
     attendance = EndpointAttendance(this);
     auth = EndpointAuth(this);
@@ -1106,6 +1214,8 @@ class Client extends _i1.ServerpodClientShared {
     user = EndpointUser(this);
     modules = Modules(this);
   }
+
+  late final EndpointAdmin admin;
 
   late final EndpointAnnouncement announcement;
 
@@ -1145,6 +1255,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+    'admin': admin,
     'announcement': announcement,
     'attendance': attendance,
     'auth': auth,

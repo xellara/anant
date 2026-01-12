@@ -37,19 +37,22 @@ import 'time_table_entry.dart' as _i24;
 import 'transaction/montly_fee_transaction.dart' as _i25;
 import 'user/user.dart' as _i26;
 import 'user/user_role.dart' as _i27;
-import 'package:anant_client/src/protocol/announcement.dart' as _i28;
-import 'package:anant_client/src/protocol/attendance/attendance.dart' as _i29;
-import 'package:anant_client/src/protocol/user/user.dart' as _i30;
-import 'package:anant_client/src/protocol/attendance/class.dart' as _i31;
-import 'package:anant_client/src/protocol/attendance/course.dart' as _i32;
-import 'package:anant_client/src/protocol/notification.dart' as _i33;
-import 'package:anant_client/src/protocol/auth/organization.dart' as _i34;
-import 'package:anant_client/src/protocol/auth/permission.dart' as _i35;
-import 'package:anant_client/src/protocol/auth/role.dart' as _i36;
-import 'package:anant_client/src/protocol/attendance/section.dart' as _i37;
+import 'utils/cache_class_list.dart' as _i28;
+import 'utils/cache_transaction_list.dart' as _i29;
+import 'utils/cache_user_list.dart' as _i30;
+import 'package:anant_client/src/protocol/auth/organization.dart' as _i31;
+import 'package:anant_client/src/protocol/user/user.dart' as _i32;
+import 'package:anant_client/src/protocol/announcement.dart' as _i33;
+import 'package:anant_client/src/protocol/attendance/attendance.dart' as _i34;
+import 'package:anant_client/src/protocol/attendance/class.dart' as _i35;
+import 'package:anant_client/src/protocol/attendance/course.dart' as _i36;
+import 'package:anant_client/src/protocol/notification.dart' as _i37;
+import 'package:anant_client/src/protocol/auth/permission.dart' as _i38;
+import 'package:anant_client/src/protocol/auth/role.dart' as _i39;
+import 'package:anant_client/src/protocol/attendance/section.dart' as _i40;
 import 'package:anant_client/src/protocol/transaction/montly_fee_transaction.dart'
-    as _i38;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i39;
+    as _i41;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i42;
 export 'announcement.dart';
 export 'attendance/attendance.dart';
 export 'attendance/class.dart';
@@ -76,6 +79,9 @@ export 'time_table_entry.dart';
 export 'transaction/montly_fee_transaction.dart';
 export 'user/user.dart';
 export 'user/user_role.dart';
+export 'utils/cache_class_list.dart';
+export 'utils/cache_transaction_list.dart';
+export 'utils/cache_user_list.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -190,6 +196,15 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i27.UserRole) {
       return _i27.UserRole.fromJson(data) as T;
     }
+    if (t == _i28.ClassListContainer) {
+      return _i28.ClassListContainer.fromJson(data) as T;
+    }
+    if (t == _i29.TransactionListContainer) {
+      return _i29.TransactionListContainer.fromJson(data) as T;
+    }
+    if (t == _i30.UserListContainer) {
+      return _i30.UserListContainer.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i2.Announcement?>()) {
       return (data != null ? _i2.Announcement.fromJson(data) : null) as T;
     }
@@ -275,6 +290,19 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i27.UserRole?>()) {
       return (data != null ? _i27.UserRole.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<_i28.ClassListContainer?>()) {
+      return (data != null ? _i28.ClassListContainer.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i29.TransactionListContainer?>()) {
+      return (data != null
+              ? _i29.TransactionListContainer.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _i1.getType<_i30.UserListContainer?>()) {
+      return (data != null ? _i30.UserListContainer.fromJson(data) : null) as T;
+    }
     if (t == Map<String, double>) {
       return (data as Map).map(
             (k, v) => MapEntry(deserialize<String>(k), deserialize<double>(v)),
@@ -314,14 +342,36 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i28.Announcement>) {
+    if (t == List<_i4.Classes>) {
+      return (data as List).map((e) => deserialize<_i4.Classes>(e)).toList()
+          as T;
+    }
+    if (t == List<_i25.MonthlyFeeTransaction>) {
       return (data as List)
-              .map((e) => deserialize<_i28.Announcement>(e))
+              .map((e) => deserialize<_i25.MonthlyFeeTransaction>(e))
               .toList()
           as T;
     }
-    if (t == List<_i29.Attendance>) {
-      return (data as List).map((e) => deserialize<_i29.Attendance>(e)).toList()
+    if (t == List<_i26.User>) {
+      return (data as List).map((e) => deserialize<_i26.User>(e)).toList() as T;
+    }
+    if (t == List<_i31.Organization>) {
+      return (data as List)
+              .map((e) => deserialize<_i31.Organization>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i32.User>) {
+      return (data as List).map((e) => deserialize<_i32.User>(e)).toList() as T;
+    }
+    if (t == List<_i33.Announcement>) {
+      return (data as List)
+              .map((e) => deserialize<_i33.Announcement>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i34.Attendance>) {
+      return (data as List).map((e) => deserialize<_i34.Attendance>(e)).toList()
           as T;
     }
     if (t == Map<String, String>) {
@@ -351,48 +401,39 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i30.User>) {
-      return (data as List).map((e) => deserialize<_i30.User>(e)).toList() as T;
-    }
-    if (t == List<_i31.Classes>) {
-      return (data as List).map((e) => deserialize<_i31.Classes>(e)).toList()
+    if (t == List<_i35.Classes>) {
+      return (data as List).map((e) => deserialize<_i35.Classes>(e)).toList()
           as T;
     }
-    if (t == List<_i32.Course>) {
-      return (data as List).map((e) => deserialize<_i32.Course>(e)).toList()
+    if (t == List<_i36.Course>) {
+      return (data as List).map((e) => deserialize<_i36.Course>(e)).toList()
           as T;
     }
-    if (t == List<_i33.Notification>) {
+    if (t == List<_i37.Notification>) {
       return (data as List)
-              .map((e) => deserialize<_i33.Notification>(e))
+              .map((e) => deserialize<_i37.Notification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i34.Organization>) {
+    if (t == List<_i38.Permission>) {
+      return (data as List).map((e) => deserialize<_i38.Permission>(e)).toList()
+          as T;
+    }
+    if (t == List<_i39.Role>) {
+      return (data as List).map((e) => deserialize<_i39.Role>(e)).toList() as T;
+    }
+    if (t == List<_i40.Section>) {
+      return (data as List).map((e) => deserialize<_i40.Section>(e)).toList()
+          as T;
+    }
+    if (t == List<_i41.MonthlyFeeTransaction>) {
       return (data as List)
-              .map((e) => deserialize<_i34.Organization>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i35.Permission>) {
-      return (data as List).map((e) => deserialize<_i35.Permission>(e)).toList()
-          as T;
-    }
-    if (t == List<_i36.Role>) {
-      return (data as List).map((e) => deserialize<_i36.Role>(e)).toList() as T;
-    }
-    if (t == List<_i37.Section>) {
-      return (data as List).map((e) => deserialize<_i37.Section>(e)).toList()
-          as T;
-    }
-    if (t == List<_i38.MonthlyFeeTransaction>) {
-      return (data as List)
-              .map((e) => deserialize<_i38.MonthlyFeeTransaction>(e))
+              .map((e) => deserialize<_i41.MonthlyFeeTransaction>(e))
               .toList()
           as T;
     }
     try {
-      return _i39.Protocol().deserialize<T>(data, t);
+      return _i42.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -425,6 +466,9 @@ class Protocol extends _i1.SerializationManager {
       _i25.MonthlyFeeTransaction => 'MonthlyFeeTransaction',
       _i26.User => 'User',
       _i27.UserRole => 'UserRole',
+      _i28.ClassListContainer => 'ClassListContainer',
+      _i29.TransactionListContainer => 'TransactionListContainer',
+      _i30.UserListContainer => 'UserListContainer',
       _ => null,
     };
   }
@@ -491,8 +535,14 @@ class Protocol extends _i1.SerializationManager {
         return 'User';
       case _i27.UserRole():
         return 'UserRole';
+      case _i28.ClassListContainer():
+        return 'ClassListContainer';
+      case _i29.TransactionListContainer():
+        return 'TransactionListContainer';
+      case _i30.UserListContainer():
+        return 'UserListContainer';
     }
-    className = _i39.Protocol().getClassNameForObject(data);
+    className = _i42.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -583,9 +633,18 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'UserRole') {
       return deserialize<_i27.UserRole>(data['data']);
     }
+    if (dataClassName == 'ClassListContainer') {
+      return deserialize<_i28.ClassListContainer>(data['data']);
+    }
+    if (dataClassName == 'TransactionListContainer') {
+      return deserialize<_i29.TransactionListContainer>(data['data']);
+    }
+    if (dataClassName == 'UserListContainer') {
+      return deserialize<_i30.UserListContainer>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i39.Protocol().deserializeByClassName(data);
+      return _i42.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -600,7 +659,7 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i39.Protocol().mapRecordToJson(record);
+      return _i42.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

@@ -16,7 +16,7 @@ dependencies:
 dev_dependencies:
   lints: ^6.0.0
   test: '^1.24.2'
-  # serverpod_test: ^3.2.0  # Only for local IDE - excluded from deployment
+  # serverpod_test: ^3.2.0
   mockito: ^5.6.1
-  # build_runner: ^2.10.4  # Commented out - not needed for production
+  build_runner: ^2.10.4
 

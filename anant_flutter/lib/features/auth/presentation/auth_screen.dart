@@ -358,6 +358,24 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  Future<void> _restorePreviousSession() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final int? serverpodUserId = prefs.getInt('serverpodUserId');
+      final String? sessionKey = prefs.getString('sessionKey');
+      final String? userName = prefs.getString('userName');
+
+      if (serverpodUserId != null && sessionKey != null && userName != null) {
+        // Restore session key
+        var keyManager = client.authKeyProvider as FlutterAuthenticationKeyManager?;
+        await keyManager?.put('$serverpodUserId:$sessionKey');
+        print('AuthScreen: Restored previous session for $userName on back press');
+      }
+    } catch (e) {
+      print('AuthScreen: Error restoring session: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
@@ -403,13 +421,33 @@ class _AuthScreenState extends State<AuthScreen> {
             body: Center(child: AnantProgressIndicator()),
           );
         }
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Scaffold(
-            body: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Star field (static background).
+        return PopScope(
+          canPop: !_isAddingAccount,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            if (_isAddingAccount) {
+              await _restorePreviousSession();
+              if (mounted) {
+                 // Manually pop after restoration
+                 // We need to ensure we don't trigger this logic again loopingly if we didn't change _isAddingAccount
+                 // Actually, Navigator.pop() will check canPop again.
+                 // We can either set _isAddingAccount = false (but that might affect UI for a split second)
+                 // Or basically we can force pop? No.
+                 // The standard way is setState(() => _isAddingAccount = false); Navigator.pop();
+                 setState(() {
+                   _isAddingAccount = false;
+                 });
+                 Navigator.of(context).pop();
+              }
+            }
+          },
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Scaffold(
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Star field (static background).
                 CustomPaint(painter: StarFieldPainter()),
                 // Galaxy background filling the full screen.
                 CustomPaint(painter: GalaxyPainter()),
@@ -655,7 +693,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ],
             ),
           ),
-        );
+        ));
       },
     );
   }

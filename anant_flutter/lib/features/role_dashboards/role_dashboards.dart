@@ -213,6 +213,11 @@ final Map<String, RoleTheme> dashboardThemes = {
     accentColor: Color(0xFFEF6C00),
     secondaryAccent: Color(0xFFFF9800),
   ),
+  'Anant': const RoleTheme(
+    gradientColors: [Color(0xFF000000), Color(0xFF1C1C1C), Color(0xFF333333)],
+    accentColor: Color(0xFFFFD700), // Gold
+    secondaryAccent: Color(0xFFB8860B), // Dark Goldenrod
+  ),
 };
 
 class _DashboardView extends StatefulWidget {
@@ -333,7 +338,7 @@ class _DashboardViewState extends State<_DashboardView> {
   Widget _buildMobileLayout(List<Widget> activePages) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      extendBody: false, // Changed to false to prevent content hiding
+      extendBody: true,
       backgroundColor: Colors.white,
       body: BlocBuilder<BottomNavBloc, BottomNavState>(
         builder: (context, navState) {
@@ -1321,7 +1326,7 @@ class GenericFloatingNavBar extends StatelessWidget {
     ];
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 50),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,

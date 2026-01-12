@@ -34,7 +34,7 @@ class _ManageClassesPageState extends State<ManageClassesPage> {
     try {
       // Fetch classes and users from server
       final classes = await client.classes.getAllClasseses();
-      final users = await client.user.getAllUsers();
+      final users = await client.user.getAllUsers(limit: 100);
       
       setState(() {
         _classes = classes;

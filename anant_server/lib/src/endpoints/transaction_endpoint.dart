@@ -1,13 +1,14 @@
 import 'package:serverpod/serverpod.dart';
-import '../generated/protocol.dart'; // imports generated MonthlyFeeTransaction class
+import '../generated/protocol.dart';
+import '../services/transaction_service.dart';
 
 class TransactionEndpoint extends Endpoint {
-  /// Create a new MonthlyFeeTransaction in the database (no checks).
+  /// Create a new MonthlyFeeTransaction in the database.
   Future<MonthlyFeeTransaction> createMonthlyFeeTransaction(
     Session session,
     MonthlyFeeTransaction txn,
   ) async {
-    return await MonthlyFeeTransaction.db.insertRow(session, txn);
+    return await TransactionService.createTransaction(session, txn);
   }
 
   /// Retrieve a single MonthlyFeeTransaction by its month
@@ -16,29 +17,31 @@ class TransactionEndpoint extends Endpoint {
     String month,
     String anantId,
   ) async {
-    return await MonthlyFeeTransaction.db.findFirstRow(
-      session,
-      where: (t) => t.month.equals(month) & t.anantId.equals(anantId),
-    );
+    return await TransactionService.getTransaction(session, month, anantId);
   }
 
-  /// Retrieve all MonthlyFeeTransactions
+  /// Retrieve all MonthlyFeeTransactions for a user
   Future<List<MonthlyFeeTransaction>> getAllMonthlyFeeTransactionUser(
     Session session,
     String anantId,
   ) async {
-    return await MonthlyFeeTransaction.db.find(session,
-      where: (t) => t.anantId.equals(anantId),
-    );
+    return await TransactionService.getTransactionsByUser(session, anantId);
   }
 
+  /// Retrieve all MonthlyFeeTransactions for an organization
   Future<List<MonthlyFeeTransaction>> getAllMonthlyFeeTransactionOrg(
     Session session,
     String organizationName,
   ) async {
-    return await MonthlyFeeTransaction.db.find(session,
-      where: (t) => t.anantId.equals(organizationName),
-    );
+    return await TransactionService.getTransactionsByOrg(session, organizationName);
+  }
+
+  /// Updates an existing MonthlyFeeTransaction.
+  Future<MonthlyFeeTransaction?> updateMonthlyFeeTransaction(
+    Session session,
+    MonthlyFeeTransaction txn,
+  ) async {
+    return await TransactionService.updateTransaction(session, txn);
   }
 
   /// Delete a MonthlyFeeTransaction by month
@@ -47,12 +50,6 @@ class TransactionEndpoint extends Endpoint {
     String month,
     String anantId,
   ) async {
-    final txn = await MonthlyFeeTransaction.db.findFirstRow(
-      session,
-      where: (t) => t.month.equals(month) & t.anantId.equals(anantId),
-    );
-    if (txn == null) return false;
-    await MonthlyFeeTransaction.db.deleteRow(session, txn);
-    return true;
+    return await TransactionService.deleteTransaction(session, month, anantId);
   }
 }

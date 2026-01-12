@@ -29,18 +29,21 @@ class _SplashScreenState extends State<SplashScreen> {
     final int? userId = prefs.getInt('userId');
     final String? sessionKey = prefs.getString('sessionKey');
     final int? serverpodUserId = prefs.getInt('serverpodUserId');
+    final String? userName = prefs.getString('userName');
+
     print('Found userId: $userId');
     print('Found sessionKey: $sessionKey');
     print('Found serverpodUserId: $serverpodUserId');
+    print('Found userName: $userName');
     
-    // Check for existence of userId, sessionKey, and serverpodUserId
-    if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty && serverpodUserId != null) {
+    // Check for existence of essential credentials
+    if (userId != null && userId != 0 && sessionKey != null && sessionKey.isNotEmpty && serverpodUserId != null && userName != null && userName.isNotEmpty) {
       // Restore session key into the client's authentication manager using the correct format.
       var keyManager = client.authKeyProvider as FlutterAuthenticationKeyManager?;
       await keyManager?.put('$serverpodUserId:$sessionKey');
       
-      // Fetch the user data using the restored session key.
-      final userData = await client.user.me(userId);
+      // Fetch the user data using the restored session key via getByAnantId logic (matching AuthBloc)
+      final userData = await client.user.getByAnantId(userName);
       if (userData == null) {
         Navigator.pushReplacementNamed(context, '/auth');
         return;
@@ -60,6 +63,9 @@ class _SplashScreenState extends State<SplashScreen> {
         print('Navigating for role: $roleName');
 
         switch (roleName) {
+          case 'anant':
+            Navigator.pushReplacementNamed(context, '/anant-home');
+            break;  
           case 'student':
             Navigator.pushReplacementNamed(context, '/home');
             break;

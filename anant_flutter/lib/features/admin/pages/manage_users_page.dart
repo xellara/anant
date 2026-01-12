@@ -36,8 +36,8 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
     });
 
     try {
-      // Fetch all users from server
-      final users = await client.user.getAllUsers();
+      // Fetch users from server (limited to 50 for cost optimization)
+      final users = await client.user.getAllUsers(limit: 50);
       
       setState(() {
         _allUsers = users;

@@ -543,6 +543,7 @@ class _AttendanceDetailPageState extends State<AttendanceDetailPage> {
         className,
         organizationName,
         role,
+        limit: 100,
       );
       // Convert User objects to local Student objects.
       List<Student> fetchedStudents = filteredUsers.map((user) {

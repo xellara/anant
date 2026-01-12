@@ -43,7 +43,7 @@ class _StudentSelectionPageState extends State<StudentSelectionPage> {
     try {
       // Fetch classes and students
       final classes = await client.classes.getAllClasseses();
-      final allUsers = await client.user.getAllUsers();
+      final allUsers = await client.user.getAllUsers(limit: 100);
       
       // Filter only students
       final students = allUsers.where((u) => u.role == UserRole.student).toList();

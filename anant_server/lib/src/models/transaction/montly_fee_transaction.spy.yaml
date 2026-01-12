@@ -15,3 +15,14 @@ fields:
   transactionType: String   # Cash,online(UPI,Card,Netbanking),Cheque
   markedByAnantId: String
   isRefunded: bool, default=false
+
+indexes:
+  # Transaction lookup by Id
+  txn_anant_id_idx:
+    fields: anantId
+  # Report aggregation by month
+  txn_month_idx:
+    fields: month
+  # Status check
+  txn_status_idx:
+    fields: transactionStatus

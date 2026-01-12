@@ -39,18 +39,21 @@ import 'time_table_entry.dart' as _i26;
 import 'transaction/montly_fee_transaction.dart' as _i27;
 import 'user/user.dart' as _i28;
 import 'user/user_role.dart' as _i29;
-import 'package:anant_server/src/generated/announcement.dart' as _i30;
-import 'package:anant_server/src/generated/attendance/attendance.dart' as _i31;
-import 'package:anant_server/src/generated/user/user.dart' as _i32;
-import 'package:anant_server/src/generated/attendance/class.dart' as _i33;
-import 'package:anant_server/src/generated/attendance/course.dart' as _i34;
-import 'package:anant_server/src/generated/notification.dart' as _i35;
-import 'package:anant_server/src/generated/auth/organization.dart' as _i36;
-import 'package:anant_server/src/generated/auth/permission.dart' as _i37;
-import 'package:anant_server/src/generated/auth/role.dart' as _i38;
-import 'package:anant_server/src/generated/attendance/section.dart' as _i39;
+import 'utils/cache_class_list.dart' as _i30;
+import 'utils/cache_transaction_list.dart' as _i31;
+import 'utils/cache_user_list.dart' as _i32;
+import 'package:anant_server/src/generated/auth/organization.dart' as _i33;
+import 'package:anant_server/src/generated/user/user.dart' as _i34;
+import 'package:anant_server/src/generated/announcement.dart' as _i35;
+import 'package:anant_server/src/generated/attendance/attendance.dart' as _i36;
+import 'package:anant_server/src/generated/attendance/class.dart' as _i37;
+import 'package:anant_server/src/generated/attendance/course.dart' as _i38;
+import 'package:anant_server/src/generated/notification.dart' as _i39;
+import 'package:anant_server/src/generated/auth/permission.dart' as _i40;
+import 'package:anant_server/src/generated/auth/role.dart' as _i41;
+import 'package:anant_server/src/generated/attendance/section.dart' as _i42;
 import 'package:anant_server/src/generated/transaction/montly_fee_transaction.dart'
-    as _i40;
+    as _i43;
 export 'announcement.dart';
 export 'attendance/attendance.dart';
 export 'attendance/class.dart';
@@ -77,6 +80,9 @@ export 'time_table_entry.dart';
 export 'transaction/montly_fee_transaction.dart';
 export 'user/user.dart';
 export 'user/user_role.dart';
+export 'utils/cache_class_list.dart';
+export 'utils/cache_transaction_list.dart';
+export 'utils/cache_user_list.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -1040,6 +1046,45 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'txn_anant_id_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'anantId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'txn_month_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'month',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'txn_status_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'transactionStatus',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
         ),
       ],
       managed: true,
@@ -2523,6 +2568,53 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
+        _i2.IndexDefinition(
+          indexName: 'user_org_class_section_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'organizationName',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'className',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'sectionName',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_fullname_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'fullName',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_rollnumber_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'rollNumber',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -2932,6 +3024,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i29.UserRole) {
       return _i29.UserRole.fromJson(data) as T;
     }
+    if (t == _i30.ClassListContainer) {
+      return _i30.ClassListContainer.fromJson(data) as T;
+    }
+    if (t == _i31.TransactionListContainer) {
+      return _i31.TransactionListContainer.fromJson(data) as T;
+    }
+    if (t == _i32.UserListContainer) {
+      return _i32.UserListContainer.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i4.Announcement?>()) {
       return (data != null ? _i4.Announcement.fromJson(data) : null) as T;
     }
@@ -3017,6 +3118,19 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i29.UserRole?>()) {
       return (data != null ? _i29.UserRole.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<_i30.ClassListContainer?>()) {
+      return (data != null ? _i30.ClassListContainer.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i31.TransactionListContainer?>()) {
+      return (data != null
+              ? _i31.TransactionListContainer.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _i1.getType<_i32.UserListContainer?>()) {
+      return (data != null ? _i32.UserListContainer.fromJson(data) : null) as T;
+    }
     if (t == Map<String, double>) {
       return (data as Map).map(
             (k, v) => MapEntry(deserialize<String>(k), deserialize<double>(v)),
@@ -3056,14 +3170,36 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i30.Announcement>) {
+    if (t == List<_i6.Classes>) {
+      return (data as List).map((e) => deserialize<_i6.Classes>(e)).toList()
+          as T;
+    }
+    if (t == List<_i27.MonthlyFeeTransaction>) {
       return (data as List)
-              .map((e) => deserialize<_i30.Announcement>(e))
+              .map((e) => deserialize<_i27.MonthlyFeeTransaction>(e))
               .toList()
           as T;
     }
-    if (t == List<_i31.Attendance>) {
-      return (data as List).map((e) => deserialize<_i31.Attendance>(e)).toList()
+    if (t == List<_i28.User>) {
+      return (data as List).map((e) => deserialize<_i28.User>(e)).toList() as T;
+    }
+    if (t == List<_i33.Organization>) {
+      return (data as List)
+              .map((e) => deserialize<_i33.Organization>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i34.User>) {
+      return (data as List).map((e) => deserialize<_i34.User>(e)).toList() as T;
+    }
+    if (t == List<_i35.Announcement>) {
+      return (data as List)
+              .map((e) => deserialize<_i35.Announcement>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i36.Attendance>) {
+      return (data as List).map((e) => deserialize<_i36.Attendance>(e)).toList()
           as T;
     }
     if (t == Map<String, String>) {
@@ -3093,43 +3229,34 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           as T;
     }
-    if (t == List<_i32.User>) {
-      return (data as List).map((e) => deserialize<_i32.User>(e)).toList() as T;
-    }
-    if (t == List<_i33.Classes>) {
-      return (data as List).map((e) => deserialize<_i33.Classes>(e)).toList()
+    if (t == List<_i37.Classes>) {
+      return (data as List).map((e) => deserialize<_i37.Classes>(e)).toList()
           as T;
     }
-    if (t == List<_i34.Course>) {
-      return (data as List).map((e) => deserialize<_i34.Course>(e)).toList()
+    if (t == List<_i38.Course>) {
+      return (data as List).map((e) => deserialize<_i38.Course>(e)).toList()
           as T;
     }
-    if (t == List<_i35.Notification>) {
+    if (t == List<_i39.Notification>) {
       return (data as List)
-              .map((e) => deserialize<_i35.Notification>(e))
+              .map((e) => deserialize<_i39.Notification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i36.Organization>) {
+    if (t == List<_i40.Permission>) {
+      return (data as List).map((e) => deserialize<_i40.Permission>(e)).toList()
+          as T;
+    }
+    if (t == List<_i41.Role>) {
+      return (data as List).map((e) => deserialize<_i41.Role>(e)).toList() as T;
+    }
+    if (t == List<_i42.Section>) {
+      return (data as List).map((e) => deserialize<_i42.Section>(e)).toList()
+          as T;
+    }
+    if (t == List<_i43.MonthlyFeeTransaction>) {
       return (data as List)
-              .map((e) => deserialize<_i36.Organization>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i37.Permission>) {
-      return (data as List).map((e) => deserialize<_i37.Permission>(e)).toList()
-          as T;
-    }
-    if (t == List<_i38.Role>) {
-      return (data as List).map((e) => deserialize<_i38.Role>(e)).toList() as T;
-    }
-    if (t == List<_i39.Section>) {
-      return (data as List).map((e) => deserialize<_i39.Section>(e)).toList()
-          as T;
-    }
-    if (t == List<_i40.MonthlyFeeTransaction>) {
-      return (data as List)
-              .map((e) => deserialize<_i40.MonthlyFeeTransaction>(e))
+              .map((e) => deserialize<_i43.MonthlyFeeTransaction>(e))
               .toList()
           as T;
     }
@@ -3170,6 +3297,9 @@ class Protocol extends _i1.SerializationManagerServer {
       _i27.MonthlyFeeTransaction => 'MonthlyFeeTransaction',
       _i28.User => 'User',
       _i29.UserRole => 'UserRole',
+      _i30.ClassListContainer => 'ClassListContainer',
+      _i31.TransactionListContainer => 'TransactionListContainer',
+      _i32.UserListContainer => 'UserListContainer',
       _ => null,
     };
   }
@@ -3236,6 +3366,12 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'User';
       case _i29.UserRole():
         return 'UserRole';
+      case _i30.ClassListContainer():
+        return 'ClassListContainer';
+      case _i31.TransactionListContainer():
+        return 'TransactionListContainer';
+      case _i32.UserListContainer():
+        return 'UserListContainer';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -3331,6 +3467,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'UserRole') {
       return deserialize<_i29.UserRole>(data['data']);
+    }
+    if (dataClassName == 'ClassListContainer') {
+      return deserialize<_i30.ClassListContainer>(data['data']);
+    }
+    if (dataClassName == 'TransactionListContainer') {
+      return deserialize<_i31.TransactionListContainer>(data['data']);
+    }
+    if (dataClassName == 'UserListContainer') {
+      return deserialize<_i32.UserListContainer>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);

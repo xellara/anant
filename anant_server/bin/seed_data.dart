@@ -44,6 +44,8 @@ void main(List<String> args) async {
       await Attendance.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Exam.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await TimetableEntry.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Course.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Section.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Subject.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Classes.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await UserCredentials.db.deleteWhere(session, where: (t) => Constant.bool(true));
@@ -51,6 +53,7 @@ void main(List<String> args) async {
       await auth.UserInfo.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Permission.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Role.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await OrganizationSettings.db.deleteWhere(session, where: (t) => Constant.bool(true));
       await Organization.db.deleteWhere(session, where: (t) => Constant.bool(true));
       print('✅ Database cleared.');
     } else {

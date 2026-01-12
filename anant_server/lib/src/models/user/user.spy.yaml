@@ -66,3 +66,12 @@ indexes:
   # Organization + Role composite index
   user_org_role_idx:
     fields: organizationName, role
+  # Organization + Class + Section composite index for filtering
+  user_org_class_section_idx:
+    fields: organizationName, className, sectionName
+  # Name search index
+  user_fullname_idx:
+    fields: fullName
+  # Roll number search index
+  user_rollnumber_idx:
+    fields: rollNumber

@@ -1,0 +1,3 @@
+class: UserListContainer
+fields:
+  users: List<User>

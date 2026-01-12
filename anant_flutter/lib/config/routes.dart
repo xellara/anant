@@ -6,6 +6,7 @@ import 'package:anant_flutter/splash_screen.dart';
 import 'package:anant_flutter/time_table_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:anant_flutter/features/role_dashboards/role_dashboards.dart';
+import 'package:anant_flutter/features/role_dashboards/anant/anant_dashboard.dart';
 import 'package:anant_flutter/features/legal/terms_of_use_page.dart';
 import 'package:anant_flutter/features/legal/privacy_policy_page.dart';
 
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String paymentGateway= "/payment-gateway";
 
   static const String adminHome = "/admin-home";
+  static const String anantHome = "/anant-home";
   static const String principalHome = "/principal-home";
   static const String accountantHome = "/accountant-home";
   static const String clerkHome = "/clerk-home";
@@ -57,6 +59,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const MembershipPage());
       case adminHome:
         return MaterialPageRoute(builder: (_) => const AdminDashboard());
+      case anantHome:
+        return MaterialPageRoute(builder: (_) => const AnantDashboardScreen());
       case principalHome:
         return MaterialPageRoute(builder: (_) => const PrincipalDashboard());
       case accountantHome:
