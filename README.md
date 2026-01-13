@@ -1,164 +1,94 @@
-## Architecture Overview
+# Anant
 
-The app is structured to support dynamic services, ensuring that different types of services (bike selling, hotel booking, etc.) can coexist and be added as the app grows. We use the **BLoC** pattern to separate business logic from the UI, making the app modular and testable.
+<p align="center">
+  <b>A Scalable, Multi-Vertical Application built with Flutter & Serverpod.</b><br>
+  Bike Selling • Hotel Booking • Food Delivery • ...and more.
+</p>
 
-### **File Structure**
+---
+
+## 🏗 Architecture
+
+The app is structured to support **dynamic services**, ensuring that different business verticals can coexist and scale independently. We utilize the **BLoC** pattern to strictly separate business logic from the UI, resulting in a modular, testable, and maintainable codebase.
+
+---
+
+## 📂 Project Structure
+
+<details>
+<summary><b>Click to expand file tree</b></summary>
 
 ```plaintext
 lib/
-├── blocs/                              # Contains all your BLoC logic (business logic)
-│   ├── auth/                           # Authentication-related logic
-│   │   ├── auth_bloc.dart              # Main auth BLoC
-│   │   ├── auth_event.dart             # Auth events (login, logout, etc.)
-│   │   ├── auth_state.dart             # Auth states (logged in, logged out, loading, error)
-│   ├── global/                         # Global app-wide logic (state management)
-│   │   ├── app_bloc.dart               # Global app BLoC (app loading, settings, etc.)
-│   │   ├── app_event.dart              # Global events (app initialization, user preferences)
-│   │   ├── app_state.dart              # Global app states (loading, error, ready)
-│   ├── services/                       # Specific service-related BLoC logic (Bike, Hotel, etc.)
-│   │   ├── bike/                       # Bike selling BLoC
-│   │   │   ├── bike_bloc.dart          # Main BLoC for bike selling
-│   │   │   ├── bike_event.dart         # Bike-specific events
-│   │   │   ├── bike_state.dart         # Bike-specific states
-│   │   ├── hotel/                      # Hotel booking BLoC
-│   │   │   ├── hotel_bloc.dart         # Main BLoC for hotel bookings
-│   │   │   ├── hotel_event.dart        # Hotel-specific events
-│   │   │   ├── hotel_state.dart        # Hotel-specific states
-│   │   ├── food_delivery/              # Food delivery BLoC
-│   │   │   ├── food_delivery_bloc.dart # Main BLoC for food delivery
-│   │   │   ├── food_delivery_event.dart# Food delivery-specific events
-│   │   │   ├── food_delivery_state.dart# Food delivery-specific states
-│   │   └── ...                         # Additional services like education, travel, etc.
-├── models/                             # Contains models for different services and common entities
-│   ├── user_model.dart                 # Model for user data
-│   ├── bike_model.dart                 # Model for bike (selling) data
-│   ├── hotel_model.dart                # Model for hotel (booking) data
-│   ├── food_delivery_model.dart        # Model for food delivery data
-│   ├── common_models.dart              # Common models (address, payment info, etc.)
-│   └── ...                             # Other service-specific models
-├── screens/                            # Contains the UI screens (pages) for all services
-│   ├── auth/                           # Authentication screens (login, register, etc.)
-│   │   ├── login_screen.dart
-│   │   ├── register_screen.dart
-│   │   ├── forgot_password_screen.dart
-│   ├── home/                           # Home screen and service selection
-│   │   ├── home_screen.dart            # Displays available services
-│   │   ├── home_widgets.dart           # Widgets for home screen UI
-│   ├── services/                       # Service-specific screens (Bike, Hotel, Food, etc.)
-│   │   ├── bike/                       # Screens for bike selling services
-│   │   │   ├── bike_listing_screen.dart  # List of available bikes
-│   │   │   ├── bike_detail_screen.dart   # Detailed view of a bike for sale
-│   │   ├── hotel/                      # Screens for hotel booking services
-│   │   │   ├── hotel_listing_screen.dart # List of hotels available
-│   │   │   ├── hotel_detail_screen.dart  # Detailed view of a hotel
-│   │   ├── food_delivery/              # Screens for food delivery services
-│   │   │   ├── food_listing_screen.dart  # List of food items or restaurants
-│   │   │   ├── food_detail_screen.dart   # Detailed view of a food item or restaurant
-│   │   └── ...                         # Screens for other services
-│   └── global/                         # Common screens (settings, profile, etc.)
-│       ├── settings_screen.dart
-│       ├── profile_screen.dart
-│       └── error_screen.dart           # Generic error screen for handling failures
-├── widgets/                            # Common reusable widgets
-│   ├── custom_button.dart              # Custom button widget
-│   ├── custom_card.dart                # Custom card widget for displaying items
-│   ├── service_card.dart               # Reusable widget for displaying service items (bike, hotel)
-│   ├── loading_indicator.dart          # Reusable loading spinner widget
-│   ├── error_widget.dart               # Reusable error widget to show errors
-│   └── ...                             # Any other reusable widgets
-├── services/                           # Handles external services (API, local storage, etc.)
-│   ├── api_service.dart                # API client service to make network requests
-│   ├── storage_service.dart            # Service to handle local storage (e.g., shared preferences)
-│   ├── push_notification_service.dart  # Service for push notifications
-│   └── ...                             # Other services like location, analytics, etc.
-├── utils/                              # Utility classes and helpers (validation, constants, etc.)
-│   ├── constants.dart                  # Constants used throughout the app (URLs, keys, etc.)
-│   ├── validators.dart                 # Helper functions for validating inputs (email, password, etc.)
-│   ├── date_helper.dart                # Helper for date formatting
-│   ├── network_helper.dart             # Helper functions for network requests
-│   └── ...                             # Other utility functions and helpers
-├── main.dart                           # Main entry point for your app
-└── routes.dart                         # Routing configuration for navigation (named routes)
+├── blocs/                              # Business Logic Components
+│   ├── auth/                           # Authentication (Login, Register)
+│   ├── global/                         # Global App State
+│   └── services/                       # Vertical-Specific Logic
+│       ├── bike/                       # Bike Selling
+│       ├── hotel/                      # Hotel Booking
+│       └── food_delivery/              # Food Delivery
+├── models/                             # Data Models
+├── screens/                            # UI Screens
+│   ├── auth/                           # Auth Pages
+│   ├── home/                           # Home & Service Selection
+│   └── services/                       # Vertical-Specific Screens
+├── widgets/                            # Reusable UI Components
+├── services/                           # External Services (API, Storage)
+├── utils/                              # Helpers & Constants
+├── main.dart                           # App Entry Point
+└── routes.dart                         # Navigation Config
+```
+</details>
 
-## Build and Deployment Guide
+---
 
-### Development (Running Locally)
+## 🚀 Build & Deployment Guide
 
-#### Server
-1.  Navigate to the server directory:
-    ```bash
-    cd anant_server
-    ```
-2.  Ensure your database configuration is correct (or Docker is running for local DB).
-3.  Start the server:
-    ```bash
-    dart bin/main.dart
-    ```
+### 🛠 Development (Running Locally)
 
-#### Flutter Client (Mobile/Web)
-1.  Navigate to the flutter directory:
-    ```bash
-    cd anant_flutter
-    ```
-2.  Run the app in **debug mode** (points to dev environments):
-    ```bash
-    flutter run -t lib/main_dev.dart
-    ```
+| Component | Description | Command |
+| :--- | :--- | :--- |
+| **Server** | Starts the Serverpod backend. Ensure Docker/Neon is configured. | `cd anant_server`<br>`dart bin/main.dart` |
+| **Client** | Runs the Flutter app in **Debug Mode** (points to Dev env). | `cd anant_flutter`<br>`flutter run -t lib/main_dev.dart` |
 
-### Production (Running Locally)
+### 📦 Production (Running Locally)
 
-To run the app with production configurations locally:
+To simulate the production environment on your local machine:
 
 ```bash
 cd anant_flutter
 flutter run --release -t lib/main_prod.dart
 ```
 
-### Generating Android Build Artifacts
+### 📱 Generating Build Artifacts
 
-Navigate to `anant_flutter` and run:
+Navigate to `anant_flutter` and run the following commands to generate release builds:
 
-**Generate APK:**
-```bash
-flutter build apk --release -t lib/main_prod.dart
-```
+| Artifact | Environment | Command |
+| :--- | :--- | :--- |
+| **APK** | **Development** | `flutter build apk --release -t lib/main_dev.dart` |
+| **APK** | **Production** | `flutter build apk --release -t lib/main_prod.dart` |
+| **AppBundle** | **Development** | `flutter build appbundle --release -t lib/main_dev.dart` |
+| **AppBundle** | **Production** | `flutter build appbundle --release -t lib/main_prod.dart` |
 
-**Generate AppBundle (.aab):**
-```bash
-flutter build appbundle --release -t lib/main_prod.dart
-```
+---
 
-### Deployment to Google Cloud Platform (GCP)
+## ☁️ Cloud Deployment (GCP)
 
-#### Server (Development)
-Deploys the Serverpod backend to Cloud Run (`anant-dev-484011`).
+We use Google Cloud Run for a serverless, scalable deployment.
 
-```bash
-cd anant_server
-./deploy/gcp/console_gcr/cloud-run-deploy-dev.sh
-```
+### Server Deployment
 
-#### Server (Production)
-Deploys the Serverpod backend to Cloud Run (`anant-prod`) using Neon DB.
+| Environment | Project | Command |
+| :--- | :--- | :--- |
+| **Development** | `anant-dev-484011` | `cd anant_server`<br>`./deploy/gcp/console_gcr/cloud-run-deploy-dev.sh` |
+| **Production** | `anant-prod` | `cd anant_server`<br>`./deploy/gcp/console_gcr/cloud-run-deploy-prod.sh` |
 
-```bash
-cd anant_server
-./deploy/gcp/console_gcr/cloud-run-deploy-prod.sh
-```
+> **Note:** The production deployment uses **Neon DB** for the database layer.
 
-#### Web Application (Development)
-Deploys the Flutter Web app to Cloud Run (`anant-dev-484011`).
+### Web App Deployment
 
-```bash
-cd anant_flutter
-./deploy/deploy_web_dev.sh
-```
-
-#### Web Application (Production)
-Deploys the Flutter Web app to Cloud Run (`anant-prod`).
-
-```bash
-cd anant_flutter
-./deploy/deploy_web_prod.sh
-```
-
+| Environment | Project | Command |
+| :--- | :--- | :--- |
+| **Development** | `anant-dev-484011` | `cd anant_flutter`<br>`./deploy/deploy_web_dev.sh` |
+| **Production** | `anant-prod` | `anant-prod` | `cd anant_flutter`<br>`./deploy/deploy_web_prod.sh` |
