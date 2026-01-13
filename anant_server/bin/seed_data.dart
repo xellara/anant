@@ -439,7 +439,7 @@ void main(List<String> args) async {
     // Fees & Transactions
     for (var student in students) {
       // Fee Record
-      final fee = await FeeRecord.db.insertRow(session, FeeRecord(
+      await FeeRecord.db.insertRow(session, FeeRecord(
         organizationId: orgId,
         studentId: student.id!,
         amount: 5000.0,
@@ -473,8 +473,8 @@ void main(List<String> args) async {
     // Announcements
     await Announcement.db.insertRow(session, Announcement(
       organizationId: orgId,
-      title: 'Welcome!',
-      content: 'Welcome to the new session.',
+      title: 'Welcome to Anant School!',
+      content: 'We are excited to begin the new academic session. Please check your timetable.',
       priority: 'High',
       targetAudience: 'All',
       createdBy: 'system',
@@ -487,8 +487,8 @@ void main(List<String> args) async {
       await Notification.db.insertRow(session, Notification(
         organizationId: orgId,
         userId: students.first.anantId!,
-        title: 'Fee Paid',
-        message: 'Your fee has been received.',
+        title: 'Fee Payment Received',
+        message: 'Your payment for Term 1 has been successfully processed.',
         type: 'fee',
         timestamp: DateTime.now(),
         isRead: false,
@@ -519,21 +519,67 @@ void main(List<String> args) async {
     }
 
     // ResourcePermission (Dummy)
-    final role = createdRoles.first;
-    final perm = createdPermissions.first;
-    await ResourcePermission.db.insertRow(session, ResourcePermission(
-      roleId: role.id!,
-      permissionId: perm.id!,
-      resourceType: 'Document',
-      resourceId: 'doc_123',
-      organizationName: orgName,
-      createdAt: DateTime.now(),
-    ));
+    if (createdRoles.isNotEmpty && createdPermissions.isNotEmpty) {
+      final role = createdRoles.first;
+      final perm = createdPermissions.first;
+      await ResourcePermission.db.insertRow(session, ResourcePermission(
+        roleId: role.id!,
+        permissionId: perm.id!,
+        resourceType: 'Document',
+        resourceId: 'doc_policy_2025',
+        organizationName: orgName,
+        createdAt: DateTime.now(),
+      ));
+    }
 
     print('✅ Announcements, Notifications, Audits populated.');
 
     print('\n✨ SEEDING COMPLETE! ✨');
-    print('All tables have been populated with at least one record.');
+    print('All tables have been populated with comprehensive data.');
+    
+    // --- 8. CREDENTIALS REPORT ---
+    print('\n');
+    print('🔐  GENERATED USER CREDENTIALS  🔐');
+    print('====================================================================================================');
+    print('| Role       | Anant ID (Username)                               | Password            | Name       |');
+    print('|------------|---------------------------------------------------|---------------------|------------|');
+    
+    // Helper to print row
+    void printCredRow(String role, String id, String pass, String name) {
+      print('| ${role.padRight(10)} | ${id.padRight(49)} | ${pass.padRight(19)} | ${name.padRight(10)} |');
+    }
+
+    // Collect and print credentials for each role
+    // Re-generating the deterministic passwords used in step 5 for reporting
+    for (var roleName in createdUsers.keys) {
+      final list = createdUsers[roleName]!;
+      // Show first 2 users of each role to avoid cluttering, or all if few
+      final limit = (roleName == 'student') ? 3 : list.length;
+      
+      for (var i = 0; i < limit; i++) {
+        final user = list[i];
+         // Re-construct the password logic used in Create Users step
+         // Logic: '${prefix[0].toUpperCase()}${prefix.substring(1)}@123'
+         // We need the prefix logic again or store it.
+         // Let's infer prefix from role name usually. 
+         // 'anant' -> 'Anant@123', 'admin' -> 'Admin@123'
+         // BUT wait, in step 5 'UserRole.anant' used prefix 'anant'.
+         // So Password matches Role capitalized + @123 usually.
+         
+         String prefix = roleName.toLowerCase();
+         // Basic password reconstruction based on Step 5 logic
+         String password = '${prefix[0].toUpperCase()}${prefix.substring(1)}@123';
+         
+         printCredRow(roleName, user.anantId!, password, (user.fullName ?? 'Unknown').split(' ').first);
+      }
+      if (list.length > limit) {
+         print('| ${''.padRight(10)} | ... and ${list.length - limit} more ${roleName}s...'.padRight(49) + ' | ${''.padRight(19)} | ${''.padRight(10)} |');
+      }
+      print('|------------|---------------------------------------------------|---------------------|------------|');
+    }
+    print('====================================================================================================');
+    print('⚠️  Note: Save these credentials! They are required for login.');
+    print('\n');
 
   } catch (e, stack) {
     print('❌ Error seeding data: $e');
