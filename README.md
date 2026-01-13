@@ -79,3 +79,86 @@ lib/
 │   └── ...                             # Other utility functions and helpers
 ├── main.dart                           # Main entry point for your app
 └── routes.dart                         # Routing configuration for navigation (named routes)
+
+## Build and Deployment Guide
+
+### Development (Running Locally)
+
+#### Server
+1.  Navigate to the server directory:
+    ```bash
+    cd anant_server
+    ```
+2.  Ensure your database configuration is correct (or Docker is running for local DB).
+3.  Start the server:
+    ```bash
+    dart bin/main.dart
+    ```
+
+#### Flutter Client (Mobile/Web)
+1.  Navigate to the flutter directory:
+    ```bash
+    cd anant_flutter
+    ```
+2.  Run the app in **debug mode** (points to dev environments):
+    ```bash
+    flutter run -t lib/main_dev.dart
+    ```
+
+### Production (Running Locally)
+
+To run the app with production configurations locally:
+
+```bash
+cd anant_flutter
+flutter run --release -t lib/main_prod.dart
+```
+
+### Generating Android Build Artifacts
+
+Navigate to `anant_flutter` and run:
+
+**Generate APK:**
+```bash
+flutter build apk --release -t lib/main_prod.dart
+```
+
+**Generate AppBundle (.aab):**
+```bash
+flutter build appbundle --release -t lib/main_prod.dart
+```
+
+### Deployment to Google Cloud Platform (GCP)
+
+#### Server (Development)
+Deploys the Serverpod backend to Cloud Run (`anant-dev-484011`).
+
+```bash
+cd anant_server
+./deploy/gcp/console_gcr/cloud-run-deploy-dev.sh
+```
+
+#### Server (Production)
+Deploys the Serverpod backend to Cloud Run (`anant-prod`) using Neon DB.
+
+```bash
+cd anant_server
+./deploy/gcp/console_gcr/cloud-run-deploy-prod.sh
+```
+
+#### Web Application (Development)
+Deploys the Flutter Web app to Cloud Run (`anant-dev-484011`).
+
+```bash
+cd anant_flutter
+./deploy/deploy_web_dev.sh
+```
+
+#### Web Application (Production)
+Deploys the Flutter Web app to Cloud Run (`anant-prod`).
+
+```bash
+cd anant_flutter
+./deploy/deploy_web_prod.sh
+```
+
