@@ -110,4 +110,12 @@ To populate the database with comprehensive sample data (covering all tables):
     dart bin/seed_data.dart
     ```
 
+### ☁️ Production Seeding (Cloud Shell)
+
+To seed the **Production** database directly from Google Cloud Shell (or any SSH session):
+
+```bash
+export SERVERPOD_PASSWORD_database="npg_FHpno9hUOg6d" && dart bin/seed_data.dart --mode production
+```
+
 > **Note:** The script seeds essential setup (Organization, Roles), Users, and operational data (Attendance, Fees, etc.). It ensures all 25+ database tables are non-empty.
