@@ -92,3 +92,22 @@ We use Google Cloud Run for a serverless, scalable deployment.
 | :--- | :--- | :--- |
 | **Development** | `anant-dev-484011` | `cd anant_flutter`<br>`./deploy/deploy_web_dev.sh` |
 | **Production** | `anant-prod` | `anant-prod` | `cd anant_flutter`<br>`./deploy/deploy_web_prod.sh` |
+
+---
+
+## 💾 Database Seeding
+
+To populate the database with comprehensive sample data (covering all tables):
+
+1.  **Navigate to the Server Directory:**
+    ```bash
+    cd anant_server
+    ```
+
+2.  **Run the Seeding Script:**
+    This script will interactively ask if you want to clear existing data.
+    ```bash
+    dart bin/seed_data.dart
+    ```
+
+> **Note:** The script seeds essential setup (Organization, Roles), Users, and operational data (Attendance, Fees, etc.). It ensures all 25+ database tables are non-empty.
